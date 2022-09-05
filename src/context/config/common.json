@@ -1,0 +1,6 @@
+{
+  "APP_NAME": "DoraFactory multisig front-end",
+  "POLKADOT_JS_EXTENSION": "https://polkadot.js.org/extension/",
+  "DORA_KSM_PARACHAIN_EXPLORE": "https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama.dorafactory.org#/accounts",
+  "KSM_NETWORK": "https://polkadot.js.org/apps/?rpc=wss%3A%2F%2Fkusama-rpc.polkadot.io#/explorer"
+}
