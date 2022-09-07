@@ -1,0 +1,44 @@
+.all-owners {
+  background: linear-gradient(190.57deg, rgba(213, 213, 213, 0.56) 19.25%, rgba(248, 248, 255, 0.71) 54.39%, rgba(230, 230, 230, 0.59) 90.02%);
+  box-shadow: -10px 48.5967px 140px rgba(126, 123, 160, 0.2);
+  border-radius: 34px;
+  padding: 40px 30px;
+  margin-right: 10px;
+  width: 1000px;
+}
+
+.owner-title {
+    font-weight: 700;
+    font-size: 20px;
+    margin-block-end: 40px;
+}
+
+.owner-card-list {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.owner-card {
+    margin-top: 10px;
+    border: 2px solid #FFFFFF;
+    box-sizing: border-box;
+    border-radius: 34px;
+    width: 300px;
+    height: 200px;
+    padding: 40px 0px;
+    text-align: center;
+    p {
+      margin-block-start: 10px;
+      margin-block-end: 0 px;
+      color: #0E0E11;
+      font-size: 16px;
+      padding: 0 10px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      .address {
+        font-size: 14px;
+      }
+    }
+  
+}

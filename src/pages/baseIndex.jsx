@@ -14,7 +14,7 @@ const BaseIndex = () => {
             </div>
 
             <div className="content">
-                <SideMenu></SideMenu>
+                <SideMenu cardName="assets"></SideMenu>
             </div>
         </div>
 )}
