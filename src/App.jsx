@@ -1,20 +1,21 @@
-import './App.scss';
+import './index.scss';
+import Home from './pages/home';
+import BaseIndex from './pages/baseIndex';
+import { SubstrateContextProvider } from "./context";
 
-function App() {
+function Main() {
   return (
     <div className="App">
-      <header className="App-header">
-        <a
-          className="App-link"
-          href="https://github.com/DoraFactory/multisig-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Multisig app front-end
-        </a>
-      </header>
+      {/* <Home></Home> */}
+      <BaseIndex></BaseIndex>
     </div>
   );
 }
 
-export default App;
+export default function App() {
+  return (
+    <SubstrateContextProvider>
+      <Main/>
+    </SubstrateContextProvider>
+  )
+};

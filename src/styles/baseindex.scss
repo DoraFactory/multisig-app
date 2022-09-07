@@ -1,0 +1,35 @@
+@import '../resources/base.scss';
+.header{
+  margin-top: 6px;
+  padding: 42px 36px;
+  display: flex;
+  justify-content: space-between;
+  #network-logo{
+    margin-right: 50px
+  }
+  span{
+    font-size: 32px;
+    font-weight: 800
+  }
+  span::first-letter{
+      color: #FF8C45
+  }
+}
+.content{
+  margin-left: 0px;
+  display: flex;
+  justify-content: flex-start;
+}
+.current-account{
+  display: flex;
+  .selected-network{
+    color: var(--theme-orange);
+    padding: 10px 16px;
+    font-size: 18px;
+    font-weight: 500;
+    background: #FFC59F;
+    opacity: 0.7;
+    box-shadow: 0px 0px 1.48148px #8393A3;
+    border-radius: 20px;
+  }
+}
