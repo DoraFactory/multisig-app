@@ -16,13 +16,10 @@ const BaseIndex = () => {
             </div>
 
             <div className="content">
-<<<<<<< HEAD
+
                 <SideMenu cardName="assets"></SideMenu>
-=======
-                <SideMenu></SideMenu>
-                {/* <AssetCards></AssetCards> */}
-                <TransactionStatus></TransactionStatus>
->>>>>>> main
+                <AssetCards></AssetCards>
+
             </div>
         </div>
 )}
