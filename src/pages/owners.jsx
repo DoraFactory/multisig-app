@@ -1,22 +1,13 @@
 import SideMenu from '../components/sideMenu'
 import '../styles/owners.scss'
 import logo from '../resources/logo.svg'
+import OwnerCard from '../components/owners/ownerCard'
 
 // import TableSingleLine from '../components/table';
 // import TransDoc from '../components/assets/transfer-doc';
 // import config from "../context/config"
 
 // const dora_ksm_parachain_explore = config.DORA_KSM_PARACHAIN_EXPLORE;
-
-
-function OwnerCard () {
-  return (
-    <div class="all-owners">
-      <p class="owner-title"> OWNERES / </p>
-      <div class="owner-card-list"></div>
-    </div>
-  )
-}
 
 function Owners () {
   return (
