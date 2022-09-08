@@ -1,18 +1,6 @@
 import react from 'react'; 
 import '../styles/sideMenu.scss';
 
-// handleMenuPageButton = (item) => {
-//     menuClass = {
-//         selected: "menu-link menu-selected",
-//         link: "menu-link"        
-//     }
-//     if (item === true) {
-//         return menuClass.selected
-//     } else {
-//         return menuClass.link
-//     }
-// }
-
 function SideMenu(cardName) {
     return(
         <div className="side-menu">
@@ -22,9 +10,6 @@ function SideMenu(cardName) {
                     + Create a new wallet
                 </div>
             </div>
-            {console.log({cardName})}
-            {console.log(cardName.cardName == 'owners')}
-
             <a href="/assets" className={cardName.cardName==="assets"? "menu-link menu-selected": "menu-link"}>
                     <svg 
                         width="24"

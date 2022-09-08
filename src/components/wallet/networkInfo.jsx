@@ -4,14 +4,14 @@ import Icons from '../../resources';
 
 const NetworkInfo = () => {
     return(
-        <div>
-            <div className="header">
+        <div className="header">
+            <span></span>
+            <div className="current-account">
                 <span className="selected-network">
                 xxxx
                 </span>
-                <img id="network-logo" src={Icons.Logo}></img>
+                <img id="network-logo" src={Icons.Logo}/>
             </div>
-            <h2>Welcome to Substrate Multisig</h2>
         </div>
     )
 }

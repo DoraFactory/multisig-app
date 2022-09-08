@@ -18,6 +18,14 @@
     width: 100%
 }
 
+.steps {
+    min-width: 970px;
+    background: linear-gradient(168.04deg, rgba(255, 255, 255, 0.56) 6.64%, rgba(248, 248, 255, 0.71) 38.22%, rgba(255, 255, 255, 0.59) 65.37%, #F8EBF4 92.29%);
+    box-shadow: -10px 48.5967px 140px rgba(126, 123, 160, 0.2);
+    backdrop-filter: blur(19px);
+    border-radius: 40px 40px 0px 0px;
+}
+
 .connector-line{
     height: 0px;
     border: 1px solid #c8c8c8;
@@ -28,4 +36,46 @@
 .active{
     border-image-source: var(--theme-light-green-bg);
     border-image-width: auto
+}
+
+
+.intro-text {
+    margin-top: 60px;
+}
+.guide-text {
+    margin-top: 48px;
+}
+.selected-network {
+    color: #0E0E11;
+    font-weight: 400;
+    background: rgba(14, 14, 17, 0.1);
+    border-radius: 4px;
+    display: inline-block;
+    padding: 10px 12px;
+}
+
+.extension-btn {
+    color: var(--theme-orange);
+    border: 1px solid var(--theme-orange);
+    background: white;
+    display: inline-flex;
+    padding: 17px 32px;
+    font-size: 16px;
+    font-weight: 700;
+    align-items: center;
+    svg {
+      margin-right: 10px;
+    }
+}
+
+.btn-group {
+    border-top: 1px solid rgba(14, 14, 17, 0.1);
+    margin-top: 48px;
+    padding-left: 48px;
+    a {
+        // cursor pointer;
+        margin-left: 48px;
+        color: var(--theme-orange);
+        font-weight: 400;
+    }
 }

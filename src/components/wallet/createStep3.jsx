@@ -4,8 +4,9 @@ import Icons from '../../resources';
 
 const CreateStep3 = () => {
     return(
+        <div className="steps">
         <div className="create-wallet-steps">
-            <StepProgess></StepProgess>
+            <StepProgess step="3"></StepProgess>
             <p>
                 Review wallet information
             </p>
@@ -46,6 +47,7 @@ const CreateStep3 = () => {
                 </div>
                 <a href="">back</a>
             </div>
+        </div>
         </div>
     )
 }

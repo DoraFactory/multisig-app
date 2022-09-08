@@ -5,8 +5,10 @@ import '../../styles/createSteps.scss';
 
 const CreateStep2 = () => {
     return(
+        <div className="steps">
+
         <div className="create-wallet-steps">
-            <StepProgess></StepProgess>
+            <StepProgess step="2"></StepProgess>
             
             <section>
                 1. Name of the new Wallet，The new multisig wallet will only be available on 
@@ -58,6 +60,7 @@ const CreateStep2 = () => {
                 </div>
                 <a> cancel</a>
             </div>
+        </div>
         </div>
         
     )

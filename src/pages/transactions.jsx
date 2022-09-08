@@ -11,19 +11,18 @@ import logo from '../resources/logo.svg'
 function Transactions () {
   return (
     <div>
-    <div className="header">
-        <span>Substrate multisig</span>
-        <div className="current-account">
-            <span className="selected-network"></span>
-            <img id="network-logo" src={logo}></img>
+        <div className="header">
+            <span>Substrate multisig</span>
+            <div className="current-account">
+                <span className="selected-network"></span>
+                <img id="network-logo" src={logo}></img>
+            </div>
+        </div>
+
+        <div className="content">
+        <SideMenu cardName="transactions"></SideMenu>
         </div>
     </div>
-
-    <div className="content">
-      <SideMenu cardName="transactions"></SideMenu>
-    </div>
-</div>
-
   )
 }
 

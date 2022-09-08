@@ -1,6 +1,6 @@
 // import SideMenu from '../components/sideMenu'
 import NetworkInfo from '../components/wallet/networkInfo'
-import CreateStep1 from '../components/wallet/createStep1'
+import CreateStep3 from '../components/wallet/createStep3'
 import '../styles/wallet.scss'
 
 // import TableSingleLine from '../components/table';
@@ -9,17 +9,17 @@ import '../styles/wallet.scss'
 
 // const dora_ksm_parachain_explore = config.DORA_KSM_PARACHAIN_EXPLORE;
 
-function WalletCreations () {
+function WalletCreation3 () {
   return (
     <div>
         <NetworkInfo></NetworkInfo>
         <h2>Welcome to Substrate Multisig</h2>
         
-        <CreateStep1></CreateStep1>
+        <CreateStep3></CreateStep3>
         {/* <div className="content">
         </div> */}
     </div>
   )
 }
 
-export default WalletCreations
+export default WalletCreation3
