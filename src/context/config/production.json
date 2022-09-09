@@ -1,3 +1,5 @@
 {
-  "PROVIDER_SOCKET": "wss://kusama.dorafactory.org"
+  "DORA_PROVIDER_SOCKET": "wss://kusama.dorafactory.org",
+  "POLKADOT_PROVIDER_SOCKET":"wss://rpc.polkadot.io",
+  "KUSAMA_PROVIDER_SOCKET":"wss://kusama-rpc.polkadot.io"
 }

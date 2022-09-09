@@ -3,18 +3,20 @@ import Icons from '../resources';
 import '../styles/home.scss';
 import PreCreateWallet from "../components/home/preCreateWallet";
 import LoginWallet from "../components/home/loginWallet";
+import {SetProviderSocket} from '../context'
 const Home = () => {
 
     const networks = [
-        {"address": "ws://127.0.0.1:9944", "name":"LocalChain", "logo": "logo.svg"},
-        {"address":"wss://rpc.polkadot.io", "name":"Polkadot", "logo": "networks/polkadot.png"},
-        {"address":"wss://kusama-rpc.polkadot.io", "name":"Kusama", "logo": "networks/kusama.png"}
+        {"name":"DoraFactory", "logo": "logo.svg"},
+        {"name":"Polkadot", "logo": "networks/polkadot.png"},
+        {"name":"Kusama", "logo": "networks/kusama.png"}
     ];
 
     const [network, setNetwork] = useState('');
 
     const handleChange = name =>{
         setNetwork(name)
+        SetProviderSocket(name)
     }
 
     return(

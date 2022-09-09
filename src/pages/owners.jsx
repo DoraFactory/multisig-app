@@ -3,12 +3,6 @@ import '../styles/owners.scss'
 import logo from '../resources/logo.svg'
 import OwnerCard from '../components/owners/ownerCard'
 
-// import TableSingleLine from '../components/table';
-// import TransDoc from '../components/assets/transfer-doc';
-// import config from "../context/config"
-
-// const dora_ksm_parachain_explore = config.DORA_KSM_PARACHAIN_EXPLORE;
-
 function Owners () {
   return (
     <div>

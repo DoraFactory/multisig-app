@@ -11,7 +11,22 @@ import config from "./config"
 
 // get the socket address
 const parsedQuery = new URLSearchParams(window.location.search)
-const connectedSocket = parsedQuery.get('rpc') || config.PROVIDER_SOCKET
+
+let Socket = config.DORA_PROVIDER_SOCKET;
+
+const SetProviderSocket = (network) => {
+  if(network === "DoraFactory") {
+    Socket = config.DORA_PROVIDER_SOCKET
+    console.log('我是dora网络')
+  }
+  if(network === "Polkadot") {
+    Socket = config.POLKADOT_PROVIDER_SOCKET
+    console.log('我是波卡网络')
+  } 
+  if(network === "Kusama") Socket = config.KUSAMA_PROVIDER_SOCKET
+}
+
+const connectedSocket = parsedQuery.get('rpc') || Socket
 
 const initialState = {
   // These are the states
@@ -183,4 +198,4 @@ const useSubstrate = () => useContext(SubstrateContext)
 // provide the child component using the context  `state`
 const useSubstrateState = () => useContext(SubstrateContext).state
 
-export { SubstrateContextProvider, useSubstrate, useSubstrateState }
+export { SubstrateContextProvider, useSubstrate, useSubstrateState, SetProviderSocket }
