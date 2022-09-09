@@ -2,7 +2,7 @@ import React from 'react';
 import StepProgess from './stepProgess';
 import icon_polkadot from '../../resources/icon_polkadot.svg'
 import '../../styles/createSteps.scss';
-import '../../styles/step1.scss';
+// import '../../styles/step1.scss';
 import '../../styles/modal.scss';
 import '../../styles/wallet.scss';
 import '../../resources/base.scss';
