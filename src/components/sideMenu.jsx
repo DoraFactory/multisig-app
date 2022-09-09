@@ -1,7 +1,19 @@
 import react from 'react'; 
 import '../styles/sideMenu.scss';
 
-const SideMenu = () => {
+// handleMenuPageButton = (item) => {
+//     menuClass = {
+//         selected: "menu-link menu-selected",
+//         link: "menu-link"        
+//     }
+//     if (item === true) {
+//         return menuClass.selected
+//     } else {
+//         return menuClass.link
+//     }
+// }
+
+function SideMenu(cardName) {
     return(
         <div className="side-menu">
             <div className="wallet-info">
@@ -10,8 +22,10 @@ const SideMenu = () => {
                     + Create a new wallet
                 </div>
             </div>
+            {console.log({cardName})}
+            {console.log(cardName.cardName == 'owners')}
 
-            <div className="menu-link">
+            <a href="/assets" className={cardName.cardName==="assets"? "menu-link menu-selected": "menu-link"}>
                     <svg 
                         width="24"
                         height="24"
@@ -59,9 +73,9 @@ const SideMenu = () => {
                         />
                     </svg>
                     <span>ASSETS</span>
-                </div>
+                </a>
 
-                <div className= "menu-link">
+                <a href="/transactions" className={cardName.cardName==="transactions"? "menu-link menu-selected": "menu-link"}>
                     <svg
                         width="24"
                         height="24"
@@ -135,9 +149,9 @@ const SideMenu = () => {
                         />
                     </svg>
                     <span>TRANSACTIONS</span>
-                </div>
+                </a>
 
-                <div className="menu-link">
+                <a href="/owners" className={cardName.cardName=="owners"? "menu-link menu-selected": "menu-link"}>
                     <svg
                         width="24"
                         height="25"
@@ -175,7 +189,7 @@ const SideMenu = () => {
                         />
                     </svg>
                     <span>OWNERES</span>
-                </div>
+                </a>
 
                 <div class="logout">
                     <svg

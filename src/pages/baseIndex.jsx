@@ -16,9 +16,10 @@ const BaseIndex = () => {
             </div>
 
             <div className="content">
-                <SideMenu></SideMenu>
-                {/* <AssetCards></AssetCards> */}
-                <TransactionStatus></TransactionStatus>
+
+                <SideMenu cardName="assets"></SideMenu>
+                <AssetCards></AssetCards>
+
             </div>
         </div>
 )}
