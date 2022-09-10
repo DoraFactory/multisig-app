@@ -1,8 +1,19 @@
 import React from "react";
 import StepProgess from './stepProgess';
 import Icons from '../../resources';
-
+import { useNavigate, Link } from 'react-router-dom';
+import localStorage from 'localStorage';
 const CreateStep3 = () => {
+    const navigate = useNavigate();
+
+    // let multisig_wallet =  JSON.parse(localStorage.getItem('multisig-wallet'));
+    // console.log( multisig_wallet);
+
+    const headToAsset = () =>{
+        //TODO: 判断是否已经填了钱包名
+        navigate('/assets')
+    }
+
     return(
         <div className="steps">
         <div className="create-wallet-steps">
@@ -42,15 +53,14 @@ const CreateStep3 = () => {
             </div>
 
             <div className="btn-group">
-                <div className="btn">
+                <div className="btn" onClick={ headToAsset }>
                     Continue
                 </div>
-                <a href="">back</a>
+                <Link to="/create-wallet">back</Link>
             </div>
         </div>
         </div>
     )
 }
-
 
 export default CreateStep3;

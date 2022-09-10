@@ -1,6 +1,6 @@
 @import '../resources/base.scss';
 
-.content{
+.home-content{
     max-width: 1440px;
     margin: 0 auto;
 }
@@ -11,7 +11,7 @@ h2{
     font-size: 56px;
 }
 
-.header {
+.header-home {
     height: 50px;
     display: flex;
     justify-content: flex-end;

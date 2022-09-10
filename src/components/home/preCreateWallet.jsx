@@ -1,4 +1,5 @@
 import React from "react";
+import { Link } from 'react-router-dom';
 import '../../styles/wallet.scss';
 
 const PreCreateWallet = () => {
@@ -8,9 +9,9 @@ const PreCreateWallet = () => {
             <div className="description">
                 Substrate multisig is a frontend product of the multisig pallet developed by Parity.io
             </div>
-            <div className="btn">
-                + Create new wallet   
-            </div>
+            <Link className="btn"  to="/create-wallet">
+                + Create new wallet
+            </Link>
         </div>
     )
 }

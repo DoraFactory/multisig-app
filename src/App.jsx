@@ -23,7 +23,8 @@ export default function App() {
     <BrowserRouter>
     <SubstrateContextProvider>
       <Routes>
-        <Route path="/create-wallet/step1" element={<WalletCreations/>}></Route>
+        <Route path='/' element={<Home></Home>}></Route>
+        <Route path="/create-wallet/" element={<WalletCreations/>}></Route>
         <Route path="/create-wallet/step2" element={<WalletCreation2/>}></Route>
         <Route path="/create-wallet/step3" element={<WalletCreation3/>}></Route>
         <Route path="/assets" element={<Main/>}></Route>

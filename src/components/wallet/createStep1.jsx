@@ -1,17 +1,55 @@
-import React from 'react';
+import React, {useEffect, useState} from 'react';
 import StepProgess from './stepProgess';
 import icon_polkadot from '../../resources/icon_polkadot.svg'
 import '../../styles/createSteps.scss';
-// import '../../styles/step1.scss';
 import '../../styles/modal.scss';
 import '../../styles/wallet.scss';
-import '../../resources/base.scss';
 import Modal from '@mui/material/Modal';
+import localStorage from 'localStorage';
+import { useSubstrate, useSubstrateState } from '../../context';
+import { useNavigate, Link } from 'react-router-dom';
 
 const CreateStep1 = () => {
-    const [open, setOpen] = React.useState(false);
+    const navigate = useNavigate();
+    const {setCurrentAccount} = useSubstrate()
+    const { keyring, currentAccount } = useSubstrateState();
+    const [open, setOpen] = useState(false);
+    const [btnText, setBtnText] = useState('Connect Wallet');
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    
+    // Get the list of accounts we possess the private key for
+    const keyringOptions = keyring.getAccounts().map(account => ({
+        key: account.address,
+        value: account.address,
+        text: account.meta.name.toUpperCase(),
+        icon: 'user',
+    }))
+
+    const initialAddress =
+        keyringOptions.length > 0 ? keyringOptions[0].value : ''
+
+    // Set the initial address
+    useEffect(() => {
+        // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
+        !currentAccount &&
+            initialAddress.length > 0 &&
+            setCurrentAccount(keyring.getPair(initialAddress))
+        if(!currentAccount){
+            localStorage.setItem('main-account', JSON.stringify(initialAddress))
+        }else{
+            localStorage.setItem('main-account', JSON.stringify(initialAddress))
+        }
+    }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+
+    const handleChange = addr => {
+        setCurrentAccount(keyring.getPair(addr))
+        setBtnText('Continue')
+    }
+
+    const handleConnect = () => {
+        navigate('/create-wallet/step2')
+    }
 
     return(
         <div className="steps">
@@ -21,7 +59,7 @@ const CreateStep1 = () => {
                     1、Select network on which to create your multisig wallet.The app is currently pointing to
                 </p>
                 <div className="selected-network">
-                    xxxxx
+                    {localStorage.getItem('network')}
                 </div>
                 <p className="guide-text">
                     2、Please use Polkadot JS Extension.
@@ -31,12 +69,19 @@ const CreateStep1 = () => {
                     <img src={icon_polkadot}/>
                     Polkadot
                 </div>
-                <div class="btn-group"> 
-                {/* TODO: next step and connect wallet. */}
-                    <div class="btn" onClick={handleOpen}>
-                            Connect Wallet
-                    </div>
-                    {/* <Button onClick={handleOpen}>Open modal</Button> */}
+                <div className="btn-group">
+                    {
+                        btnText == "Connect Wallet" ?(
+                            <div className="btn" onClick={ handleOpen }>
+                                {btnText}
+                            </div>
+                        ) : (
+                            <div className="btn" onClick={ handleConnect }>
+                                {btnText}
+                            </div>
+                        )
+                    }
+                    
                     <Modal
                     open={open}
                     onClose={handleClose}
@@ -76,17 +121,26 @@ const CreateStep1 = () => {
                                 />
                                 </svg>
                             </span>
-                            <slot name="content" />
-                            <div class="main">
+                            <slot className="content" />
+                            <div className="main">
                                 <h3>Select an account</h3>
-                                <select>
+                                <select 
+                                    onChange={(dropdown) => {
+                                        handleChange(dropdown.target.value)
+                                    }}
+                                    value={currentAccount ? currentAccount.address : initialAddress}
+                                >
                                     <option>Please select a account</option>
-                                    <option>fengfeng(5G48MUSiceK26a32TA3NSciGr2w7azCMVbCMsyKQDyjj6BWt)</option>
+                                    {keyringOptions.map((option) => (
+                                        <option value = {option.value}>
+                                            {option.text}:{option.value}
+                                        </option>
+                                    ))}
                                 </select>
                             </div>
                         </div>
                     </Modal>
-                    <a >cancel</a>
+                    <Link to ='/'>cancel</Link>
                 </div>
             </div>
         </div>
