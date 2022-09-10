@@ -98,22 +98,22 @@ const CreateStep2 = () => {
                             <div>ADDRESS</div>
                         </div>
 
-                        <div className="address-inputs">
-                            {
-                                owners.map((owner) =>(
-                                    <>
-                                        <input type="text" value={owner.name}/>
-                                        <div className="editable">
-                                            <div className="validate-status"></div>
-                                            <input type="text" value = {owner.account} />
-                                        </div>
-                                        <img src={Icons.Delete} className="deletion"/>
-                                    </>
-                                ))
-                            }
-                            
-                        </div>
+                        {
+                            owners.map((owner, index) =>(
+                                <div className="address-inputs">
+                                {console.log(owner)}
+                                {console.log(index)}
 
+                                    <input type="text" disabled={index===0?true:false} value={owner.name}/>
+                                    <div className="editable">
+                                        <div className="validate-status"></div>
+                                        <input type="text" disabled={index===0?true:false}  value = {owner.account} />
+                                    </div>
+                                    <img src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
+                                </div>
+                            ))
+                        }
+                        
                         <div className="add-link" onClick={ addAccountLink }>
                             + add another owner
                         </div>
