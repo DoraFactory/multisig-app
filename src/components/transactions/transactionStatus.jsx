@@ -5,12 +5,19 @@ import '../../styles/transactionStatus.scss';
 import '../../styles/newTransaction.scss';
 import Modal from '@mui/material/Modal';
 
+
+
 const TransactionStatus = () => {
     const [open, setOpen] = React.useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
     const Tabs = ['Pending', 'Created', 'Completed'];
+    const [activeTab, setActiveTab] = React.useState("Pending");
+    const selectTab = (tab) => {
+        return (<li id={tab} className={activeTab===tab ? "selected" : ""} onClick={() => setActiveTab(tab)}>{tab}</li>)
+        
+    }
 
     return(
         <div>
@@ -21,7 +28,11 @@ const TransactionStatus = () => {
             <div className="options">
                 <ul>
                     {Tabs.map((tab) => {
-                        return <li>{tab}</li>
+                        // console.log(tab)
+                        return selectTab(tab)
+                        // <li>{tab}</li>
+                        // return <li className={activeTab==={tab} ? "active" : ""} onClick={() => setActiveTab(activeTab=tab)}>{tab}</li>
+                        // return <li id={tab} onClick={}>{tab}</li>
                     })}
                 </ul>
 
