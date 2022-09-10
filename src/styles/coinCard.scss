@@ -1,0 +1,40 @@
+.receive-assets {
+    width: 560px;
+    text-align: left;
+    h2 {
+        font-weight: 600;
+        line-height: 32px;
+        height: 32px;
+        font-size: 24px;
+        color: #0E0E11;
+        margin-block: 0;
+        text-align: left;
+    }
+
+    .note-info {
+        margin-top: 32px;
+        display: flex;
+        justify-content: flex-start;
+        align-items: center;
+        .note-text {
+            font-size: 12px;
+        }
+    }
+
+    .description {
+        margin-top: 16px;
+        font-size: 16px;
+    }
+    .address-info {
+        background: rgba(14, 14, 17, 0.03);
+        border-radius: 4px;
+        color: black;
+        padding: 12px 15px;
+        margin-top: 20px;
+    }
+    .stretch-btn {
+        width: 145px;
+        text-align: center;
+        margin-left: 160px;
+    }
+}

@@ -2,6 +2,8 @@ import SideMenu from '../components/sideMenu'
 import '../styles/owners.scss'
 import logo from '../resources/logo.svg'
 
+import TransactionStatus from '../components/transactions/transactionStatus'
+
 // import TableSingleLine from '../components/table';
 // import TransDoc from '../components/assets/transfer-doc';
 // import config from "../context/config"
@@ -21,6 +23,7 @@ function Transactions () {
 
         <div className="content">
         <SideMenu cardName="transactions"></SideMenu>
+        <TransactionStatus></TransactionStatus>
         </div>
     </div>
   )
