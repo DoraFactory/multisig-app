@@ -96,7 +96,7 @@ const CreateStep2 = () => {
             wallet_name: walletName.current.value,
             accountId: '',
             owners: owners,
-            threshold: threshold.current.value,
+            threshold: Math.abs(threshold.current.value),
         }
         
         localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
