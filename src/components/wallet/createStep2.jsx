@@ -5,6 +5,7 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
+import { childstate } from "@polkadot/types/interfaces/definitions";
 const CreateStep2 = () => {
     const navigate = useNavigate();
     const walletName = useRef();
@@ -57,26 +58,39 @@ const CreateStep2 = () => {
         console.log(multisigAccount)
     }
 
+    const handleInputChange = (event) => {
+        const value = event.target.value;
+        const inputType = event.target.id.split(' ')[0];
+        const inputIndex = Number(event.target.id.split(' ')[1]);
+
+        owners.map((owner, index) => {
+            if (index === inputIndex) {
+                if (inputType === 'name') {
+                    owner.name = value
+                }
+                if (inputType === 'address') {
+                    owner.account = value
+                }
+            }
+        })
+
+        setOwners([...owners]);
+    }
+
     const handleConnect = () => {
         //TODO: 需要判断是否已经填了wallet名
         console.log('当前的wallet name IS ' + walletName.current.value) 
         console.log('当前的阈值 IS ' + threshold.current.value) 
-        setMultisigAccount({
+        let wallet_multisig = {
             wallet_name: walletName.current.value,
             accountId: '',
             owners: owners,
             threshold: threshold.current.value,
-        })
-        // 由于setState是异步的，所以这里一时无法更新为最新值
-        // console.log(multisigAccount);
-        // console.log('当前的阈值为' + threshold.current.value);
-        // console.log('当前多签钱包名为'  + walletName.current.value)
-       
-        console.log(multisigAccount);
+        }
+        
+        localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
 
         navigate('/create-wallet/step3')
-        localStorage.setItem('multisig-wallet', JSON.stringify(multisigAccount));
-
     }
 
 
@@ -112,10 +126,10 @@ const CreateStep2 = () => {
                         {
                             owners.map((owner, index) =>(
                                 <div className="address-inputs">
-                                    <input type="text" disabled={index===0?true:false} value={owner.name}/>
+                                    <input type="text" id={`name ${index}`} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
-                                        <input type="text" disabled={index===0?true:false}  value = {owner.account} />
+                                        <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
                                     <img src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
                                 </div>
