@@ -1,11 +1,28 @@
 import react from 'react'; 
 import '../styles/sideMenu.scss';
+import Icons from '../resources'
 
 function SideMenu(cardName) {
+
+
+    const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
+    
+
     return(
         <div className="side-menu">
             <div className="wallet-info">
-                <div>dropdown</div>
+                <div>
+                    <div class="profile">
+                        <img src={Icons.Avatar} />
+                        <div
+                            v-if="wallet"
+                            class="name-info"
+                        >
+                            <p>{multisig.wallet_name}</p>
+                            <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+                        </div>
+                    </div>
+                </div>
                 <div className="new-wallet">
                     + Create a new wallet
                 </div>
