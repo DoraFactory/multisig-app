@@ -11,6 +11,7 @@
     "@polkadot/types": "^9.3.3",
     "@polkadot/ui-keyring": "^2.9.8",
     "@polkadot/util": "^10.1.7",
+    "@polkadot/util-crypto": "^10.1.7",
     "@testing-library/jest-dom": "^5.16.5",
     "@testing-library/react": "^13.3.0",
     "@testing-library/user-event": "^13.5.0",

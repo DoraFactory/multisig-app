@@ -32,10 +32,10 @@ const CreateStep2 = () => {
 
         setMultisigAccount(
             {
-                wallet_name: '',
+                wallet_name: walletName.current.value,
                 accountId: '',
                 owners: owners,
-                threshold: 1,
+                threshold: threshold.current.value,
             }
         )
     },[])
@@ -48,26 +48,37 @@ const CreateStep2 = () => {
         setOwners([...owners]);
         setMultisigAccount(
             {
-                wallet_name: '',
+                wallet_name: walletName.current.value,
                 accountId: '',
                 owners: owners,
-                threshold: 1,
+                threshold: threshold.current.value,
             }
         )
+        console.log(multisigAccount)
     }
 
     const handleConnect = () => {
-        //TODO: 需要判断
+        //TODO: 需要判断是否已经填了wallet名
+        console.log('当前的wallet name IS ' + walletName.current.value) 
+        console.log('当前的阈值 IS ' + threshold.current.value) 
         setMultisigAccount({
-            wallet_name: walletName,
+            wallet_name: walletName.current.value,
             accountId: '',
             owners: owners,
-            threshold: threshold,
+            threshold: threshold.current.value,
         })
-        localStorage.setItem('multisig-wallet', multisigAccount);
+        // 由于setState是异步的，所以这里一时无法更新为最新值
+        // console.log(multisigAccount);
+        // console.log('当前的阈值为' + threshold.current.value);
+        // console.log('当前多签钱包名为'  + walletName.current.value)
+       
         console.log(multisigAccount);
+
         navigate('/create-wallet/step3')
+        localStorage.setItem('multisig-wallet', JSON.stringify(multisigAccount));
+
     }
+
 
     return(
         <div className="steps">
@@ -98,21 +109,18 @@ const CreateStep2 = () => {
                             <div>ADDRESS</div>
                         </div>
 
-                        <div className="address-inputs">
-                            {
-                                owners.map((owner) =>(
-                                    <>
-                                        <input type="text" value={owner.name}/>
-                                        <div className="editable">
-                                            <div className="validate-status"></div>
-                                            <input type="text" value = {owner.account} />
-                                        </div>
-                                        <img src={Icons.Delete} className="deletion"/>
-                                    </>
-                                ))
-                            }
-                            
-                        </div>
+                        {
+                            owners.map((owner, index) =>(
+                                <div className="address-inputs">
+                                    <input type="text" disabled={index===0?true:false} value={owner.name}/>
+                                    <div className="editable">
+                                        <div className="validate-status"></div>
+                                        <input type="text" disabled={index===0?true:false}  value = {owner.account} />
+                                    </div>
+                                    <img src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
+                                </div>
+                            ))
+                        }
 
                         <div className="add-link" onClick={ addAccountLink }>
                             + add another owner

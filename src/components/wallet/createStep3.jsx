@@ -3,14 +3,17 @@ import StepProgess from './stepProgess';
 import Icons from '../../resources';
 import { useNavigate, Link } from 'react-router-dom';
 import localStorage from 'localStorage';
+import { createKeyMulti, encodeAddress, sortAddresses} from '@polkadot/util-crypto'
+
 const CreateStep3 = () => {
     const navigate = useNavigate();
 
-    // let multisig_wallet =  JSON.parse(localStorage.getItem('multisig-wallet'));
-    // console.log( multisig_wallet);
+    let multisig_wallet =  JSON.parse(localStorage.getItem('multisig-wallet'));
+    console.log( 'STEP3页面' + JSON.stringify(multisig_wallet));
 
-    const headToAsset = () =>{
-        //TODO: 判断是否已经填了钱包名
+    const CreateWallet = () =>{
+        const SS58Prefix = 0
+
         navigate('/assets')
     }
 
@@ -34,12 +37,12 @@ const CreateStep3 = () => {
                         <p className="first-red">
                             Any transaction requires the confirmation of:
                         </p>
-                        <p> xxx out of xxx owners </p>
+                        <p> {multisig_wallet.owners.length} out of {multisig_wallet.threshold} owners </p>
                     </div>
 
                     <div className="owners">
                         <p className="first-red">
-                            xxx wallet owners
+                            {multisig_wallet.owners.length} wallet owners
                         </p>
                         <div className="profile">   
                             <img src={Icons.Avatar} />
@@ -53,8 +56,8 @@ const CreateStep3 = () => {
             </div>
 
             <div className="btn-group">
-                <div className="btn" onClick={ headToAsset }>
-                    Continue
+                <div className="btn" onClick={ CreateWallet }>
+                    Create Wallet
                 </div>
                 <Link to="/create-wallet">back</Link>
             </div>

@@ -36,9 +36,9 @@ const CreateStep1 = () => {
             initialAddress.length > 0 &&
             setCurrentAccount(keyring.getPair(initialAddress))
         if(!currentAccount){
-            localStorage.setItem('main-account', JSON.stringify(initialAddress))
+            localStorage.setItem('main-account', JSON.stringify(initialAddress.address))
         }else{
-            localStorage.setItem('main-account', JSON.stringify(initialAddress))
+            localStorage.setItem('main-account', JSON.stringify(currentAccount.address))
         }
     }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
