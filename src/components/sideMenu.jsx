@@ -1,12 +1,17 @@
 import react from 'react'; 
 import '../styles/sideMenu.scss';
 import Icons from '../resources'
+import { useNavigate } from 'react-router-dom';
 
 function SideMenu(cardName) {
 
-
+    const navegate =  useNavigate();
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
     
+
+    const handleCreateWallet = () => {
+        navegate('/create-wallet')
+    }
 
     return(
         <div className="side-menu">
@@ -23,7 +28,7 @@ function SideMenu(cardName) {
                         </div>
                     </div>
                 </div>
-                <div className="new-wallet">
+                <div className="new-wallet" onClick={handleCreateWallet}>
                     + Create a new wallet
                 </div>
             </div>
