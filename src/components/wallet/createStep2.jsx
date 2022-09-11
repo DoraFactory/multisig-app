@@ -57,6 +57,25 @@ const CreateStep2 = () => {
         console.log(multisigAccount)
     }
 
+    const handleInputChange = (event) => {
+        const value = event.target.value;
+        const inputType = event.target.id.split(' ')[0];
+        const inputIndex = Number(event.target.id.split(' ')[1]);
+
+        owners.map((owner, index) => {
+            if (index === inputIndex) {
+                if (inputType === 'name') {
+                    owner.name = value
+                }
+                if (inputType === 'address') {
+                    owner.account = value
+                }
+            }
+        })
+
+        setOwners([...owners]);
+    }
+
     const handleConnect = () => {
         //TODO: 需要判断是否已经填了wallet名
         console.log('当前的wallet name IS ' + walletName.current.value) 
@@ -112,10 +131,10 @@ const CreateStep2 = () => {
                         {
                             owners.map((owner, index) =>(
                                 <div className="address-inputs">
-                                    <input type="text" disabled={index===0?true:false} value={owner.name}/>
+                                    <input type="text" id={`name ${index}`} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
-                                        <input type="text" disabled={index===0?true:false}  value = {owner.account} />
+                                        <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
                                     <img src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
                                 </div>
