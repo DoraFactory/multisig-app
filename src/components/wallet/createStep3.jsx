@@ -9,11 +9,25 @@ const CreateStep3 = () => {
     const navigate = useNavigate();
 
     let multisig_wallet =  JSON.parse(localStorage.getItem('multisig-wallet'));
-    console.log( 'STEP3页面' + JSON.stringify(multisig_wallet));
+    const owners = multisig_wallet.owners;
+    const threshold = multisig_wallet.threshold;
+    const wallet_name = multisig_wallet.wallet_name;
 
+    const sub_address_set = owners.map((owner) => owner.account);
     const CreateWallet = () =>{
-        const SS58Prefix = 0
-
+        // prefix 
+        const SS58Prefix = 42
+        const multiAddress = createKeyMulti(sub_address_set, threshold);
+        const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
+        console.log(Ss58Address)
+        console.log(multiAddress)
+        let multisig = {
+            wallet_name: wallet_name,
+            accountId: Ss58Address,
+            owners: owners,
+            threshold: threshold
+        }
+        localStorage.setItem('multisig-wallet', JSON.stringify(multisig));
         navigate('/assets')
     }
 
@@ -30,27 +44,29 @@ const CreateStep3 = () => {
                         <p className="first-red">
                             Name of new multisig
                         </p>
-                        <p> wallet name</p>
+                        <p>{wallet_name}</p>
                     </div>
 
                     <div className="right-part">
                         <p className="first-red">
                             Any transaction requires the confirmation of:
                         </p>
-                        <p> {multisig_wallet.owners.length} out of {multisig_wallet.threshold} owners </p>
+                        <p> {multisig_wallet.owners.length} out of {threshold} owners </p>
                     </div>
 
                     <div className="owners">
                         <p className="first-red">
                             {multisig_wallet.owners.length} wallet owners
                         </p>
-                        <div className="profile">   
-                            <img src={Icons.Avatar} />
-                            <div className="name-info">
-                                <p>acount name</p>
-                                <p>account address</p>
+                        {owners.map((owner) => (
+                            <div className="profile">   
+                                <img src={Icons.Avatar} />
+                                <div className="name-info">
+                                    <p>{owner.name}</p>
+                                    <p>{owner.account}</p>
+                                </div>
                             </div>
-                        </div>
+                        ))}
                     </div>
                 </div>
             </div>

@@ -5,6 +5,7 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
+import { childstate } from "@polkadot/types/interfaces/definitions";
 const CreateStep2 = () => {
     const navigate = useNavigate();
     const walletName = useRef();
@@ -91,22 +92,16 @@ const CreateStep2 = () => {
         //TODO: 需要判断是否已经填了wallet名
         console.log('当前的wallet name IS ' + walletName.current.value) 
         console.log('当前的阈值 IS ' + threshold.current.value) 
-        setMultisigAccount({
+        let wallet_multisig = {
             wallet_name: walletName.current.value,
             accountId: '',
             owners: owners,
             threshold: threshold.current.value,
-        })
-        // 由于setState是异步的，所以这里一时无法更新为最新值
-        // console.log(multisigAccount);
-        // console.log('当前的阈值为' + threshold.current.value);
-        // console.log('当前多签钱包名为'  + walletName.current.value)
-       
-        console.log(multisigAccount);
+        }
+        
+        localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
 
         navigate('/create-wallet/step3')
-        localStorage.setItem('multisig-wallet', JSON.stringify(multisigAccount));
-
     }
 
 
