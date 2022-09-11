@@ -3,6 +3,7 @@ import Icons from '../resources';
 import '../styles/home.scss';
 import PreCreateWallet from "../components/home/preCreateWallet";
 import LoginWallet from "../components/home/loginWallet";
+import localStorage from 'localStorage';
 const Home = () => {
 
     const networks = [
@@ -12,14 +13,23 @@ const Home = () => {
     ];
 
     const [network, setNetwork] = useState('');
+    const [isFirst , setIsFirst] = useState(true);
+
+    // store the network
+    if(isFirst){
+        localStorage.setItem('network', networks[0].name);
+    }else{
+        localStorage.setItem('network', network);
+    }
 
     const handleChange = name =>{
         setNetwork(name)
+        setIsFirst(false)
     }
 
     return(
-        <div className="content"> 
-            <div className="header">
+        <div className="home-content"> 
+            <div className="header-home">
                 <select 
                     onChange={(dropdown) => {
                         handleChange(dropdown.target.value)
@@ -36,9 +46,9 @@ const Home = () => {
             </div>
             <h2>Welcome to Substrate Multisig</h2>
             <main>
-            <PreCreateWallet />
-            <div class="vertical-space-divider" />
-            <LoginWallet />
+                <PreCreateWallet />
+                <div class="vertical-space-divider" />
+                <LoginWallet />
             </main>
         </div>
 )}

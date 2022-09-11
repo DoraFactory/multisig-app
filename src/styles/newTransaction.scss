@@ -1,0 +1,133 @@
+
+h3 {
+    text-align: left;
+    font-size: 24px;
+    margin-block-start: 0;
+}
+
+.wallet-header {
+    display: flex;
+    justify-content: space-between;
+    width: 900px;
+    .balance {
+        color: rgba(14, 14, 17, 0.5);
+        font-size: 12px;
+        font-weight: 400;
+    }
+}
+
+.form-groups {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 900px;
+    .description {
+        text-align: left;
+        padding-left: 16px;
+        padding-bottom: 6px;
+        font-size: 12px;
+        font-weight: 400;
+    }
+    .form-control {
+        margin-top: 12px;
+        margin-bottom: 12px;
+        text-align: left;
+    }
+    .wallet-info {
+        height: 40px;
+        width: 100%;
+        text-align: left;
+        font-size: 16px;
+        padding: 10px 16px;
+        border: 1px solid rgba(14, 14, 17, 0.1);
+        box-sizing: border-box;
+        border-radius: 4px;
+        color: rgba(14, 14, 17, 0.3);
+    }
+}
+
+.method-group {
+    display: flex;
+    justify-content: space-between;
+}
+.module-control {
+    margin-right: 10px;
+    max-width: 130px;
+}
+.el-dropdown--default {
+    width: 100px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+.method-control {
+    width: 760px;
+    .el-dropdown--default {
+        width: 740px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+}
+
+.el-dropdown {
+    height: 40px;
+    border: 1px solid rgba(14, 14, 17, 0.1);
+    box-sizing: border-box;
+    border-radius: 4px;
+    padding: 8px 16px;
+    color: #0E0E11;
+    .el-dropdown-link {
+        line-height: 24px;
+        font-size: 16px;
+        cursor: pointer;
+        overflow: hidden;
+        white-space: nowrap;
+        text-overflow: ellipsis;
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+      span:first-child {
+        margin-right: 20px;
+      }
+      span:last-child {
+        color: rgba(14, 14, 17, 0.3);
+      }
+}
+
+.el-dropdown-menu {
+    overflow-y: scroll;
+}
+.encoded {
+    color: rgba(14, 14, 17, 0.3);
+    font-size: 16px;
+    text-align: left;
+    line-height: 24px;
+    width: 900px;
+    display: flex;
+    justify-content: space-between;
+    img {
+        cursor: pointer;
+    }
+}
+
+.arg-name {
+    text-align: left;
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 18px;
+    margin-bottom: 6px;
+    margin-left: 16px;
+    color: #0E0E11;
+}
+
+.arg-value {
+    height: 32px;
+    border: 1px solid rgba(14, 14, 17, 0.1);
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: rgba(14, 14, 17, 0.3);
+    text-align: left;
+    min-width: 600px;
+}

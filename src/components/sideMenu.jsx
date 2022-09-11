@@ -1,30 +1,37 @@
 import react from 'react'; 
 import '../styles/sideMenu.scss';
-
-// handleMenuPageButton = (item) => {
-//     menuClass = {
-//         selected: "menu-link menu-selected",
-//         link: "menu-link"        
-//     }
-//     if (item === true) {
-//         return menuClass.selected
-//     } else {
-//         return menuClass.link
-//     }
-// }
+import Icons from '../resources'
+import { useNavigate } from 'react-router-dom';
 
 function SideMenu(cardName) {
+
+    const navegate =  useNavigate();
+    const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
+    
+
+    const handleCreateWallet = () => {
+        navegate('/create-wallet')
+    }
+
     return(
         <div className="side-menu">
             <div className="wallet-info">
-                <div>dropdown</div>
-                <div className="new-wallet">
+                <div>
+                    <div class="profile">
+                        <img src={Icons.Avatar} />
+                        <div
+                            v-if="wallet"
+                            class="name-info"
+                        >
+                            <p>{multisig.wallet_name}</p>
+                            <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+                        </div>
+                    </div>
+                </div>
+                <div className="new-wallet" onClick={handleCreateWallet}>
                     + Create a new wallet
                 </div>
             </div>
-            {console.log({cardName})}
-            {console.log(cardName.cardName == 'owners')}
-
             <a href="/assets" className={cardName.cardName==="assets"? "menu-link menu-selected": "menu-link"}>
                     <svg 
                         width="24"
