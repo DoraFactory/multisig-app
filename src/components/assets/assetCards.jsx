@@ -15,7 +15,7 @@ const AssetCards = () => {
     const [doraBalance, setDoraBalance] = useState();
 
     const { api, currentAccount } = useSubstrateState();
-    const chainDecimals = api.registry.chainDecimals[0];
+    // const chainDecimals = api.registry.chainDecimals[0];
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
     
 /*     useEffect(() => {
