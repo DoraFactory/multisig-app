@@ -121,7 +121,6 @@ const CreateStep2 = () => {
                                 </div>
                             ))
                         }
-
                         <div className="add-link" onClick={ addAccountLink }>
                             + add another owner
                         </div>
