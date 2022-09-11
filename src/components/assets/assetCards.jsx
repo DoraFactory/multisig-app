@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState, useEffect} from "react";
 import Modal from '@mui/material/Modal';
 import Icons from "../../resources";
 import '../../styles/assetCard.scss';
@@ -7,11 +7,27 @@ import '../../styles/coinCard.scss';
 import '../../styles/modal.scss';
 import '../../resources/base.scss';
 
+import { useSubstrateState  } from "../../context";
+import { formatBalance } from '@polkadot/util'
+
 const AssetCards = () => {
-    const [open, setOpen] = React.useState(false);
+    const [open, setOpen] = useState(false);
+    const [doraBalance, setDoraBalance] = useState();
+
+    const { api, currentAccount } = useSubstrateState();
+    const chainDecimals = api.registry.chainDecimals[0];
+    const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
+    
+/*     useEffect(() => {
+        api.query.system.accounts(multisig.accountId, balanceInfo => {
+            const free = formatBalance(balanceInfo.data.free, { withSi: false, forceUnit: '-' }, chainDecimals);
+            setDoraBalance(free);
+        })
+    }, [api, doraBalance, setDoraBalance]) */
+
+    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    
 
     return(
         <div className="all-assets">
@@ -74,7 +90,7 @@ const AssetCards = () => {
                     </div>
                     <div className="asset-detail">
                         <p className="detail-label">
-                            BALANCE
+                            {doraBalance}
                         </p>
                         <p className="detail-value">
                             0
@@ -91,10 +107,7 @@ const AssetCards = () => {
                         <Modal
                         open={open}
                         onClose={handleClose}
-                        // aria-labelledby="modal-modal-title"
-                        // aria-describedby="modal-modal-description"
                         >
-
                             <div
                                 v-if="showModal"
                                 className="modal receive-assets"
