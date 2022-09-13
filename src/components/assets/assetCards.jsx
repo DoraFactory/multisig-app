@@ -8,22 +8,24 @@ import '../../styles/modal.scss';
 import '../../resources/base.scss';
 
 import { useSubstrateState  } from "../../context";
+
 import { formatBalance } from '@polkadot/util'
 
 const AssetCards = () => {
     const [open, setOpen] = useState(false);
     const [doraBalance, setDoraBalance] = useState();
+    const {api, currentAccount} = useSubstrateState();
+    const chainDecimals = api.registry.chainDecimals[0];
 
-    const { api, currentAccount } = useSubstrateState();
-    // const chainDecimals = api.registry.chainDecimals[0];
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
     
-/*     useEffect(() => {
-        api.query.system.accounts(multisig.accountId, balanceInfo => {
-            const free = formatBalance(balanceInfo.data.free, { withSi: false, forceUnit: '-' }, chainDecimals);
+    useEffect(() => {
+        api.query.system.account(multisig.accountId, balanceInfo => {
+            const free = formatBalance(balanceInfo.data.free, { withSi: false, forceUnit: '-' });
+            console.log(free)
             setDoraBalance(free);
         })
-    }, [api, doraBalance, setDoraBalance]) */
+    }, [api, doraBalance, setDoraBalance])
 
     
     const handleOpen = () => setOpen(true);
