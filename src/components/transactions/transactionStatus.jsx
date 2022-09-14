@@ -233,10 +233,11 @@ const TransactionStatus = () => {
                     </Modal>
             </div>
         </div>
-            <div class="transaction-card-list">
+
+            <div className="transaction-card-list">
             <div
               v-for="(trans, hash) in transactions"
-              class="transaction-card"
+              className="transaction-card"
             >
               <div class="transaction-summary">
                 <p>
