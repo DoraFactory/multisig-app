@@ -5,6 +5,11 @@ import '../../styles/transactionStatus.scss';
 import '../../styles/newTransaction.scss';
 import Modal from '@mui/material/Modal';
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
 
 
 const TransactionStatus = () => {
@@ -18,6 +23,18 @@ const TransactionStatus = () => {
         return (<li id={tab} className={activeTab===tab ? "selected" : ""} onClick={() => setActiveTab(tab)}>{tab}</li>)
         
     }
+
+    const [multiArgs, setMultiArgs] = React.useState('Id');
+
+    const handleSelectChange = (event) => {
+      setMultiArgs(event.target.value);
+    };
+
+    const [method, setMethod] = React.useState('transfer(dest, value)');
+
+    const handleMethodChange = (event) => {
+      setMethod(event.target.value);
+    };
 
     return(
         <div>
@@ -50,7 +67,7 @@ const TransactionStatus = () => {
                         class="modal"
                         role="dialog"
                         >
-                            <span class="close" onClick={handleClose}>
+                            <span className="close" onClick={handleClose}>
                                 <svg
                                 width="32"
                                 height="32"
@@ -78,68 +95,114 @@ const TransactionStatus = () => {
                                 />
                                 </svg>
                             </span>
-                            <div class="main">
+                            <div className="main">
 
                                 <h3> New transaction</h3>
-                                <div class="form-groups">
-                                <div class="wallet-header">
-                                    <div class="description">
+                                <div className="form-groups">
+                                <div className="wallet-header">
+                                    <div className="description">
                                     Accounts
                                     </div>
-                                    <div class="balance">
+                                    <div className="balance">
                                     Balance: 100
                                     </div>
                                 </div>
-                                <div class="wallet-info">
+                                <div className="wallet-info">
                                     1c9CM8yp4q33KBdhjdLBK9Nk74KkPJ7eM9uQqhAovNofgkS
                                 </div>
-                                <div class="form-control">
-                                    <div class="description">
+                                <div className="form-control">
+                                    <div className="description">
                                     Submit
                                     </div>
-                                    <div class="controls">
-                                    <el-dropdown
-                                        trigger="click"
-                                        max-height="400px"
-                                        class="module-control"
-                                    >
-                                        <span class="el-dropdown-link">
-                                        balances
-                                        </span>
-                                        <el-icon class="el-icon--right">
-                                        {/* <ArrowDown /> */}
-                                        </el-icon>
-                                    </el-dropdown>
-                                    <el-dropdown
-                                        trigger="click"
-                                        max-height="400px"
-                                        class="method-control"
-                                    >
-                                        <div class="el-dropdown-link">
-                                        <span></span>
-                                        <span></span>
+                                    <div>
+                                      {/* <div className="el-dropdown module-control">
+                                          <span>
+                                          balances
+                                          </span>
+                                      </div> */}
+                                      <div><input value="balances"/></div>
+                                 
+                                      <FormControl sx={{ m: 1, minWidth: 700 }}  size="small">
+                                      <Select           
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={method}
+                                        onChange={handleMethodChange}
+                                        displayEmpty
+                                        inputProps={{ 'aria-label': 'Without label' }}
+                                      >
+                                        <MenuItem value="transfer"><div className="method-dropdown"><span className>transfer(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span></div></MenuItem>
+                                        <MenuItem value="setBalance"><div className="method-dropdown"><span className>setBalance(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span></div></MenuItem>
+                                        <MenuItem value="Raw"><div className="method-dropdown"><span className>transfer(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span></div></MenuItem>
+                                        <MenuItem value="Address32"><div className="method-dropdown"><span className>transfer(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span></div></MenuItem>
+                                        <MenuItem value="Address20"><div className="method-dropdown"><span className>transfer(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span></div></MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                      {/* <div className="el-dropdown method-control">
+                                        <div className="el-dropdown-link el-select" role="button" tabindex="0" aria-expanded="false" aria-haspopup="menu">
+                                          <span>transfer(dest, value)</span>
+                                          <span>transfer some tokens to other address.</span>
                                         </div>
-                                        <el-icon class="el-icon--right">
-                                        {/* <ArrowDown /> */}
-                                        </el-icon>
-
-                                    </el-dropdown>
+                                      </div> */}
                                     </div>
                                 </div>
                                 <div
                                     v-for="(arg,i) in selectedMethod.args"
                                     class="form-control"
                                 >
+                                  <div>
                                     <div class="arg-name">
+                                      dest: MultiAddress (LookupSource)
                                     </div>
-                                    {/* <MultiAddressInput
-                                    v-if="arg.type == 'MultiAddress'"
-                                    /> */}
+                                    {/* <div class="el-select address-type"> */}
+{/*  
+                                    <input class="el-input"/> */}
+                                    <FormControl sx={{ m: 1, minWidth: 120 }}  size="small">
+                                      <Select           
+                                        labelId="demo-select-small"
+                                        id="demo-select-small"
+                                        value={multiArgs}
+                                        onChange={handleSelectChange}
+                                        displayEmpty
+                                        inputProps={{ 'aria-label': 'Without label' }}
+
+                                      >
+                                        <MenuItem value="Id">Id</MenuItem>
+                                        <MenuItem value="Index">Index</MenuItem>
+                                        <MenuItem value="Raw">Raw</MenuItem>
+                                        <MenuItem value="Address32">Address32</MenuItem>
+                                        <MenuItem value="Address20">Address20</MenuItem>
+                                      </Select>
+                                    </FormControl>
+                                     <input
+                                    v-else
+                                    v-model="values[i]"
+                                    class="arg-value"
+                                    />
+                                    {/* </div> */}
+                                    {/* <input
+                                    v-else
+                                    v-model="values[i]"
+                                    class="arg-value"
+                                    />
+                                     */}
+                                     
+                                    </div>
+                                    <div>
+                                    <div class="arg-name">
+                                      amount
+                                    </div>
                                     <input
                                     v-else
                                     v-model="values[i]"
                                     class="arg-value"
                                     />
+                                    </div>
                                 </div>
                                 <div class="form-control">
                                     <div class="description">
