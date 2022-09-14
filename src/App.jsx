@@ -12,26 +12,24 @@ import Transactions from './pages/transactions';
 
 function Main() {
   return (
-    <div className="App">
-      <BaseIndex></BaseIndex>
-    </div>
+    <BrowserRouter>
+      <Routes>
+          <Route path='/' element={<Home></Home>}></Route>
+          <Route path="/create-wallet/" element={<WalletCreations/>}></Route>
+          <Route path="/create-wallet/step2" element={<WalletCreation2/>}></Route>
+          <Route path="/create-wallet/step3" element={<WalletCreation3/>}></Route>
+          <Route path="/assets" element={<BaseIndex/>}></Route>
+          <Route path="/transactions" element={<Transactions/>}></Route>
+          <Route path="/owners" element={<Owners/>}></Route>
+        </Routes>
+    </BrowserRouter>
   );
 }
 
 export default function App() {
   return (
-    <BrowserRouter>
     <SubstrateContextProvider>
-      <Routes>
-        <Route path='/' element={<Home></Home>}></Route>
-        <Route path="/create-wallet/" element={<WalletCreations/>}></Route>
-        <Route path="/create-wallet/step2" element={<WalletCreation2/>}></Route>
-        <Route path="/create-wallet/step3" element={<WalletCreation3/>}></Route>
-        <Route path="/assets" element={<Main/>}></Route>
-        <Route path="/transactions" element={<Transactions/>}></Route>
-        <Route path="/owners" element={<Owners/>}></Route>
-      </Routes>
+      <Main/>
     </SubstrateContextProvider>
-    </BrowserRouter>
   )
 };

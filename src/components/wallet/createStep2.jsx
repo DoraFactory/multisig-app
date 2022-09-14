@@ -5,7 +5,6 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
-import { childstate } from "@polkadot/types/interfaces/definitions";
 const CreateStep2 = () => {
     const navigate = useNavigate();
     const walletName = useRef();

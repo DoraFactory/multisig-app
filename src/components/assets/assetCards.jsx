@@ -27,6 +27,8 @@ const AssetCards = () => {
         })
     }, [api, doraBalance, setDoraBalance])
 
+    console.log(api)
+
     
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);

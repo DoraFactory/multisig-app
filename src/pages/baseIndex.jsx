@@ -9,7 +9,7 @@ const BaseIndex = () => {
     const multisig_accountId = JSON.parse(localStorage.getItem('multisig-wallet')).accountId;
 
     return (
-        <div>
+        <div className="App">
             <div className="header">
                 <span>Substrate multisig</span>
                 <div className="current-account">
