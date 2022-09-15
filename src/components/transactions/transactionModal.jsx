@@ -1,6 +1,9 @@
 
-
 const TransactionModal = () => {
+
+
+
+
     return (
         <div>
         <h3> New transaction</h3>
