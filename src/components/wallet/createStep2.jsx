@@ -112,8 +112,7 @@ const CreateStep2 = () => {
             
             <section>
                 1. Name of the new Wallet, The new multisig wallet will only be available on 
-                <span className="current-network">{localStorage.getItem('network')} </span>
-                network
+                <span className="current-network">{localStorage.getItem('network')} Network</span>
             </section>
             <div className="form-input">
                 <input
