@@ -41,7 +41,8 @@ const TransactionStatus = () => {
     const [completedTx, setCompletedTx] = useState({});
 
     const [currTxList, setCurrTxList] = useState({});
-
+    // 
+    const [approvealNums, setApprovealNums] = useState(0);
     const [calls, setCalls] = useState({});
 
     const {api} = useSubstrateState();
@@ -74,9 +75,8 @@ const TransactionStatus = () => {
     let multisig_wallet = JSON.parse(localStorage.getItem('multisig-wallet'));
     let main_owner = JSON.parse(localStorage.getItem('main-account'));
 
-    const SubmitTx = async() => { 
+    const submitTx = async() => { 
       // current owner / sender of this multisig wallet
-      console.log(main_owner)
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != main_owner
       }).map((acc) => {return acc.account});
@@ -102,13 +102,69 @@ const TransactionStatus = () => {
       setUnsub(() => unsub)
     }
 
-    const ApproveTx = () => {
-      
-    }
+    const approveTx = async(hash) => {
+      const trans = currTxList[hash];
+      const otherAddresses = multisig_wallet.owners.filter((acc) => {
+        return acc.account != main_owner
+      }).map((acc) => {return acc.account});
+      console.log(otherAddresses)
+      const otherSignatories = sortAddresses(otherAddresses, 0);
+      const injector = await web3FromAddress(main_owner);
+      // a way to calculate the maxweight
+      const dumbExt = api.tx.multisig.approveAsMulti(
+        multisig_wallet.threshold,
+        otherSignatories,
+        trans.when,
+        hash,
+        0
+      );
+      const info =  await dumbExt.paymentInfo(main_owner)
+      console.log('手续费 为:')
+      console.log(info.partialFee);
+      const extrinsic = api.tx.multisig.approveAsMulti(
+        multisig_wallet.threshold,
+        otherSignatories,
+        trans.when,
+        hash,
+        info.partialFee
+        // 1000000,
+      )
 
-    const RejectTx = () => {
-
+      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
+        if (result.status.isInBlock) {
+          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+        }else if(result.status.isFinalized){
+          console.log('send multisig tx successfully ! ');
+        }
+      })
+      setUnsub(() => unsub)
     }
+    
+
+    
+    const rejectTx = async(hash) => {
+      const trans = currTxList[hash];
+      const otherAddresses = multisig_wallet.owners.filter((acc) => {
+        return acc.account != main_owner
+      }).map((acc) => {return acc.account});
+      console.log(otherAddresses)
+      const otherSignatories = sortAddresses(otherAddresses, 0);
+      const injector = await web3FromAddress(main_owner);
+      const extrinsic = api.tx.multisig.cancelAsMulti(
+        multisig_wallet.threshold,
+        otherSignatories,
+        trans.when,
+        hash,
+      )
+      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
+        if (result.status.isInBlock) {
+          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+        }else if(result.status.isFinalized){
+          console.log('send multisig tx successfully ! ');
+        }
+      })
+      setUnsub(() => unsub)
+    } 
 
 
     useEffect(() => {
@@ -156,18 +212,25 @@ const TransactionStatus = () => {
               const owner = trans.depositor
               // group transactions by depositor
               // key: encoded data hash  value: tx info
-              // TODO: set complete tx
+
+              console.log(trans.approvals.length);
+              console.log(multisig_wallet.owners.length)
+              console.log('hahah我刷新了');
               if(owner == main_owner){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
-              }else{
+              }
+              if(trans.approvals.length < multisig_wallet.owners.length){
                 pendingTx[keys[1]] = trans;
                 setPendingTx(pendingTx);
+              }else{
+                completedTx[keys[1]] = trans;
+                setCompletedTx(completedTx);
               }
             })
           }
         })
-    }, [api])
+    }, [api, pendingTx, createdTx])
 
     useEffect(() => {
       api.query.multisig.calls.entries((resCalls) => {
@@ -360,7 +423,7 @@ const TransactionStatus = () => {
                                       <img src={copy_circle}/>
                                       </div>
                                   </div>
-                                  <div class="btn" onClick={SubmitTx}>
+                                  <div class="btn" onClick={submitTx}>
                                       Submit transaction
                                   </div>
                                   </div>
@@ -403,24 +466,191 @@ const TransactionStatus = () => {
                       </div>
                     
                       <div class="transaction-status">
-                        <div class="status-bar">
-                          <span>Pending approval</span>
-                          {/* 这里需要增加一些条件选项，控制这块的出现 */}
-                          <div
-                            v-if="tabIndex==0"
-                            class="approve-btn"
-                          >
-                            ✓ Approve
+                        {tx.depositor == main_owner ? null : (
+                          <div class="status-bar">
+                            <span>Pending approval</span>
+                            <div
+                              v-if="tabIndex==0"
+                              class="approve-btn"
+                              onClick={() =>approveTx(hash)}
+                            >
+                              ✓ Approve
+                            </div>
+                            <div
+                              v-if="tabIndex==0"
+                              class="reject-btn"
+                              onClick={() =>rejectTx(hash)}
+                            >
+                              X Reject
+                            </div>
                           </div>
-                          <div
-                            v-if="tabIndex==0"
-                            class="reject-btn"
-                          >
-                            X Reject
+                        )}
+                        
+                        <p class="status-summary">
+                          {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
+                        </p>
+
+                        <div class="progress-bar">
+                          <div class="progress-created">
+                            <div class="circle-sign">
+                              +
+                            </div>
+                            <span>Created</span>
+                            <span class="connect-line" />
+                          </div>
+                          <div>
+                            <div class="progress-confirmed">
+                              <div class="circle-sign" />
+                              <div class="">
+                                Confirmed
+                              </div>
+                              <span class="connect-line waiting" />
+                            </div>
+                          </div>
+                          <div class="progress-executed inactive">
+                            <div class="circle-sign empty" />
+                            <div class="">
+                              Executed
+                            </div>
                           </div>
                         </div>
+
+                        <div class="users-list">
+                          {tx.approvals.map((approver) => (
+                            <div
+                              class="user-info"
+                            >
+                              <img src={avatar}/>
+                              <div class="user-profile">
+                                <p>Account</p>
+                                <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                        
+                      </div>
+                    </div>
+                  )) : 
+                  null
+                }
+
+
+                { 
+                  activeTab === 'Created' ? Object.entries(currTxList).map(([hash, tx]) => (
+                    <div className="transaction-card">
+                      <div class="transaction-summary">
+                        <p>
+                          <span class="summary-label">CALL HASH:</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">BLOCK TIME:</span>
+                          <span class="summary-value">{tx.when.height}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">Depositor:</span>
+                          <span class="summary-value">{tx.depositor.substring(0,15)+ '...' + tx.depositor.substring(35)}</span>
+
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">MODULEID/METHOD:</span>
+                          { JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
+                          ) : null}
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">PARAMETER:</span>
+                          {JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                          ) : null}
+                        </p>
+                      </div>
+                    
+                      <div class="transaction-status">
                         <p class="status-summary">
-                          {multisig_wallet.threshold} out of 3 owners
+                          {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
+                        </p>
+
+                        <div class="progress-bar">
+                          <div class="progress-created">
+                            <div class="circle-sign">
+                              +
+                            </div>
+                            <span>Created</span>
+                            <span class="connect-line" />
+                          </div>
+                          <div>
+                            <div class="progress-confirmed">
+                              <div class="circle-sign" />
+                              <div class="">
+                                Confirmed
+                              </div>
+                              <span class="connect-line waiting" />
+                            </div>
+                          </div>
+                          <div class="progress-executed inactive">
+                            <div class="circle-sign empty" />
+                            <div class="">
+                              Executed
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="users-list">
+                          {tx.approvals.map((approver) => (
+                            <div
+                              class="user-info"
+                            >
+                              <img src={avatar}/>
+                              <div class="user-profile">
+                                <p>Account</p>
+                                <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
+                              </div>
+                            </div>
+                          ))}
+                        </div>
+                            
+                      </div>
+                    </div>
+                  )) : 
+                  null
+                }
+
+                { 
+                  activeTab === 'Completed' ? Object.entries(currTxList).map(([hash, tx]) => (
+                    <div className="transaction-card">
+                      <div class="transaction-summary">
+                        <p>
+                          <span class="summary-label">CALL HASH:</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">BLOCK TIME:</span>
+                          <span class="summary-value">{tx.when.height}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">Depositor:</span>
+                          <span class="summary-value">{tx.depositor.substring(0,15)+ '...' + tx.depositor.substring(35)}</span>
+
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">MODULEID/METHOD:</span>
+                          { JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
+                          ) : null}
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">PARAMETER:</span>
+                          {JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                          ) : null}
+                        </p>
+                      </div>
+                    
+                      <div class="transaction-status">
+                        <p class="status-summary">
+                          {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
                         </p>
 
                         <div class="progress-bar">
@@ -467,8 +697,6 @@ const TransactionStatus = () => {
                   )) : 
                   null
                 }
-
-
             </div>
           </div>
     )
