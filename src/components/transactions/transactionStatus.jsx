@@ -15,7 +15,6 @@ import arg from 'arg';
 
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
-import { main } from '@popperjs/core';
 
 const TransactionStatus = () => {
 
@@ -26,19 +25,26 @@ const TransactionStatus = () => {
     const [unsub, setUnsub] = useState(null)
     // all methods of pallet balances 
     const [methods, setMethods] = useState([]);
-
     // current method
     const [method, setMethod] = useState(methods[0]);
-
     // current method parameters
     const [params, setParams] = useState(new Array());
-
     // encode data
     const [encodeData, setEncodeData] = useState('0x');
     // encodeed data hash
     const [encodeHash, setEncodeHash] = useState('0x');
+    // created multisig tx list
+    const [createdTx, setCreatedTx] = useState({});
+    // pending multisig tx list
+    const [pendingTx, setPendingTx] = useState({});
+    // completed multisig tx list
+    const [completedTx, setCompletedTx] = useState({});
 
-    const {api, keyring} = useSubstrateState();
+    const [currTxList, setCurrTxList] = useState({});
+
+    const [calls, setCalls] = useState({});
+
+    const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
 
     const NewTrans = () => {
@@ -46,9 +52,13 @@ const TransactionStatus = () => {
     }
     const handleClose = () => setOpen(false);
     const selectTab = (tab) => {
-        return (<li id={tab} className={activeTab===tab ? "selected" : ""} onClick={() => setActiveTab(tab)}>{tab}</li>)
+        return (
+          <li id={tab} className={activeTab===tab ? "selected" : ""} onClick={() => setActiveTab(tab)}>
+            {tab}
+          </li>
+        )
     }
-    const handleSelectChange = (event) => {
+    const handleSelectChange = (event) => { 
       setMultiArgs(event.target.value);
     };
     const handleMethodChange = (event) => {
@@ -61,10 +71,11 @@ const TransactionStatus = () => {
       setParams([...params]);
     }
 
+    let multisig_wallet = JSON.parse(localStorage.getItem('multisig-wallet'));
+    let main_owner = JSON.parse(localStorage.getItem('main-account'));
+
     const SubmitTx = async() => { 
-      let multisig_wallet =  JSON.parse(localStorage.getItem('multisig-wallet'));
       // current owner / sender of this multisig wallet
-      let main_owner = JSON.parse(localStorage.getItem('main-account'));
       console.log(main_owner)
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != main_owner
@@ -99,9 +110,6 @@ const TransactionStatus = () => {
 
     }
 
-    console.log('当前的方法为和参数为')
-    console.log(method)
-    console.log(params);
 
     useEffect(() => {
       if(method && params.length == method.args.length){
@@ -115,8 +123,6 @@ const TransactionStatus = () => {
       }
     }, [method, params])
 
-
-    let multisig_wallet = JSON.parse(localStorage.getItem('multisig-wallet'));
 
     useEffect(() => {
       const balance_methods = api.tx['balances'];
@@ -136,7 +142,68 @@ const TransactionStatus = () => {
     }, [])
 
 
-    console.log(method ? method : 'method不存在');
+    useEffect(() => {
+        api.query.multisig.multisigs.entries(multisig_wallet.accountId, multisigTxs => {
+          if(multisigTxs.length){
+            multisigTxs.forEach(([key, exposure]) => {
+              // keys里面存的多签地址和call hash
+              const keys = key.toHuman()
+              console.log(keys)
+              // 当前多签地址的所有多签交易
+              const trans = exposure.toJSON()
+              console.log(trans)
+              // as polkdot extension provides us substrate address, we have to convert first to compare
+              const owner = trans.depositor
+              // group transactions by depositor
+              // key: encoded data hash  value: tx info
+              // TODO: set complete tx
+              if(owner == main_owner){
+                createdTx[keys[1]] = trans;
+                setCreatedTx(createdTx);
+              }else{
+                pendingTx[keys[1]] = trans;
+                setPendingTx(pendingTx);
+              }
+            })
+          }
+        })
+    }, [api])
+
+    useEffect(() => {
+      api.query.multisig.calls.entries((resCalls) => {
+        console.log('我在查询calls')
+        resCalls.forEach(([key, exposure]) => {
+          const keys = key.toHuman()
+          const callInfo = exposure.toHuman()
+          console.log(keys);
+          console.log(callInfo)
+          // key: encoded data hash  value: call info
+          calls[keys[0]] = callInfo;
+          setCalls(calls);
+        })
+      })
+    }, [api])
+
+
+    // record the current tx list according to the tab
+    useEffect(() => {
+      if(activeTab == "Pending"){
+        console.log('this is pending');
+        setCurrTxList(pendingTx);
+      }else if(activeTab == "Created"){
+        setCurrTxList(createdTx);
+      }else {
+        setCurrTxList(completedTx);
+      }
+    }, [activeTab])
+
+    console.log('pending is ' + JSON.stringify(pendingTx));
+    console.log(createdTx)
+    console.log(currTxList)
+    console.log(activeTab)
+    console.log('calls is ' + JSON.stringify(calls));
+
+
     return(
         <div>
           <div className="all-transactions">
@@ -241,7 +308,7 @@ const TransactionStatus = () => {
                                         <div class="arg-name">
                                           {args.name + ':' + args.type + '(' + args.typeName + ')'}
                                         </div>
-                                        {args.type == "MultiAddress" ? 
+                                        {args.type === "MultiAddress" ? 
                                             (
                                               <div>
                                                 <FormControl sx={{ m: 1, minWidth: 120 }}  size="small">
@@ -303,86 +370,105 @@ const TransactionStatus = () => {
               </div>
           </div>
 
+          <div className="transaction-card-list">
+                { 
+                  activeTab === 'Pending' ? Object.entries(currTxList).map(([hash, tx]) => (
+                    <div className="transaction-card">
+                      <div class="transaction-summary">
+                        <p>
+                          <span class="summary-label">CALL HASH:</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">BLOCK TIME:</span>
+                          <span class="summary-value">{tx.when.height}</span>
+                        </p>
+                        <p>
+                          <span class="summary-label">Depositor:</span>
+                          <span class="summary-value">{tx.depositor.substring(0,15)+ '...' + tx.depositor.substring(35)}</span>
 
-
-              <div className="transaction-card-list">
-                <div
-                  v-for="(trans, hash) in transactions"
-                  className="transaction-card"
-                >
-                  <div class="transaction-summary">
-                    <p>
-                      <span class="summary-label">CALL HASH:</span>
-                      <span class="summary-value">0x123123</span>
-                    </p>
-                    <p>
-                      <span class="summary-label">TIME:</span>
-                      <span class="summary-value">12.30</span>
-                    </p>
-                    <p>
-                      <span class="summary-label">Depositor:</span>
-                    </p>
-                    <p v-if="callDetail(hash)">
-                      <span class="summary-label">PALLET/MODULEID:</span>
-                      <span class="summary-value">balances/transfer</span>
-                    </p>
-                    <p v-if="callDetail(hash)">
-                      <span class="summary-label">PARAMETER:</span>
-                      <span class="summary-value">1000</span>
-                    </p>
-                  </div>
-                  <div class="transaction-status">
-                    <div class="status-bar">
-                      <span>Pending approval</span>
-                      <div
-                        v-if="tabIndex==0"
-                        class="approve-btn"
-                      >
-                        Approve
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">MODULEID/METHOD:</span>
+                          { JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
+                          ) : null}
+                        </p>
+                        <p v-if="callDetail(hash)">
+                          <span class="summary-label">PARAMETER:</span>
+                          {JSON.stringify(calls) != '{}' ? (
+                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                          ) : null}
+                        </p>
                       </div>
-                    </div>
-                    <p class="status-summary">
-                    1 out of 3 owners
-                    </p>
-                    <div class="progress-bar">
-                      <div class="progress-created">
-                        <div class="circle-sign">
-                          +
-                        </div>
-                        <span>Created</span>
-                        <span class="connect-line" />
-                      </div>
-                      <div>
-                        <div class="progress-confirmed">
-                          <div class="circle-sign" />
-                          <div class="">
-                            Confirmed
-                          </div>
-                          <span class="connect-line waiting" />
-                        </div>
-                      </div>
-                      <div class="progress-executed inactive">
-                        <div class="circle-sign empty" />
-                        <div class="">
-                          Executed
-                        </div>
-                      </div>
-                    </div>
-                    <div class="users-list">
-                      <div
-                        v-for="(addr, i) in trans.approvals"
                     
-                        class="user-info"
-                      >
-                        <img src={avatar}/>
-                        <div class="user-profile">
-                          <p>Account</p>
-                          <p>5EyU8W...wSL</p>
+                      <div class="transaction-status">
+                        <div class="status-bar">
+                          <span>Pending approval</span>
+                          {/* 这里需要增加一些条件选项，控制这块的出现 */}
+                          <div
+                            v-if="tabIndex==0"
+                            class="approve-btn"
+                          >
+                            ✓ Approve
+                          </div>
+                          <div
+                            v-if="tabIndex==0"
+                            class="reject-btn"
+                          >
+                            X Reject
+                          </div>
                         </div>
+                        <p class="status-summary">
+                          {multisig_wallet.threshold} out of 3 owners
+                        </p>
+
+                        <div class="progress-bar">
+                          <div class="progress-created">
+                            <div class="circle-sign">
+                              +
+                            </div>
+                            <span>Created</span>
+                            <span class="connect-line" />
+                          </div>
+                          <div>
+                            <div class="progress-confirmed">
+                              <div class="circle-sign" />
+                              <div class="">
+                                Confirmed
+                              </div>
+                              <span class="connect-line waiting" />
+                            </div>
+                          </div>
+                          <div class="progress-executed inactive">
+                            <div class="circle-sign empty" />
+                            <div class="">
+                              Executed
+                            </div>
+                          </div>
+                        </div>
+
+                        <div class="users-list">
+                          <div
+                            v-for="(addr, i) in trans.approvals"
+                        
+                            class="user-info"
+                          >
+                            <img src={avatar}/>
+                            <div class="user-profile">
+                              <p>Account</p>
+                              <p>5EyU8W...wSL</p>
+                            </div>
+                          </div>
+                        </div>
+                        
                       </div>
                     </div>
-                  </div>
-                </div>
+                  )) : 
+                  null
+                }
+
+
             </div>
           </div>
     )
