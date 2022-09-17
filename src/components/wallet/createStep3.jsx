@@ -28,7 +28,7 @@ const CreateStep3 = () => {
             threshold: threshold
         }
         localStorage.setItem('multisig-wallet', JSON.stringify(multisig));
-        navigate('/assets')
+        navigate('/accountInfo')
     }
 
     return(

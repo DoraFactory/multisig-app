@@ -1,38 +1,61 @@
-import react from 'react'; 
+import { React, useState } from 'react'; 
 import '../styles/sideMenu.scss';
-import Icons from '../resources'
+import '../styles/baseindex.scss'
 import { useNavigate } from 'react-router-dom';
+import Icons from '../resources';
+import TabContent from './tabs/tabContent';
+import AssetCards from './assets/assetCards';
+import TransactionStatus from './transactions/transactionStatus';
+import OwnerCard from './owners/ownerCard';
 
-function SideMenu(cardName) {
-
+const Menu = () => {
     const navegate =  useNavigate();
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
-    
 
+    const [activeTab, setActiveTab] = useState("assets");
+    
     const handleCreateWallet = () => {
         navegate('/create-wallet')
     }
 
+    const loginOut = () => {
+        navegate('/')
+    }
+
+    const handleAsset = () => {
+        setActiveTab('assets')
+    }
+
+    const handleTransaction = () => {
+        setActiveTab('transactions')
+    }
+
+    const handleOwner = () => {
+        setActiveTab('owners')
+    }
+
     return(
-        <div className="side-menu">
-            <div className="wallet-info">
-                <div>
-                    <div class="profile">
-                        <img src={Icons.Avatar} />
-                        <div
-                            v-if="wallet"
-                            class="name-info"
-                        >
-                            <p>{multisig.wallet_name}</p>
-                            <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+        <div className="content">
+            <div className="side-menu">
+                <div className="wallet-info">
+                    <div>
+                        <div class="profile">
+                            <img src={Icons.Avatar} />
+                            <div
+                                v-if="wallet"
+                                class="name-info"
+                            >
+                                <p>{multisig.wallet_name}</p>
+                                <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+                            </div>
                         </div>
                     </div>
+                    <div className="new-wallet" onClick={handleCreateWallet}>
+                        + Create a new wallet
+                    </div>
                 </div>
-                <div className="new-wallet" onClick={handleCreateWallet}>
-                    + Create a new wallet
-                </div>
-            </div>
-            <a href="/assets" className={cardName.cardName==="assets"? "menu-link menu-selected": "menu-link"}>
+
+                <div className={activeTab==="assets" ? "menu-link menu-selected": "menu-link"} onClick={handleAsset}>
                     <svg 
                         width="24"
                         height="24"
@@ -80,9 +103,8 @@ function SideMenu(cardName) {
                         />
                     </svg>
                     <span>ASSETS</span>
-                </a>
-
-                <a href="/transactions" className={cardName.cardName==="transactions"? "menu-link menu-selected": "menu-link"}>
+                </div>
+                <div className={activeTab==="transactions" ? "menu-link menu-selected": "menu-link"} onClick={handleTransaction}>
                     <svg
                         width="24"
                         height="24"
@@ -156,9 +178,9 @@ function SideMenu(cardName) {
                         />
                     </svg>
                     <span>TRANSACTIONS</span>
-                </a>
+                </div>
 
-                <a href="/owners" className={cardName.cardName=="owners"? "menu-link menu-selected": "menu-link"}>
+                <div className={activeTab==="owners" ? "menu-link menu-selected": "menu-link"} onClick={handleOwner}>
                     <svg
                         width="24"
                         height="25"
@@ -196,9 +218,9 @@ function SideMenu(cardName) {
                         />
                     </svg>
                     <span>OWNERES</span>
-                </a>
+                </div>
 
-                <div class="logout">
+                <div class="logout" onClick={loginOut}>
                     <svg
                         width="24"
                         height="24"
@@ -230,8 +252,20 @@ function SideMenu(cardName) {
                     </svg>
                     <span>Logout</span>
                 </div>
+            </div>
+            <div>
+                <TabContent id="assets" activeTab={activeTab}>
+                    <AssetCards></AssetCards>
+                </TabContent>
+                <TabContent id="transactions" activeTab={activeTab}>
+                    <TransactionStatus></TransactionStatus>
+                </TabContent>
+                <TabContent id="owners" activeTab={activeTab}>
+                    <OwnerCard></OwnerCard>
+                </TabContent>
+            </div>
         </div>
     )
 }
 
-export default SideMenu;
+export default Menu;

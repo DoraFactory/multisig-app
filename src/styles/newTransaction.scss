@@ -43,6 +43,7 @@ h3 {
         box-sizing: border-box;
         border-radius: 4px;
         color: rgba(14, 14, 17, 0.3);
+        margin-bottom: 0px;
     }
 }
 
@@ -87,14 +88,32 @@ h3 {
         width: 100%;
         display: flex;
         justify-content: space-between;
+        span:first-child {
+            margin-right: 20px;
+          }
+        span:last-child {
+        color: rgba(14, 14, 17, 0.3);
+        }
     }
-      span:first-child {
+}
+.method-dropdown {
+    line-height: 24px;
+    font-size: 16px;
+    cursor: pointer;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    span:first-child {
         margin-right: 20px;
       }
-      span:last-child {
-        color: rgba(14, 14, 17, 0.3);
-      }
+    span:last-child {
+    color: rgba(14, 14, 17, 0.3);
+    }
 }
+
 
 .el-dropdown-menu {
     overflow-y: scroll;
@@ -123,11 +142,12 @@ h3 {
 }
 
 .arg-value {
-    height: 32px;
+    height: 34px;
     border: 1px solid rgba(14, 14, 17, 0.1);
     box-sizing: border-box;
     border-radius: 4px;
     color: rgba(14, 14, 17, 0.3);
     text-align: left;
     min-width: 600px;
+    margin-top: 9px;
 }

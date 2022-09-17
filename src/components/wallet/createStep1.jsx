@@ -9,6 +9,12 @@ import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
 import { useNavigate, Link } from 'react-router-dom';
 
+import InputLabel from '@mui/material/InputLabel';
+import MenuItem from '@mui/material/MenuItem';
+import FormHelperText from '@mui/material/FormHelperText';
+import FormControl from '@mui/material/FormControl';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+
 const CreateStep1 = () => {
     const navigate = useNavigate();
     const {setCurrentAccount} = useSubstrate()
@@ -51,6 +57,12 @@ const CreateStep1 = () => {
         navigate('/create-wallet/step2')
     }
 
+    const [ownerAddress, setAddress] = React.useState('');
+
+    const handleAddressChange = (event) => {
+        setAddress(event.target.value);
+    };
+
     return(
         <div className="steps">
             <div className="create-wallet-steps">
@@ -69,6 +81,31 @@ const CreateStep1 = () => {
                     <img src={icon_polkadot}/>
                     Polkadot
                 </div>
+                <p className="guide-text">
+                    3、Select an account
+                </p>
+                <FormControl sx={{ m: 1, minWidth: 592 }}  size="small">
+                    <Select           
+                    labelId="demo-select-small"
+                    id="demo-select-small"
+                    // value={ownerAddress}
+                    // onChange={handleAddressChange}
+                    onChange={(dropdown) => {
+                        handleChange(dropdown.target.value)
+                    }}
+                    value={currentAccount ? currentAccount.address : initialAddress}
+                    displayEmpty
+                    inputProps={{ 'aria-label': 'Without label' }}
+                    >
+                    <MenuItem value="" >
+                        <em>Please select an account</em>
+                    </MenuItem>
+                    {keyringOptions.map((option) => (
+                        <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
+                    ))}
+                    </Select>
+                </FormControl>
+
                 <div className="btn-group">
                     {
                         btnText == "Connect Wallet" ?(
@@ -82,7 +119,7 @@ const CreateStep1 = () => {
                         )
                     }
                     
-                    <Modal
+                    {/* <Modal
                     open={open}
                     onClose={handleClose}
                     aria-labelledby="modal-modal-title"
@@ -139,7 +176,7 @@ const CreateStep1 = () => {
                                 </select>
                             </div>
                         </div>
-                    </Modal>
+                    </Modal> */}
                     <Link to ='/'>cancel</Link>
                 </div>
             </div>

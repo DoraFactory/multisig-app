@@ -8,7 +8,6 @@ function WalletCreation2 () {
     <div>
         <NetworkInfo></NetworkInfo>
         <h2>Welcome to Substrate Multisig</h2>
-        
         <CreateStep2></CreateStep2>
     </div>
   )
