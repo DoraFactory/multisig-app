@@ -111,23 +111,21 @@ const TransactionStatus = () => {
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
       // a way to calculate the maxweight
-      const dumbExt = api.tx.multisig.approveAsMulti(
+/*       const dumbExt = api.tx.multisig.approveAsMulti(
         multisig_wallet.threshold,
         otherSignatories,
         trans.when,
         hash,
         0
       );
-      const info =  await dumbExt.paymentInfo(main_owner)
-      console.log('手续费 为:')
-      console.log(info.partialFee);
+      const info =  await dumbExt.paymentInfo(main_owner) */
       const extrinsic = api.tx.multisig.approveAsMulti(
         multisig_wallet.threshold,
         otherSignatories,
         trans.when,
         hash,
-        info.partialFee
-        // 1000000,
+        // info.partialFee,
+        100000000000,
       )
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
@@ -243,9 +241,12 @@ const TransactionStatus = () => {
           // key: encoded data hash  value: call info
           calls[keys[0]] = callInfo;
           setCalls(calls);
+          console.log('我一直在查村')
         })
       })
-    }, [api])
+
+      //TODO: 需要一直根据当前hash进行查询multisig交易是否存在，如果不存在就剔除对应的tx信息
+    }, [])
 
 
     // record the current tx list according to the tab
