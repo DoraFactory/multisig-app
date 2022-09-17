@@ -1,10 +1,9 @@
-import react from 'react'
+import React from 'react'
 import '../styles/baseindex.scss'
 import logo from '../resources/logo.svg'
-import SideMenu from '../components/sideMenu';
 import AssetCards from '../components/assets/assetCards';
-import TransactionStatus from '../components/transactions/transactionStatus';
-const BaseIndex = () => {
+import Menu from '../components/menu';
+const CommonIndex = () => {
 
     const multisig_accountId = JSON.parse(localStorage.getItem('multisig-wallet')).accountId;
 
@@ -21,13 +20,14 @@ const BaseIndex = () => {
                 </div>
             </div>
 
-            <div className="content">
+            {/* <div className="content"> */}
 
-                <SideMenu cardName="assets"></SideMenu>
-                <AssetCards></AssetCards>
+                {/* <SideMenu cardName="assets"></SideMenu>
+                <AssetCards></AssetCards> */}
+            <Menu></Menu>
 
-            </div>
+            {/* </div> */}
         </div>
 )}
 
-export default BaseIndex
+export default CommonIndex
