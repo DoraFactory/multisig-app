@@ -29,7 +29,6 @@ const AssetCards = () => {
     }, [api, doraBalance, setDoraBalance])
 
     console.log(api)
-
     
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -108,16 +107,16 @@ const AssetCards = () => {
                             </div>
                             <div className="asset-detail">
                                 <p className="detail-label">
-                                    {doraBalance}
+                                    BALANCE
                                 </p>
                                 <p className="detail-value">
-                                    0
+                                    {doraBalance}
                                 </p>
                                 <p className="detail-label">
                                     VALUE
                                 </p>
                                 <p className="detail-value">
-                                    N/A
+                                    $
                                 </p>
                                 <span className="receive-btn" onClick={handleOpen}>
                                     ↙ Receive

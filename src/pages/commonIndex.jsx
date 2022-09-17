@@ -5,7 +5,7 @@ import AssetCards from '../components/assets/assetCards';
 import Menu from '../components/menu';
 const CommonIndex = () => {
 
-    const multisig_accountId = JSON.parse(localStorage.getItem('multisig-wallet')).accountId;
+    const main_account = JSON.parse(localStorage.getItem('main-account'));
 
     return (
         <div className="App">
@@ -14,19 +14,12 @@ const CommonIndex = () => {
                 <div className="current-account">
                     <span className="selected-network">
                         {localStorage.getItem('network')}:
-                        {multisig_accountId.substring(0,6) + '...' + multisig_accountId.substring(42,)}
+                        {main_account.substring(0,6) + '...' + main_account.substring(42,)}
                     </span>
                     <img id="network-logo" src={logo}></img>
                 </div>
             </div>
-
-            {/* <div className="content"> */}
-
-                {/* <SideMenu cardName="assets"></SideMenu>
-                <AssetCards></AssetCards> */}
             <Menu></Menu>
-
-            {/* </div> */}
         </div>
 )}
 

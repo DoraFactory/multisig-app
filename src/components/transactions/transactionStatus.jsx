@@ -3,16 +3,13 @@ import avatar from '../../resources/avatar.svg'
 import copy_circle from '../../resources/copy-circle.svg';
 import '../../styles/transactionStatus.scss';
 import '../../styles/newTransaction.scss';
+
 import Modal from '@mui/material/Modal';
-
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { useSubstrateState } from "../../context";
-import arg from 'arg';
+import Select from '@mui/material/Select';
 
+import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
 
@@ -110,22 +107,13 @@ const TransactionStatus = () => {
       console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
-      // a way to calculate the maxweight
-/*       const dumbExt = api.tx.multisig.approveAsMulti(
-        multisig_wallet.threshold,
-        otherSignatories,
-        trans.when,
-        hash,
-        0
-      );
-      const info =  await dumbExt.paymentInfo(main_owner) */
+
       const extrinsic = api.tx.multisig.approveAsMulti(
         multisig_wallet.threshold,
         otherSignatories,
         trans.when,
         hash,
-        // info.partialFee,
-        100000000000,
+        100000000000,     // currently, we use this default value
       )
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
@@ -441,7 +429,7 @@ const TransactionStatus = () => {
                       <div class="transaction-summary">
                         <p>
                           <span class="summary-label">CALL HASH:</span>
-                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(49,)}</span>
                         </p>
                         <p>
                           <span class="summary-label">BLOCK TIME:</span>
@@ -455,7 +443,7 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
                           { JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
+                            <span class="summary-value">{calls[hash][0].section  + '/' + calls[hash][0].method}</span>
                           ) : null}
                         </p>
                         <p v-if="callDetail(hash)">
@@ -467,25 +455,28 @@ const TransactionStatus = () => {
                       </div>
                     
                       <div class="transaction-status">
-                        {tx.depositor == main_owner ? null : (
                           <div class="status-bar">
                             <span>Pending approval</span>
-                            <div
-                              v-if="tabIndex==0"
-                              class="approve-btn"
-                              onClick={() =>approveTx(hash)}
-                            >
-                              ✓ Approve
-                            </div>
-                            <div
-                              v-if="tabIndex==0"
-                              class="reject-btn"
-                              onClick={() =>rejectTx(hash)}
-                            >
-                              X Reject
-                            </div>
+                            {tx.depositor === main_owner ? (
+                              <div
+                                v-if="tabIndex==0"
+                                class="reject-btn"
+                                onClick={() =>rejectTx(hash)}
+                              >
+                                X Reject
+                              </div>
+                              ) 
+                            : (
+                              <div
+                                v-if="tabIndex==0"
+                                class="approve-btn"
+                                onClick={() =>approveTx(hash)}
+                              >
+                                ✓ Approve
+                              </div>
+                              )
+                            }
                           </div>
-                        )}
                         
                         <p class="status-summary">
                           {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
@@ -543,7 +534,7 @@ const TransactionStatus = () => {
                       <div class="transaction-summary">
                         <p>
                           <span class="summary-label">CALL HASH:</span>
-                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(49,)}</span>
                         </p>
                         <p>
                           <span class="summary-label">BLOCK TIME:</span>
@@ -557,7 +548,7 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
                           { JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
+                            <span class="summary-value">{calls[hash][0].section  + '/' + calls[hash][0].method}</span>
                           ) : null}
                         </p>
                         <p v-if="callDetail(hash)">
@@ -624,7 +615,7 @@ const TransactionStatus = () => {
                       <div class="transaction-summary">
                         <p>
                           <span class="summary-label">CALL HASH:</span>
-                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(42,)}</span>
+                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(49,)}</span>
                         </p>
                         <p>
                           <span class="summary-label">BLOCK TIME:</span>
