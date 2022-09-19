@@ -107,8 +107,17 @@ const CreateStep2 = () => {
     const handleDelOwner = (index) => {
         console.log("=====================")
         console.log(index)
-        setOwners(...owners.splice(index, 1));
+        owners.pop();
+        setOwners([...owners]);
         console.log(owners)
+        setMultisigAccount(
+            {
+                wallet_name: walletName.current.value,
+                accountId: '',
+                owners: owners,
+                threshold: threshold.current.value,
+            }
+        )
     }
 
     return(
