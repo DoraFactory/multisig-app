@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import StepProgess from './stepProgess';
 import icon_polkadot from '../../resources/icon_polkadot.svg'
-// import '../../styles/createSteps.scss';
-// import '../../styles/modal.scss';
-// import '../../styles/wallet.scss';
+import '../../styles/createSteps.scss';
+import '../../styles/modal.scss';
+import '../../styles/wallet.scss';
 import Modal from '@mui/material/Modal';
 import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
