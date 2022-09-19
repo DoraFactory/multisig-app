@@ -5,6 +5,7 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
+
 const CreateStep2 = () => {
     const navigate = useNavigate();
     const walletName = useRef();
@@ -103,10 +104,12 @@ const CreateStep2 = () => {
         navigate('/create-wallet/step3')
     }
 
+    const handleDelOwner = (index) => {
+        setOwners(...owners.splice(index, 1));
+    }
 
     return(
         <div className="steps">
-
         <div className="create-wallet-steps">
             <StepProgess step="2"></StepProgess>
             
@@ -140,7 +143,7 @@ const CreateStep2 = () => {
                                         <div className="validate-status"></div>
                                         <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
-                                    <img src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
+                                    <img id={index} onClick={index===0?null:handleDelOwner(index)} src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
                                 </div>
                             ))
                         }

@@ -1,9 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import StepProgess from './stepProgess';
 import icon_polkadot from '../../resources/icon_polkadot.svg'
-import '../../styles/createSteps.scss';
-import '../../styles/modal.scss';
-import '../../styles/wallet.scss';
+// import '../../styles/createSteps.scss';
+// import '../../styles/modal.scss';
+// import '../../styles/wallet.scss';
 import Modal from '@mui/material/Modal';
 import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
@@ -14,6 +14,24 @@ import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { Button, message } from 'antd';
+
+message.config({
+    top:100,
+    duration:2
+})
+
+const success = () => {
+  message.success('This is a success message', 3);
+};
+
+const error = () => {
+  message.error('This is an error message');
+};
+
+const warning = () => {
+  message.warning('This is a warning message');
+};
 
 const CreateStep1 = () => {
     const navigate = useNavigate();
@@ -54,6 +72,8 @@ const CreateStep1 = () => {
     }
 
     const handleConnect = () => {
+        success()
+
         navigate('/create-wallet/step2')
     }
 
@@ -113,6 +133,10 @@ const CreateStep1 = () => {
                                 {btnText}
                             </div>
                         ) : (
+                            
+                                // <Button  onClick={ success }>
+                            // /        {btnText}
+                                // </Button>
                             <div className="btn" onClick={ handleConnect }>
                                 {btnText}
                             </div>
