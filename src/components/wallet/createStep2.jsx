@@ -108,6 +108,7 @@ const CreateStep2 = () => {
         console.log("=====================")
         console.log(index)
         setOwners(...owners.splice(index, 1));
+        console.log(owners)
     }
 
     return(
@@ -145,7 +146,10 @@ const CreateStep2 = () => {
                                         <div className="validate-status"></div>
                                         <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
-                                    <img id={index} onClick={index===0?null:handleDelOwner(index)} src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
+                                    <img id={index} onClick={index===0?null:(e)=> {
+                                        e.persist();
+                                        handleDelOwner(index)
+                                    }} src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
                                 </div>
                             ))
                         }

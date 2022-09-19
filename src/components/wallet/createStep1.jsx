@@ -13,8 +13,8 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
-// import Select, { SelectChangeEvent } from '@mui/material/Select';
-import { Select, message } from 'antd';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import { message } from 'antd';
 import 'antd/dist/antd.css';
 
 const { Option } = Select;
@@ -69,7 +69,7 @@ const CreateStep1 = () => {
         }
     }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
-    const handleChange = addr => {
+    const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
         setBtnText('Continue')
     }
@@ -107,7 +107,7 @@ const CreateStep1 = () => {
                 <p className="guide-text">
                     3、Select an account
                 </p>
-                {/* <FormControl sx={{ m: 1, minWidth: 592 }}  size="small">
+                <FormControl sx={{ m: 1, minWidth: 592 }}  size="small">
                     <Select           
                     labelId="demo-select-small"
                     id="demo-select-small"
@@ -127,17 +127,26 @@ const CreateStep1 = () => {
                         <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
                     ))}
                     </Select>
-                </FormControl> */}
-                <Select defaultValue="lucy" style={{ width: 592 }}                     onChange={(dropdown) => {
-                        handleChange(dropdown.target.value)
-                    }}>
-                    <Option value="" >
+                </FormControl>
+                {/* <Select defaultValue="" style={{ width: 592 }} onChange={(dropdown) => {
+                        console.log("1-----")
+                        console.log(dropdown)
+                        console.log("2-----")
+                        console.log(dropdown.target.value)
+                        console.log("3-----")
+
+                        handleChange(dropdown.toString())
+                    }}
+                    
+                    displayEmpty
+                    > */}
+                    {/* <Option value="" >
                         <em>Please select an account</em>
                     </Option>
                     {keyringOptions.map((option) => (
                         <Option value={option.value}>{option.text}:{option.value}</Option>
                     ))}
-                </Select>
+                </Select> */}
 
                 <div className="btn-group">
                     {
