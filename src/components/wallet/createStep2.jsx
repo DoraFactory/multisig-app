@@ -105,6 +105,8 @@ const CreateStep2 = () => {
     }
 
     const handleDelOwner = (index) => {
+        console.log("=====================")
+        console.log(index)
         setOwners(...owners.splice(index, 1));
     }
 
@@ -166,7 +168,7 @@ const CreateStep2 = () => {
                 <div class="btn" onClick = {handleConnect}>
                     Continue
                 </div>
-                <Link to='/create-wallet'> cancel</Link>
+                <Link to='/create-wallet'>cancel</Link>
             </div>
         </div>
         </div>
