@@ -5,6 +5,30 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
+import { message } from 'antd';
+import 'antd/dist/antd.css';
+
+message.config({
+    top:100,
+    duration:2
+})
+
+const success = () => {
+  message.success('This is a success message', 3);
+};
+
+const NoWalletName = () => {
+  message.error('No wallet name, please set it');
+};
+
+const NoThreshold = () => {
+    message.error('No threshold of this multisig wallet, please set it');
+};
+
+const InvalidThreshold = () => {
+    message.error('This is a invalid threshold, please set a correct threshold');
+}
+
 
 const CreateStep2 = () => {
     const navigate = useNavigate();
@@ -92,6 +116,19 @@ const CreateStep2 = () => {
         //TODO: 需要判断是否已经填了wallet名
         console.log('当前的wallet name IS ' + walletName.current.value) 
         console.log('当前的阈值 IS ' + threshold.current.value) 
+        if(walletName.current.value == ''){
+            NoWalletName()
+            return
+        }
+        if(threshold.current.value == 0){
+            NoThreshold()
+            return
+        }
+        if(!threshold.current.value >= 1 || threshold.current.value > owners.length || threshold.current.value < 0){
+            InvalidThreshold()
+            return
+        }
+
         let wallet_multisig = {
             wallet_name: walletName.current.value,
             accountId: '',
