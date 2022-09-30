@@ -1,0 +1,59 @@
+.create-wallet-main {
+    width: 473px;
+    padding: 50px 40px;
+}
+
+.login-card {
+    padding: 40px 70px;
+    font-size: 14px;
+    // width: 750px;
+    height: 420px;
+
+    width: 500px;
+    padding-left: 100px;
+    padding-right: 100px;
+    text-align: center;
+    margin: 120px auto;
+    h3 {
+        margin-bottom: 8px;
+    }
+    .description {
+        text-align: left;
+        padding-bottom: 6px;
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+    .login-btn {
+        width: 496px;
+        background: #ffc59f;
+    }
+
+    .signUp-btn {
+        width: 496px;
+    }
+}
+
+.div-line-word {
+    flex-basis: 50%;
+}
+
+.login-btn-base {
+    background-color: var(--theme-orange);
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    border-radius: 25px;
+    display: inline-block;
+    cursor: pointer;
+  }
+.login-btn-reverse {
+    background-color: white;
+    color: var(--theme-orange);
+}
+
+.text-center {
+    text-align: center;
+    margin-top: 220px;
+    margin-bottom: 10px;
+}
