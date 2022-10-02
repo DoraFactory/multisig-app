@@ -6,7 +6,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
 import { message } from 'antd';
-import 'antd/dist/antd.css';
+import 'antd/es/message/style/index.css'
 
 message.config({
     top:100,

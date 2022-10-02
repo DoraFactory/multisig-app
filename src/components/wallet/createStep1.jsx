@@ -15,7 +15,7 @@ import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { message } from 'antd';
-import 'antd/dist/antd.css';
+import 'antd/es/message/style/index.css'
 
 const { Option } = Select;
 
