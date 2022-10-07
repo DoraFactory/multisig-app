@@ -10,6 +10,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 
+
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
@@ -69,12 +70,14 @@ const LoginUserCard = () => {
                     ))} */}
                     </Select>
                 </FormControl>
-            <div className="login-btn-base login-btn-reverse login-btn">
+            <div className="login-btn-base login-btn-background login-btn-choose">
                 <div>
                     Login
                 </div>
             </div>
-            <div className="div-line-word"></div>
+            <div className="div-line-word or-line">
+                OR
+            </div>
             <div className="text-center">Haven’t used Polkassembly before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
                 <div>

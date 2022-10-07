@@ -7,7 +7,7 @@
     padding: 40px 70px;
     font-size: 14px;
     width: 750px;
-    height: 520px;
+    height: 505px;
 
     // width: 500px;
     padding-left: 100px;
@@ -26,7 +26,7 @@
     }
     .login-btn {
         width: 496px;
-        background: #ffc59f;
+        background: rgba(255, 118, 28, 0.1);
     }
 
     .signUp-btn {
@@ -36,24 +36,87 @@
 
 .div-line-word {
     flex-basis: 50%;
+    margin-top: 80px;
 }
 
 .login-btn-base {
-    background-color: var(--theme-orange);
+    box-sizing: border-box;
+
+    // position: absolute;
+    width: 496px;
+    height: 48px;
+    // left: 127px;
+    // top: 238px;
+
+    background: rgba(255, 118, 28, 0.1);
+    border: 1px solid #FF761C;
+    border-radius: 8px;
+
+    // background-color: var(--theme-orange);
     color: white;
     font-weight: 600;
     padding: 15px;
-    border-radius: 25px;
     display: inline-block;
     cursor: pointer;
   }
-.login-btn-reverse {
+
+.sign-up-btn-reverse {
     background-color: white;
     color: var(--theme-orange);
 }
 
+.login-btn-reverse {
+    background-color: white;
+    color: #FF761C;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 600;
+    // font-size: 15px;
+    // line-height: 24px;
+}
+
+.login-btn-choose {
+    background-color: white;
+    // color: #FF761C;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 600;
+    // font-size: 15px;
+    // line-height: 24px;
+
+}
+
+.login-btn-background {
+    background: #FF761C;
+    border-radius: 8px;
+}
+
+
 .text-center {
     text-align: center;
-    margin-top: 180px;
+    margin-top: 120px;
     margin-bottom: 10px;
+}
+
+.or-line {
+    display: flex;
+    flex-direction: row;
+    color: rgba(0, 0, 0, 0.3);
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+}
+.or-line:before, .or-line:after{
+content: "";
+    flex: 1 1;
+    border-bottom: 1px solid;
+    margin: auto;
+}
+.or-line:before {
+    margin-right: 10px
+}
+.or-line:after {
+    margin-left: 10px
 }
