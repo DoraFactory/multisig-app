@@ -9,9 +9,7 @@ import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
 import { useNavigate, Link } from 'react-router-dom';
 
-import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
-import FormHelperText from '@mui/material/FormHelperText';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import { message } from 'antd';
@@ -82,10 +80,6 @@ const CreateStep1 = () => {
 
     const [ownerAddress, setAddress] = React.useState('');
 
-    const handleAddressChange = (event) => {
-        setAddress(event.target.value);
-    };
-
     return(
         <div className="steps">
             <div className="create-wallet-steps">
@@ -111,8 +105,6 @@ const CreateStep1 = () => {
                     <Select           
                     labelId="demo-select-small"
                     id="demo-select-small"
-                    // value={ownerAddress}
-                    // onChange={handleAddressChange}
                     onChange={(dropdown) => {
                         handleChange(dropdown.target.value)
                     }}
@@ -120,33 +112,14 @@ const CreateStep1 = () => {
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                     >
-                    <MenuItem value="" >
-                        <em>Please select an account</em>
-                    </MenuItem>
-                    {keyringOptions.map((option) => (
-                        <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
-                    ))}
+                        <MenuItem value="" >
+                            <em>Please select an account</em>
+                        </MenuItem>
+                        {keyringOptions.map((option) => (
+                            <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
+                        ))}
                     </Select>
                 </FormControl>
-                {/* <Select defaultValue="" style={{ width: 592 }} onChange={(dropdown) => {
-                        console.log("1-----")
-                        console.log(dropdown)
-                        console.log("2-----")
-                        console.log(dropdown.target.value)
-                        console.log("3-----")
-
-                        handleChange(dropdown.toString())
-                    }}
-                    
-                    displayEmpty
-                    > */}
-                    {/* <Option value="" >
-                        <em>Please select an account</em>
-                    </Option>
-                    {keyringOptions.map((option) => (
-                        <Option value={option.value}>{option.text}:{option.value}</Option>
-                    ))}
-                </Select> */}
 
                 <div className="btn-group">
                     {
@@ -164,65 +137,6 @@ const CreateStep1 = () => {
                             </div>
                         )
                     }
-                    
-                    {/* <Modal
-                    open={open}
-                    onClose={handleClose}
-                    aria-labelledby="modal-modal-title"
-                    aria-describedby="modal-modal-description"
-                    >
-                        <div
-                        v-if="showModal"
-                        class="modal"
-                        role="dialog"
-                        >
-                            <span class="close" onClick={handleClose}>
-                                <svg
-                                width="32"
-                                height="32"
-                                viewBox="0 0 32 32"
-                                fill="none"
-                                xmlns="http://www.w3.org/2000/svg"
-                                >
-                                <rect
-                                    x="22.3638"
-                                    y="11.0503"
-                                    width="16"
-                                    height="2"
-                                    rx="1"
-                                    transform="rotate(135 22.3638 11.0503)"
-                                    fill="#FF761C"
-                                />
-                                <rect
-                                    x="11.0503"
-                                    y="9.63599"
-                                    width="16"
-                                    height="2"
-                                    rx="1"
-                                    transform="rotate(45 11.0503 9.63599)"
-                                    fill="#FF761C"
-                                />
-                                </svg>
-                            </span>
-                            <slot className="content" />
-                            <div className="main">
-                                <h3>Select an account</h3>
-                                <select 
-                                    onChange={(dropdown) => {
-                                        handleChange(dropdown.target.value)
-                                    }}
-                                    value={currentAccount ? currentAccount.address : initialAddress}
-                                >
-                                    <option>Please select a account</option>
-                                    {keyringOptions.map((option) => (
-                                        <option value = {option.value}>
-                                            {option.text}:{option.value}
-                                        </option>
-                                    ))}
-                                </select>
-                            </div>
-                        </div>
-                    </Modal> */}
                     <Link to ='/'>cancel</Link>
                 </div>
             </div>

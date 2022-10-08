@@ -67,11 +67,13 @@ const Home = () => {
                 <LoginCard setDefaultPolka = {changeDefault}></LoginCard>
             ) : null}
 
-            {isExtension ? (
+            {isExtension && !defaultPolka ? (
                 <LoginUserCard></LoginUserCard>
-            ) : (
+            ) : null}
+
+            { !isExtension &&  !defaultPolka ? (
                 <WithoutExtensionCard></WithoutExtensionCard>
-            )}
+            ) : null}
 
         </div>
 )}
