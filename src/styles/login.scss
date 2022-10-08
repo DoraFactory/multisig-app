@@ -136,3 +136,22 @@ content: "";
     line-height: 17px;
     color: #FF761C;
 }
+
+.first-login-logo {
+    display: contents;
+
+    // display:table-cell; 
+    vertical-align:middle;
+}
+
+.without-extension-card {
+    // box-sizing: border-box;
+
+    // position: absolute;
+    width: 496px;
+    height: 96px;
+
+    background: #FFFFFF;
+    box-shadow: 0px 0px 20px rgba(14, 14, 17, 0.05);
+    border-radius: 8px;
+}

@@ -7,21 +7,21 @@ import 'antd/es/button/style/index.css';
 import polkadot_logo from '../../resources/polkadot-logo.svg'
 
 
-const LoginCard = () => {
+const WithoutExtensionCard = () => {
     return(
         <div className="login-card blur-card-bg">
             <h3>Login</h3>
             <div className="description">Welcome back! Login with Web3 wallet.</div>
 
-            <div className="login-btn-base login-btn-reverse login-btn">
-                <img src={polkadot_logo}/>
-                <div className='first-login-logo'>Login with Polkadot</div>
+           
+            <div className='without-extension-card'>
+            <div>Polkadot Js extension not detected.</div>
+            <div>Please install Firefox or Chorme browser to use this feature.</div>
             </div>
-            
             <div className="div-line-word or-line">
                 OR
             </div>
-            <div className="text-center">Haven’t used Polkassembly before? Sign up!</div>
+            <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base sign-up-btn-reverse signUp-btn">
                 <div>
                     Sign-Up
@@ -32,4 +32,4 @@ const LoginCard = () => {
 }
 
 
-export default LoginCard;
+export default WithoutExtensionCard;
