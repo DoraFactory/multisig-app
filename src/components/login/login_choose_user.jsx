@@ -62,8 +62,6 @@ const LoginUserCard = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
-    
-
 
     const handleSignMessage = async()  => {
         const extensions = await web3Enable('my cool dapp');
@@ -90,28 +88,7 @@ const LoginUserCard = () => {
             console.log(signature);
         }
     } 
-    // Get the list of accounts we possess the private key for
-    // const keyringOptions = keyring.getAccounts().map(account => ({
-    //     key: account.address,
-    //     value: account.address,
-    //     text: account.meta.name.toUpperCase(),
-    //     icon: 'user',
-    // }))
-    // const initialAddress =
-    //     keyringOptions.length > 0 ? keyringOptions[0].value : ''
 
-    // Set the initial address
-    // useEffect(() => {
-    //     // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
-    //     !currentAccount &&
-    //         initialAddress.length > 0 &&
-    //         setCurrentAccount(keyring.getPair(initialAddress))
-    //     if(!currentAccount){
-    //         localStorage.setItem('main-account', JSON.stringify(initialAddress.address))
-    //     }else{
-    //         localStorage.setItem('main-account', JSON.stringify(currentAccount.address))
-    //     }
-    // }, [currentAccount, setCurrentAccount, keyring, initialAddress])
 
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
