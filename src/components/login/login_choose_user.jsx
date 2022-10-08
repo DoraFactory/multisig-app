@@ -1,10 +1,7 @@
 import React, {useEffect, useState} from 'react';
-import icon_polkadot from '../../resources/icon_polkadot.svg'
-import { useNavigate, Link } from 'react-router-dom';
-
-import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate, Link } from 'react-router-dom';
 
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -59,6 +56,21 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
+
+    let keyringOptions = [];
+    let initialAddress = '';
+    if(keyring){
+        keyringOptions = keyring.getAccounts().map(account => ({
+            key: account.address,
+            value: account.address,
+            text: account.meta.name.toUpperCase(),
+            icon: 'user',
+        }))
+    
+        initialAddress =keyringOptions.length > 0 ? keyringOptions[0].value : ''
+    }
+
+
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
@@ -96,7 +108,7 @@ const LoginUserCard = () => {
             });
             console.log(signature);
         }
-    } 
+    }
 
 
     const handleChange = (addr) => {
@@ -112,37 +124,33 @@ const LoginUserCard = () => {
                     <Select           
                     labelId="demo-select-small"
                     id="demo-select-small"
-                    // value={ownerAddress}
-                    // onChange={handleAddressChange}
-                    onChange={() => {
-                        handleChange()
+                    onChange={(dropdown) => {
+                        handleChange(dropdown.target.value)
                     }}
-                    value=""
+                    value={currentAccount ? currentAccount.address : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                     input={<BootstrapInput/>}
                     >
-                        
-                    <MenuItem value="" >
-                        <div class="profile">
-                            <Identicon
-                                value={"5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}
-                                size={32}
-                                theme={"polkadot"}
-                            />
-                            <div
-                                class="name-info"
-                            >
-                                <p align='left'>Alice</p>
-                                <p>5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ</p>
-                            </div>
-                        </div>
-                    </MenuItem>
-                    {/* {keyringOptions.map((option) => (
-                        <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
-                    ))} */}
+                        {keyringOptions.map((option) => (
+                            <MenuItem value={option.value}>
+                                <div class="profile">
+                                    <Identicon
+                                        value={option.value}
+                                        size={32}
+                                        theme={"polkadot"}
+                                    />
+                                    <div
+                                        class="name-info"
+                                    >
+                                        <p align='left'>{option.text}</p>
+                                        <p>{option.value}</p>
+                                    </div>
+                                </div>
+                            </MenuItem>
+                        ))}
                     </Select>
-                </FormControl>
+            </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose">
                 <div onClick={() => handleSignMessage("5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ")}>
                     Login
@@ -153,9 +161,9 @@ const LoginUserCard = () => {
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
-                <div>
-                    Sign-Up
-                </div>
+            <Link to="/create-wallet">
+            Sign Up
+        </Link>
             </div>
         </div>
     )

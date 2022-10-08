@@ -12,7 +12,7 @@ const WithoutExtensionCard = () => {
             <h3>Login</h3>
             <div className="description">Welcome back! Login with Web3 wallet.</div>
 
-           
+
             <div className='without-extension-card'>
             <div className='extension-card-text-1'>Polkadot Js extension not detected.</div>
             <div className='extension-card-text-2'>Please install <a className='extension-card-link' href="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/">Firefox</a> or <a className='extension-card-link' href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd">Chorme</a> browser to use this feature.</div>
@@ -22,9 +22,9 @@ const WithoutExtensionCard = () => {
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base sign-up-btn-reverse signUp-btn">
-                <div>
-                    Sign-Up
-                </div>
+                <Link to="/create-wallet">
+                    Sign Up
+                </Link>
             </div>
         </div>
     )

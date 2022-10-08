@@ -4,10 +4,14 @@ import { useNavigate, Link } from 'react-router-dom';
 
 const SignUpCard = () => {
 
+    const signup = () => {
+
+    }
+
     return(
-        <div>
+        <Link to="/create-wallet">
             Sign Up
-        </div>
+        </Link>
     )
 }
 
