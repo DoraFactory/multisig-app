@@ -6,8 +6,8 @@
 .login-card {
     padding: 40px 70px;
     font-size: 14px;
-    width: 750px;
-    height: 505px;
+    width: 500px;
+    height: 400px;
 
     // width: 500px;
     padding-left: 100px;
@@ -94,7 +94,7 @@
 
 .text-center {
     text-align: center;
-    margin-top: 120px;
+    margin-top: 20px;
     margin-bottom: 10px;
 }
 
@@ -115,8 +115,24 @@ content: "";
     margin: auto;
 }
 .or-line:before {
-    margin-right: 10px
+    margin-right: 10px;
 }
 .or-line:after {
-    margin-left: 10px
+    margin-left: 10px;
+}
+
+.profile {
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.name-info {
+    max-width: 130px;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FF761C;
 }

@@ -9,7 +9,51 @@ import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
+import avatar from '../../resources/avatar.svg'
 
+
+
+import { styled } from '@mui/material/styles';
+import InputLabel from '@mui/material/InputLabel';
+import InputBase from '@mui/material/InputBase';
+
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+    '& .MuiInputBase-input': {
+      borderRadius: 4,
+      display: 'flex',
+      'justify-content': 'flex-start',
+      cursor: 'pointer',
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+      border: '1px solid #FF761C',
+      'border-radius': '4px',
+      fontSize: 16,
+      margin:-2,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#FF761C',
+        boxShadow: '0 0 0 0.2rem rgba(255, 118, 28, 0.1)',
+      },
+    },
+  }));
 
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
@@ -49,7 +93,7 @@ const LoginUserCard = () => {
         <div className="login-card blur-card-bg">
             <h3>Login</h3>
             <div className="description">Choose linked account </div>
-            <FormControl sx={{ m: 1, minWidth: 592 }}  size="small">
+            <FormControl sx={{ m: 1, minWidth: 490 }}  size="small">
                     <Select           
                     labelId="demo-select-small"
                     id="demo-select-small"
@@ -61,9 +105,18 @@ const LoginUserCard = () => {
                     value=""
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
+                    input={<BootstrapInput/>}
                     >
                     <MenuItem value="" >
-                        <em>Please select an account</em>
+                        <div class="profile">
+                            <img  src={avatar}/>
+                            <div
+                                class="name-info"
+                            >
+                                <p align='left'>Alice</p>
+                                <p>0x1231321wlkejwoeiujwoiguowieg2311</p>
+                            </div>
+                        </div>
                     </MenuItem>
                     {/* {keyringOptions.map((option) => (
                         <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
