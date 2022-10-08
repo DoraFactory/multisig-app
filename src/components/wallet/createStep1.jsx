@@ -73,8 +73,6 @@ const CreateStep1 = () => {
     }
 
     const handleConnect = () => {
-        success()
-
         navigate('/create-wallet/step2')
     }
 

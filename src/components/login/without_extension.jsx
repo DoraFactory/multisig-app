@@ -22,9 +22,9 @@ const WithoutExtensionCard = () => {
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base sign-up-btn-reverse signUp-btn">
-                <div>
-                    Sign-Up
-                </div>
+                <Link to="/create-wallet">
+                    Sign Up
+                </Link>
             </div>
         </div>
     )

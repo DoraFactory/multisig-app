@@ -1,6 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import { useSubstrate, useSubstrateState } from '../../context';
 import MenuItem from '@mui/material/MenuItem';
+import { useNavigate, Link } from 'react-router-dom';
 
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -98,7 +99,7 @@ const LoginUserCard = () => {
             });
             console.log(signature);
         }
-    } 
+    }
 
 
     const handleChange = (addr) => {
@@ -150,9 +151,9 @@ const LoginUserCard = () => {
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
-                <div>
-                    Sign-Up
-                </div>
+            <Link to="/create-wallet">
+            Sign Up
+        </Link>
             </div>
         </div>
     )
