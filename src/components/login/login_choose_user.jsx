@@ -7,7 +7,7 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 import avatar from '../../resources/avatar.svg'
-import { web3Accounts, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
@@ -76,14 +76,13 @@ const LoginUserCard = () => {
     const handleClose = () => setOpen(false);
 
     const handleSignMessage = async()  => {
-
-        console.log(currentAccount.address);
-
         const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
 
-        const signRaw = currentAccount?.signer?.signRaw;
+        const injector = await web3FromAddress(currentAccount.address);
+
+        const signRaw = injector?.signer?.signRaw;
 
         if (!!signRaw) {
             // after making sure that signRaw is defined
