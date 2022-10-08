@@ -75,27 +75,21 @@ const LoginUserCard = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleSignMessage = async(accountAddress)  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}}).then((res) => {
+    const handleSignMessage = async()  => {
+
+        console.log(currentAccount.address);
+
+        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
-        
-        const extensions = await web3Enable('my cool dapp');
-        if (extensions.length === 0) {
-            return;
-        }
-        const allAccounts = await web3Accounts();
-        const account = allAccounts[0];
 
-        const injector = await web3FromSource(account.meta.source);
-
-        const signRaw = injector?.signer?.signRaw;
+        const signRaw = currentAccount?.signer?.signRaw;
 
         if (!!signRaw) {
             // after making sure that signRaw is defined
             // we can use it to sign our message
             const { signature } = await signRaw({
-                address: account.address,
+                address: currentAccount.address,
                 data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
@@ -146,7 +140,7 @@ const LoginUserCard = () => {
                     </Select>
             </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose">
-                <div onClick={() => handleSignMessage("5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ")}>
+                <div onClick={() => handleSignMessage()}>
                     Login
                 </div>
             </div>
