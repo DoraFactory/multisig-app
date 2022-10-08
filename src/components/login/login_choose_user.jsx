@@ -75,24 +75,17 @@ const LoginUserCard = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleSignMessage = async(accountM)  => {
-        const message =  await axios.get("http://127.0.0.1:8000/login/", {params: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}}).then((res) => {
-            console.log(res)
+    const handleSignMessage = async(accountAddress)  => {
+        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}}).then((res) => {
+            return res.data
         });
-
-        console.log("----------------------------");
-        console.log("----------------------------");
-        console.log(message);
-        console.log("----------------------------");
-        console.log("----------------------------");
+        
         const extensions = await web3Enable('my cool dapp');
         if (extensions.length === 0) {
             return;
         }
         const allAccounts = await web3Accounts();
         const account = allAccounts[0];
-        console.log(allAccounts);
-        console.log(account);
 
         const injector = await web3FromSource(account.meta.source);
 
@@ -103,10 +96,11 @@ const LoginUserCard = () => {
             // we can use it to sign our message
             const { signature } = await signRaw({
                 address: account.address,
-                data: stringToHex(message),
+                data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
-            console.log(signature);
+            console.log(signature)
+            return signature
         }
     }
 
