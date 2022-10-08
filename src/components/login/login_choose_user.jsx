@@ -12,7 +12,7 @@ import '../../styles/login.scss';
 import avatar from '../../resources/avatar.svg'
 import { web3Accounts, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
 import { stringToHex } from "@polkadot/util";
-
+import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
@@ -63,7 +63,16 @@ const LoginUserCard = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
-    const handleSignMessage = async()  => {
+    const handleSignMessage = async(accountM)  => {
+        const message =  await axios.get("http://127.0.0.1:8000/login/", {params: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}}).then((res) => {
+            console.log(res)
+        });
+
+        console.log("----------------------------");
+        console.log("----------------------------");
+        console.log(message);
+        console.log("----------------------------");
+        console.log("----------------------------");
         const extensions = await web3Enable('my cool dapp');
         if (extensions.length === 0) {
             return;
@@ -82,7 +91,7 @@ const LoginUserCard = () => {
             // we can use it to sign our message
             const { signature } = await signRaw({
                 address: account.address,
-                data: stringToHex('message to sign'),
+                data: stringToHex(message),
                 type: 'bytes'
             });
             console.log(signature);
@@ -96,6 +105,7 @@ const LoginUserCard = () => {
 
     return(
         <div className="login-card blur-card-bg">
+
             <h3>Login</h3>
             <div className="description">Choose linked account </div>
             <FormControl sx={{ m: 1, minWidth: 490 }}  size="small">
@@ -134,7 +144,7 @@ const LoginUserCard = () => {
                     </Select>
                 </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose">
-                <div onClick={handleSignMessage}>
+                <div onClick={() => handleSignMessage("5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ")}>
                     Login
                 </div>
             </div>
