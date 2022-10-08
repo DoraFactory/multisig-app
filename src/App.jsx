@@ -17,6 +17,7 @@ function Main() {
           <Route path="/create-wallet/" element={<WalletCreations/>}></Route>
           <Route path="/create-wallet/step2" element={<WalletCreation2/>}></Route>
           <Route path="/create-wallet/step3" element={<WalletCreation3/>}></Route>
+          <Route path="/accountInfo" element={<CommonIndex/>}></Route>
           <Route path="/login" element={<Login/>}></Route>
           <Route path="/sign-up" element={<SignUp/>}></Route>
         </Routes>

@@ -4,6 +4,9 @@ import '../styles/home.scss';
 import PreCreateWallet from "../components/home/preCreateWallet";
 import LoginWallet from "../components/home/loginWallet";
 import localStorage from 'localStorage';
+import { LoginUserCard, LoginCard, WithoutExtensionCard } from "../components/login";
+import { web3Enable, web3Accounts } from '@polkadot/extension-dapp';
+
 const Home = () => {
 
     const networks = [
@@ -15,6 +18,9 @@ const Home = () => {
     const [network, setNetwork] = useState('');
     const [isFirst , setIsFirst] = useState(true);
 
+    const [isExtension, setIsExtension] = useState(1);
+    const [defaultPolka, setDefaultPolka] = useState(1)
+
     // store the network
     if(isFirst){
         localStorage.setItem('network', networks[0].name);
@@ -22,9 +28,20 @@ const Home = () => {
         localStorage.setItem('network', network);
     }
 
-    const handleChange = name =>{
+    const handleNetworkChange = name =>{
         setNetwork(name)
         setIsFirst(false)
+    }
+
+    const changeDefault = () => {
+        setDefaultPolka(0)
+        web3Enable("dorafactory multisig app").then((extension) => {
+            // no polkadot.js extension
+            console.log(extension.length);
+            if (extension.length == 0) {
+                setIsExtension(0);
+            }
+        });
     }
 
     return(
@@ -32,7 +49,7 @@ const Home = () => {
             <div className="header-home">
                 <select 
                     onChange={(dropdown) => {
-                        handleChange(dropdown.target.value)
+                        handleNetworkChange(dropdown.target.value)
                     }}
                     value = {network}
                 >
@@ -45,11 +62,17 @@ const Home = () => {
                 <img src={Icons.Logo}></img>
             </div>
             <h2>Welcome to Substrate Multisig</h2>
-            <main>
-                <PreCreateWallet />
-                <div class="vertical-space-divider" />
-                <LoginWallet />
-            </main>
+
+            {defaultPolka ? (
+                <LoginCard setDefaultPolka = {changeDefault}></LoginCard>
+            ) : null}
+
+            {isExtension ? (
+                <LoginUserCard></LoginUserCard>
+            ) : (
+                <WithoutExtensionCard></WithoutExtensionCard>
+            )}
+
         </div>
 )}
 
