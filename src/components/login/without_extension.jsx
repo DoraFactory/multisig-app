@@ -15,8 +15,8 @@ const WithoutExtensionCard = () => {
 
            
             <div className='without-extension-card'>
-            <div>Polkadot Js extension not detected.</div>
-            <div>Please install Firefox or Chorme browser to use this feature.</div>
+            <div className='extension-card-text-1'>Polkadot Js extension not detected.</div>
+            <div className='extension-card-text-2'>Please install <a className='extension-card-link' href="https://addons.mozilla.org/en-US/firefox/addon/polkadot-js-extension/">Firefox</a> or <a className='extension-card-link' href="https://chrome.google.com/webstore/detail/polkadot%7Bjs%7D-extension/mopnmbcafieddcagagdcbnhejhlodfdd">Chorme</a> browser to use this feature.</div>
             </div>
             <div className="div-line-word or-line">
                 OR

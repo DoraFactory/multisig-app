@@ -136,7 +136,7 @@ const LoginUserCard = () => {
             <div className="div-line-word or-line">
                 OR
             </div>
-            <div className="text-center">Haven’t used Polkassembly before? Sign up!</div>
+            <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
                 <div>
                     Sign-Up
