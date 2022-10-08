@@ -6,7 +6,6 @@ import '../../styles/login.scss';
 import 'antd/es/button/style/index.css';
 import polkadot_logo from '../../resources/polkadot-logo.svg'
 
-
 const WithoutExtensionCard = () => {
     return(
         <div className="login-card blur-card-bg">
@@ -30,6 +29,5 @@ const WithoutExtensionCard = () => {
         </div>
     )
 }
-
 
 export default WithoutExtensionCard;

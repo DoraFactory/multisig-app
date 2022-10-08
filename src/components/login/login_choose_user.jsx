@@ -10,7 +10,8 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 import avatar from '../../resources/avatar.svg'
-
+import { web3Accounts, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import { stringToHex } from "@polkadot/util";
 
 
 import { styled } from '@mui/material/styles';
@@ -62,6 +63,33 @@ const LoginUserCard = () => {
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
     
+
+
+    const handleSignMessage = async()  => {
+        const extensions = await web3Enable('my cool dapp');
+        if (extensions.length === 0) {
+            return;
+        }
+        const allAccounts = await web3Accounts();
+        const account = allAccounts[0];
+        console.log(allAccounts);
+        console.log(account);
+
+        const injector = await web3FromSource(account.meta.source);
+
+        const signRaw = injector?.signer?.signRaw;
+
+        if (!!signRaw) {
+            // after making sure that signRaw is defined
+            // we can use it to sign our message
+            const { signature } = await signRaw({
+                address: account.address,
+                data: stringToHex('message to sign'),
+                type: 'bytes'
+            });
+            console.log(signature);
+        }
+    } 
     // Get the list of accounts we possess the private key for
     // const keyringOptions = keyring.getAccounts().map(account => ({
     //     key: account.address,
@@ -129,7 +157,7 @@ const LoginUserCard = () => {
                     </Select>
                 </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose">
-                <div>
+                <div onClick={handleSignMessage}>
                     Login
                 </div>
             </div>

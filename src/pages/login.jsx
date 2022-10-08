@@ -9,9 +9,9 @@ function Login () {
   return (
     <div>
         <h2>Welcome to Substrate Multisig</h2>
-        {/* <LoginUserCard></LoginUserCard> */}
+        <LoginUserCard></LoginUserCard>
         {/* <LoginCard></LoginCard> */}
-        <WithoutExtensionCard></WithoutExtensionCard>
+        {/* <WithoutExtensionCard></WithoutExtensionCard> */}
     </div>
   )
 }
