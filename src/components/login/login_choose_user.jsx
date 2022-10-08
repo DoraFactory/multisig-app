@@ -14,8 +14,8 @@ import avatar from '../../resources/avatar.svg'
 
 
 import { styled } from '@mui/material/styles';
-import InputLabel from '@mui/material/InputLabel';
 import InputBase from '@mui/material/InputBase';
+import Identicon from '@polkadot/react-identicon';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -107,14 +107,19 @@ const LoginUserCard = () => {
                     inputProps={{ 'aria-label': 'Without label' }}
                     input={<BootstrapInput/>}
                     >
+                        
                     <MenuItem value="" >
                         <div class="profile">
-                            <img  src={avatar}/>
+                            <Identicon
+                                value={"5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ"}
+                                size={32}
+                                theme={"polkadot"}
+                            />
                             <div
                                 class="name-info"
                             >
                                 <p align='left'>Alice</p>
-                                <p>0x1231321wlkejwoeiujwoiguowieg2311</p>
+                                <p>5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ</p>
                             </div>
                         </div>
                     </MenuItem>
