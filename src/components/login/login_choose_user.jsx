@@ -14,6 +14,7 @@ import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
+// import JSONBigInt from 'json-bigint';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -93,7 +94,25 @@ const LoginUserCard = () => {
                 type: 'bytes'
             });
             console.log(signature)
-            return signature
+            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
+            // const token = await axios.post("http://127.0.0.1:8000/login/", {headers: {"Content-Type": "application/json"}, data: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ", signature: signature.toString()}}).then((res) => {
+            //     console.log(res.data)
+            // });
+            const data = {
+                "account": currentAccount.address.toString(),
+                "signature": signature
+            };
+            const result = await axios(
+                {
+                    method: "post",
+                    url: 'http://127.0.0.1:8000/login/',
+                    headers: {
+                    'Content-Type': 'application/json'
+                    },
+                    data
+                });
+            console.log(result.data)
+            // return signature
         }
     }
 
