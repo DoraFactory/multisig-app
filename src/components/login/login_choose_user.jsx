@@ -84,7 +84,7 @@ const LoginUserCard = () => {
 
         const signRaw = injector?.signer?.signRaw;
 
-        if (!!signRaw) {
+        if (signRaw) {
             // after making sure that signRaw is defined
             // we can use it to sign our message
             const { signature } = await signRaw({
@@ -138,8 +138,8 @@ const LoginUserCard = () => {
                         ))}
                     </Select>
             </FormControl>
-            <div className="login-btn-base login-btn-background login-btn-choose">
-                <div onClick={() => handleSignMessage()}>
+            <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
+                <div>
                     Login
                 </div>
             </div>
