@@ -74,10 +74,6 @@ const CreateStep3 = () => {
         console.log('------------------------------4')
 
         console.log(result.data)
-        // const wallets = await axios.post(`http://127.0.0.1:8000/wallets/${localStorage.getItem('main-account')}/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-        //     .then((res) => {
-        //         return res.data
-        //     });
         navigate('/accountInfo')
     }
 

@@ -81,7 +81,7 @@ const LoginUserCard = () => {
     const navigate = useNavigate();
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
+        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
             return res.data
         });
 
@@ -121,7 +121,7 @@ const LoginUserCard = () => {
 
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
-                const wallets = await axios.get(`http://127.0.0.1:8000/wallets/${currentAccount.address}/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+                const wallets = await axios.get(`http://127.0.0.1:8000/wallets/${currentAccount.address.toString()}/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
                     .then((res) => {
                         return res.data
                     });

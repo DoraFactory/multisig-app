@@ -97,9 +97,6 @@ const SignUpCard = () => {
             });
             console.log(signature)
             console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
-            // const token = await axios.post("http://127.0.0.1:8000/login/", {headers: {"Content-Type": "application/json"}, data: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ", signature: signature.toString()}}).then((res) => {
-            //     console.log(res.data)
-            // });
             const data = {
                 "account": currentAccount.address.toString(),
                 "signature": signature
