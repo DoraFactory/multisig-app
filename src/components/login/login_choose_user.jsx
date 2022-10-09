@@ -14,6 +14,9 @@ import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
+
+// import sessionStorage from 'sessionStorage';
+
 // import JSONBigInt from 'json-bigint';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -77,7 +80,7 @@ const LoginUserCard = () => {
     const handleClose = () => setOpen(false);
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
+        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
 
@@ -105,14 +108,13 @@ const LoginUserCard = () => {
             const result = await axios(
                 {
                     method: "post",
-                    url: 'http://127.0.0.1:8000/login/',
+                    url: 'https://multisig.dorafactory.org/login/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
                     data
                 });
-            console.log(result.data)
-            // return signature
+            sessionStorage.setItem("token", result.data['token'].toString())
         }
     }
 

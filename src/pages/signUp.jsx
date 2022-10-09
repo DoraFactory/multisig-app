@@ -2,7 +2,6 @@
 import SignUpCard from '../components/login/signUp'
 import '../styles/wallet.scss'
 
-
 function SignUp () {
   return (
     <div>

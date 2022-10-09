@@ -111,7 +111,7 @@ const SignUpCard = () => {
                     },
                     data
                 });
-            console.log(result.data)
+            sessionStorage.setItem("token", result.data['token'].toString())
             // return signature
         }
     }
