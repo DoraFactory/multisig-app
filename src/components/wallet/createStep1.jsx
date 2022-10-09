@@ -120,27 +120,14 @@ const CreateStep1 = () => {
                 </FormControl>
 
                 <div className="btn-group">
-                    {
-                        btnText == "Connect Wallet" ?(
-                            <div className="btn" onClick={ handleOpen }>
-                                {btnText}
-                            </div>
-                        ) : (
-                            
-                                // <Button  onClick={ success }>
-                            // /        {btnText}
-                                // </Button>
-                            <div className="btn" onClick={ handleConnect }>
-                                {btnText}
-                            </div>
-                        )
-                    }
+                    <div className="btn" onClick={ handleConnect }>
+                        Continue
+                    </div>
                     <Link to ='/'>cancel</Link>
                 </div>
             </div>
         </div>
     )
 }
-
 
 export default CreateStep1;
