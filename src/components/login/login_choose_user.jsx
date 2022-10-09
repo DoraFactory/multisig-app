@@ -78,9 +78,10 @@ const LoginUserCard = () => {
     const [open, setOpen] = useState(false);
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const navigate = useNavigate();
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address}}).then((res) => {
+        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
 
@@ -98,23 +99,42 @@ const LoginUserCard = () => {
             });
             console.log(signature)
             console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
-            // const token = await axios.post("http://127.0.0.1:8000/login/", {headers: {"Content-Type": "application/json"}, data: {account: "5GZN1wfpzTv8geP6GtEKBFoi1pUskey72LAfdsv2hvzAd3QJ", signature: signature.toString()}}).then((res) => {
-            //     console.log(res.data)
-            // });
+
             const data = {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
+            console.log(currentAccount.address.toString())
+            console.log('-------------------------------1');
+
             const result = await axios(
                 {
                     method: "post",
-                    url: 'https://multisig.dorafactory.org/login/',
+                    url: 'http://127.0.0.1:8000/login/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
                     data
                 });
-            sessionStorage.setItem("token", result.data['token'].toString())
+            console.log('-------------------------------2');
+            console.log(result.data)
+
+            if(result.data['token']){
+                sessionStorage.setItem("token", result.data['token'].toString())
+                const wallets = await axios.get(`http://127.0.0.1:8000/wallets/${currentAccount.address}/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+                    .then((res) => {
+                        return res.data
+                    });
+                console.log('---------------------------here')
+                console.log(wallets);
+                if(wallets.length == 0) {
+                    navigate("/create-wallet")
+                } else {
+                    navigate("/accountInfo")
+                }
+            } else {
+                navigate("/signup")
+            }
         }
     }
 
@@ -169,7 +189,7 @@ const LoginUserCard = () => {
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/create-wallet">
+            <Link to="/signup">
             Sign Up
         </Link>
             </div>

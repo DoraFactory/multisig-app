@@ -16,6 +16,7 @@ import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
 // import JSONBigInt from 'json-bigint';
 
+
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
       marginTop: theme.spacing(3),
@@ -57,6 +58,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const SignUpCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
+    const navigate = useNavigate();
 
     let keyringOptions = [];
     let initialAddress = '';
@@ -102,6 +104,9 @@ const SignUpCard = () => {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
+            console.log(data)
+            console.log('------------------------------1')
+
             const result = await axios(
                 {
                     method: "post",
@@ -111,7 +116,13 @@ const SignUpCard = () => {
                     },
                     data
                 });
+            console.log('------------------------------2')
+
+            console.log(result.data)
             sessionStorage.setItem("token", result.data['token'].toString())
+            if(result.data['token']){
+                navigate("/create-wallet")
+            }
             // return signature
         }
     }
@@ -167,7 +178,7 @@ const SignUpCard = () => {
             </div>
             <div className="text-center">Already have an account? Login!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/create-wallet">
+            <Link to="/login">
             Login
         </Link>
             </div>
