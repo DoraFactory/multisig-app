@@ -1,0 +1,197 @@
+.create-wallet-main {
+    width: 473px;
+    padding: 50px 40px;
+}
+
+.login-card {
+    padding: 40px 70px;
+    font-size: 14px;
+    width: 500px;
+    height: 400px;
+
+    // width: 500px;
+    padding-left: 100px;
+    padding-right: 100px;
+    text-align: center;
+    margin: 120px auto;
+    h3 {
+        margin-bottom: 8px;
+    }
+    .description {
+        text-align: left;
+        padding-bottom: 6px;
+        font-size: 12px;
+        font-weight: 400;
+        margin-bottom: 10px;
+    }
+    .login-btn {
+        width: 496px;
+        background: rgba(255, 118, 28, 0.1);
+    }
+
+    .signUp-btn {
+        width: 496px;
+    }
+}
+
+.div-line-word {
+    flex-basis: 50%;
+    margin-top: 80px;
+}
+
+.login-btn-base {
+    box-sizing: border-box;
+
+    // position: absolute;
+    width: 496px;
+    height: 48px;
+    // left: 127px;
+    // top: 238px;
+
+    background: rgba(255, 118, 28, 0.1);
+    border: 1px solid #FF761C;
+    border-radius: 8px;
+
+    // background-color: var(--theme-orange);
+    color: white;
+    font-weight: 600;
+    padding: 15px;
+    display: inline-block;
+    cursor: pointer;
+  }
+
+.sign-up-btn-reverse {
+    background-color: white;
+    color: var(--theme-orange);
+}
+
+.login-btn-reverse {
+    background-color: white;
+    color: #FF761C;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 600;
+    // font-size: 15px;
+    // line-height: 24px;
+}
+
+.login-btn-choose {
+    background-color: white;
+    // color: #FF761C;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 600;
+    // font-size: 15px;
+    // line-height: 24px;
+
+}
+
+.login-btn-background {
+    background: #FF761C;
+    border-radius: 8px;
+}
+
+
+.text-center {
+    text-align: center;
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.or-line {
+    display: flex;
+    flex-direction: row;
+    color: rgba(0, 0, 0, 0.3);
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 16px;
+    line-height: 19px;
+}
+.or-line:before, .or-line:after{
+content: "";
+    flex: 1 1;
+    border-bottom: 1px solid;
+    margin: auto;
+}
+.or-line:before {
+    margin-right: 10px;
+}
+.or-line:after {
+    margin-left: 10px;
+}
+
+.profile {
+    display: flex;
+    justify-content: flex-start;
+    cursor: pointer;
+}
+
+.name-info {
+    max-width: 130px;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    font-weight: 400;
+    font-size: 14px;
+    line-height: 17px;
+    color: #FF761C;
+}
+
+.first-login-logo {
+    display: contents;
+
+    // display:table-cell; 
+    vertical-align:middle;
+}
+
+.without-extension-card {
+    // box-sizing: border-box;
+
+    // position: absolute;
+    width: 496px;
+    height: 96px;
+
+    background: #FFFFFF;
+    box-shadow: 0px 0px 20px rgba(14, 14, 17, 0.05);
+    border-radius: 8px;
+}
+
+.extension-card-text-1 {
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 400;
+    font-size: 14px;
+    // line-height: 24px;
+    /* or 150% */
+    text-align: left;
+    
+    color: rgba(14, 14, 17, 0.5);
+    padding-top: 24px;
+    padding-left: 10px;
+}
+
+.extension-card-text-2 {
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 400;
+    font-size: 14px;
+    // line-height: 24px;
+    /* or 150% */
+    text-align: left;
+    
+    color: rgba(14, 14, 17, 0.5);
+    // padding-top: 8px;
+    padding-left: 10px;
+}
+
+.extension-card-link {
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    // font-weight: 400;
+    font-size: 14px;
+    // line-height: 24px;
+    /* or 150% */
+    text-align: left;
+    text-decoration:underline;
+    color: #FF761C;
+}

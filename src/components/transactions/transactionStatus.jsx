@@ -13,6 +13,8 @@ import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
 
+import axios from 'axios';
+
 const TransactionStatus = () => {
 
     const [open, setOpen] = useState(false);
@@ -41,6 +43,8 @@ const TransactionStatus = () => {
     // 
     const [approvealNums, setApprovealNums] = useState(0);
     const [calls, setCalls] = useState({});
+    // 
+    const [blockHeight, setBlockHeight] = useState();
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
@@ -89,14 +93,37 @@ const TransactionStatus = () => {
         0
       );
 
-      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
+      extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
         }else if(result.status.isFinalized){
+          // save current multisig wallet's transaction 
+          let data = {
+            call_hash : api.registry.hash(encodeData).toHex(),
+            owner: main_owner,
+            detail: {
+              block_height: 0,
+              address: main_owner,
+              pallet_method: `balances` + method.name,
+              parameters: params,
+            },
+            status: 1
+          }
+          const result = await axios({
+                method: "post",
+                url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+                headers: {
+                  'Content-Type': 'application/json',
+                  "dorafactory-token": sessionStorage.getItem('token'),
+                },
+                data
+          });
+          console.log(result);
           console.log('send multisig tx successfully ! ');
         }
       })
       setUnsub(() => unsub)
+      setOpen(false);
     }
 
     const approveTx = async(hash) => {
@@ -126,7 +153,6 @@ const TransactionStatus = () => {
       setUnsub(() => unsub)
     }
     
-
     
     const rejectTx = async(hash) => {
       const trans = currTxList[hash];
@@ -134,7 +160,8 @@ const TransactionStatus = () => {
         return acc.account != main_owner
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
-      const otherSignatories = sortAddresses(otherAddresses, 0);
+      //TODO: we need to change the ss58format according the different network!
+      const otherSignatories = sortAddresses(otherAddresses, 128);
       const injector = await web3FromAddress(main_owner);
       const extrinsic = api.tx.multisig.cancelAsMulti(
         multisig_wallet.threshold,
@@ -201,7 +228,6 @@ const TransactionStatus = () => {
 
               console.log(trans.approvals.length);
               console.log(multisig_wallet.owners.length)
-              console.log('hahah我刷新了');
               if(owner == main_owner){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
@@ -233,7 +259,6 @@ const TransactionStatus = () => {
         })
       })
 
-      //TODO: 需要一直根据当前hash进行查询multisig交易是否存在，如果不存在就剔除对应的tx信息
     }, [])
 
 
@@ -245,6 +270,7 @@ const TransactionStatus = () => {
       }else if(activeTab == "Created"){
         setCurrTxList(createdTx);
       }else {
+
         setCurrTxList(completedTx);
       }
     }, [activeTab])
@@ -457,7 +483,9 @@ const TransactionStatus = () => {
                       <div class="transaction-status">
                           <div class="status-bar">
                             <span>Pending approval</span>
-                            {tx.depositor === main_owner ? (
+                            {/* <span>{tx.depositor}</span> */}
+                            {/* <span>{main_owner} </span> */}
+                            {tx.depositor == main_owner ? (
                               <div
                                 v-if="tabIndex==0"
                                 class="reject-btn"
