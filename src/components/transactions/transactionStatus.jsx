@@ -94,32 +94,44 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
+        // let block_number;
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+          // block_number = await api.rpc.chain.getBlock(result.status.asInBlock).block;
+          // console.log(block_number);
+          // console.log(JSON.stringify(result));
         }else if(result.status.isFinalized){
-          // save current multisig wallet's transaction 
-          let data = {
-            call_hash : api.registry.hash(encodeData).toHex(),
-            owner: main_owner,
-            detail: {
-              block_height: 0,
-              address: main_owner,
-              pallet_method: `balances` + method.name,
-              parameters: params,
-            },
-            status: 1
+          console.log(result.status.isFinalized)
+          if(!result.dispatchError){
+            // save current multisig wallet's transaction 
+            console.log(result.txHash)
+            // console.log(block_number);
+            let data = {
+              call_hash : api.registry.hash(encodeData).toHex(),
+              detail: {
+                block_height: 0,
+                address: main_owner,
+                pallet_method: `balances/` + method.name,
+                parameters: params,
+              },
+              status: 0,
+              operation: 'approve',
+              transaction_hash: result.txHash,
+            }
+            const res = await axios({
+                  method: "post",
+                  url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+                  headers: {
+                    'Content-Type': 'application/json',
+                    "dorafactory-token": sessionStorage.getItem('token'),
+                  },
+                  data
+            });
+            console.log(res);
+            console.log('send multisig tx successfully ! ');
+          }else{
+            console.log(`transaction failed`);
           }
-          const result = await axios({
-                method: "post",
-                url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
-                headers: {
-                  'Content-Type': 'application/json',
-                  "dorafactory-token": sessionStorage.getItem('token'),
-                },
-                data
-          });
-          console.log(result);
-          console.log('send multisig tx successfully ! ');
         }
       })
       setUnsub(() => unsub)

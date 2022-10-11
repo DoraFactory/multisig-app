@@ -63,7 +63,7 @@ const CreateStep3 = () => {
         const result = await axios(
             {
                 method: "post",
-                url: `http://127.0.0.1:8000/wallets/${curr_account}/`,
+                url: `http://127.0.0.1:8000/wallets/`,
                 headers: {
                     'Content-Type': 'application/json',
                     "dorafactory-token": sessionStorage.getItem("token")
