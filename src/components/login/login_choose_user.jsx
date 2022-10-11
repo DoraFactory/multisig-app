@@ -6,18 +6,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
-import avatar from '../../resources/avatar.svg'
-import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import { web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import {encodeAddress} from '@polkadot/util-crypto'
+
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
-
-// import sessionStorage from 'sessionStorage';
-
-// import JSONBigInt from 'json-bigint';
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
@@ -60,18 +57,19 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
-
+    const SS58Prefix = 128;
+    
     let keyringOptions = [];
     let initialAddress = '';
     if(keyring){
         keyringOptions = keyring.getAccounts().map(account => ({
-            key: account.address,
-            value: account.address,
+            key: encodeAddress(account.address, SS58Prefix),
+            value: encodeAddress(account.address, SS58Prefix),
             text: account.meta.name.toUpperCase(),
             icon: 'user',
         }))
     
-        initialAddress =keyringOptions.length > 0 ? keyringOptions[0].value : ''
+        initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
     }
 
 
@@ -85,7 +83,7 @@ const LoginUserCard = () => {
             return res.data
         });
 
-        const injector = await web3FromAddress(currentAccount.address);
+        const injector = await web3FromAddress(encodeAddress(currentAccount.address, SS58Prefix));
 
         const signRaw = injector?.signer?.signRaw;
 
@@ -93,19 +91,15 @@ const LoginUserCard = () => {
             // after making sure that signRaw is defined
             // we can use it to sign our message
             const { signature } = await signRaw({
-                address: currentAccount.address,
+                address: encodeAddress(currentAccount.address, SS58Prefix),
                 data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
-            console.log(signature)
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
 
             const data = {
-                "account": currentAccount.address.toString(),
+                "account": encodeAddress(currentAccount.address, SS58Prefix).toString(),
                 "signature": signature
             };
-            console.log(currentAccount.address.toString())
-            console.log('-------------------------------1');
 
             const result = await axios(
                 {
@@ -116,7 +110,6 @@ const LoginUserCard = () => {
                     },
                     data
                 });
-            console.log('-------------------------------2');
             console.log(result.data)
 
             if(result.data['token']){
@@ -125,7 +118,6 @@ const LoginUserCard = () => {
                     .then((res) => {
                         return res.data
                     });
-                console.log('---------------------------here')
                 console.log(wallets);
                 if(wallets.length == 0) {
                     navigate("/create-wallet")
@@ -141,6 +133,7 @@ const LoginUserCard = () => {
 
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
+        console.log(currentAccount)
     }
 
     return(
@@ -153,9 +146,9 @@ const LoginUserCard = () => {
                     labelId="demo-select-small"
                     id="demo-select-small"
                     onChange={(dropdown) => {
-                        handleChange(dropdown.target.value)
+                        handleChange(dropdown.target.value);
                     }}
-                    value={currentAccount ? currentAccount.address : initialAddress}
+                    value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                     input={<BootstrapInput/>}
@@ -177,6 +170,11 @@ const LoginUserCard = () => {
                                 </div>
                             </MenuItem>
                         ))}
+                        {/* {
+                            keyringOptions.map((option) => {
+                                console.log(option.value)
+                            })
+                        } */}
                     </Select>
             </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
@@ -187,11 +185,11 @@ const LoginUserCard = () => {
             <div className="div-line-word or-line">
                 OR
             </div>
-            <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
+            <div className="text-center">Haven't used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
             <Link to="/signup">
-            Sign Up
-        </Link>
+                Sign Up
+            </Link>
             </div>
         </div>
     )

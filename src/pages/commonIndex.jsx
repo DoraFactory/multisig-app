@@ -3,9 +3,11 @@ import '../styles/baseindex.scss'
 import logo from '../resources/logo.svg'
 import AssetCards from '../components/assets/assetCards';
 import Menu from '../components/menu';
-const CommonIndex = () => {
+import {encodeAddress} from '@polkadot/util-crypto'
 
-    const main_account = JSON.parse(localStorage.getItem('main-account'));
+const CommonIndex = () => {
+    const SS58Prefix = 128;
+    const main_account =  encodeAddress(JSON.parse(localStorage.getItem('main-account')), SS58Prefix);
 
     return (
         <div className="App">

@@ -3,16 +3,10 @@ import StepProgess from './stepProgess';
 import Icons from '../../resources';
 import { useNavigate, Link } from 'react-router-dom';
 import localStorage from 'localStorage';
-import { createKeyMulti, encodeAddress, sortAddresses} from '@polkadot/util-crypto'
-import { useSubstrate, useSubstrateState } from '../../context';
+import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto'
+import { useSubstrateState } from '../../context';
 
-import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
-import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
-
-import { styled } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
 
 const CreateStep3 = () => {
     const navigate = useNavigate();
@@ -24,11 +18,11 @@ const CreateStep3 = () => {
 
     const sub_address_set = owners.map((owner) => owner.account);
 
-    const { keyring, currentAccount } = useSubstrateState();
+    const { keyring } = useSubstrateState();
 
     const CreateWallet = async() =>{
         // prefix 
-        const SS58Prefix = 42
+        const SS58Prefix = 128;
         const multiAddress = createKeyMulti(sub_address_set, threshold);
         const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
         console.log(Ss58Address)
@@ -41,14 +35,8 @@ const CreateStep3 = () => {
         }
         localStorage.setItem('multisig-wallet', JSON.stringify(multisig));
 
-
         let curr_account = JSON.parse(localStorage.getItem('main-account'));
         let curr_name = keyring.getAddress(curr_account).meta.name;
-        console.log('--------------------------1');
-        console.log(curr_account)
-        console.log(currentAccount)
-        console.log(curr_name)
-        console.log('--------------------------2');
         
         const data = {
             "wallet": Ss58Address,
@@ -57,8 +45,6 @@ const CreateStep3 = () => {
             "extra_info": {"owners": owners},
             "threshold": threshold
         }
-        console.log(data);
-        console.log('--------------------------3');
 
         const result = await axios(
             {
@@ -70,8 +56,6 @@ const CreateStep3 = () => {
                 },
                 data
             });
-
-        console.log('------------------------------4')
 
         console.log(result.data)
         navigate('/accountInfo')
