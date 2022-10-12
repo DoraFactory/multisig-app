@@ -7,12 +7,108 @@ import TabContent from './tabs/tabContent';
 import AssetCards from './assets/assetCards';
 import TransactionStatus from './transactions/transactionStatus';
 import OwnerCard from './owners/ownerCard';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import Identicon from '@polkadot/react-identicon';
+
+import {encodeAddress} from '@polkadot/util-crypto'
+import { useSubstrate, useSubstrateState } from '../context';
+
+import axios from 'axios';
+
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+    '& .MuiInputBase-input': {
+      borderRadius: 4,
+      display: 'flex',
+      'justify-content': 'flex-start',
+      cursor: 'pointer',
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+    //   border: '1px solid #FF761C',
+      'border-radius': '4px',
+      fontSize: 16,
+      margin:-2,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#FF761C',
+        boxShadow: '0 0 0 0.2rem rgba(255, 118, 28, 0.1)',
+      },
+    },
+  }));
+
 
 const Menu = () => {
     const navegate =  useNavigate();
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
 
     const [activeTab, setActiveTab] = useState("assets");
+
+
+    const {setCurrentAccount} = useSubstrate()
+    const { keyring, currentAccount } = useSubstrateState();
+    const SS58Prefix = 128;
+
+
+    let keyringOptions = [];
+    let initialAddress = '';
+    if(keyring){
+        keyringOptions = keyring.getAccounts().map(account => ({
+            key: encodeAddress(account.address, SS58Prefix),
+            value: encodeAddress(account.address, SS58Prefix),
+            text: account.meta.name.toUpperCase(),
+            icon: 'user',
+        }))
+    
+        initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
+    }
+    
+    // useEffect(async () => {
+    //     // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
+    //     !currentAccount &&
+    //         initialAddress.length > 0 &&
+    //         setCurrentAccount(keyring.getPair(initialAddress))
+    //     if(!currentAccount){
+    //         localStorage.setItem('main-account', JSON.stringify(initialAddress.address))
+    //     }else{
+    //         localStorage.setItem('main-account', JSON.stringify(currentAccount.address))
+    //     }
+
+    //     const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+    //     .then((res) => {
+    //         return res.data
+    //     });
+    //     localStorage.setItem('multisig', wallets['detail'])
+    // }, [currentAccount, setCurrentAccount, keyring, initialAddress])
+
+    const keyringOptionws = async() => {
+        const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+        .then((res) => {
+            return res.data
+        });
+
+        return wallets['detail']
+    }
     
     const handleCreateWallet = () => {
         navegate('/create-wallet')
@@ -34,25 +130,50 @@ const Menu = () => {
         setActiveTab('owners')
     }
 
+    const handleChange = (addr) => {
+        setCurrentAccount(keyring.getPair(addr))
+    }
+
     return(
         <div className="content">
             <div className="side-menu">
                 <div className="wallet-info">
                     <div>
-                        <div class="profile">
-                            <img src={Icons.Avatar} />
-                            <div
-                                v-if="wallet"
-                                class="name-info"
-                            >
-                                <p>{multisig.wallet_name}</p>
-                                <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
-                            </div>
-                        </div>
+                        <FormControl sx={{ m: 1, minWidth: 200 }}  size="small">
+                                <Select           
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                onChange={(dropdown) => {
+                                    handleChange(dropdown.target.value)
+                                }}
+                                // value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
+                                value = {multisig.accountId}
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                input={<BootstrapInput/>}
+                                >
+                                    <MenuItem value={multisig.accountId}>
+                                        <div class="profile">
+                                            <Identicon
+                                                value={multisig.accountId}
+                                                size={32}
+                                                theme={"polkadot"}
+                                            />
+                                            <div
+                                                class="name-info"
+                                            >
+                                                <p align='left'>{multisig.wallet_name}</p>
+                                                <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+                                            </div>
+                                        </div>
+                                    </MenuItem>
+                                </Select>
+                        </FormControl>
                     </div>
                     <div className="new-wallet" onClick={handleCreateWallet}>
                         + Create a new wallet
                     </div>
+
                 </div>
 
                 <div className={activeTab==="assets" ? "menu-link menu-selected": "menu-link"} onClick={handleAsset}>

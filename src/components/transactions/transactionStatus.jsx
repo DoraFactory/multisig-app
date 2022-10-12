@@ -373,9 +373,10 @@ const TransactionStatus = () => {
                                       <div className="description">
                                       Submit
                                       </div>
-                                      <div>
-                                        <div><input value="balances"/></div>
-                                        <FormControl sx={{ m: 1, minWidth: 700 }}  size="small">
+                                      <div className='flex-submit-div'>
+                                        <div><input value="balances" className='module-input'/></div>
+                                        <div>
+                                        <FormControl sx={{ m: 1, minWidth: 800 }}  size="small">
                                         <Select           
                                           labelId="demo-select-small"
                                           id="demo-select-small"
@@ -396,6 +397,7 @@ const TransactionStatus = () => {
                                           })}
                                         </Select>
                                       </FormControl>
+                                      </div>
                                       </div>
                                   </div>
 

@@ -19,14 +19,14 @@ const CreateStep3 = () => {
     const sub_address_set = owners.map((owner) => owner.account);
 
     const { keyring } = useSubstrateState();
+  
+    const SS58Prefix = 128;
+    const multiAddress = createKeyMulti(sub_address_set, threshold);
+    const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
 
     const CreateWallet = async() =>{
         // prefix 
-        const SS58Prefix = 128;
-        const multiAddress = createKeyMulti(sub_address_set, threshold);
-        const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
-        console.log(Ss58Address)
-        console.log(multiAddress)
+
         let multisig = {
             wallet_name: wallet_name,
             accountId: Ss58Address,
@@ -71,20 +71,41 @@ const CreateStep3 = () => {
             <div className="sunmmary">
                 <div className="top">
                     <div className="left-part">
-                        <p className="first-red">
-                            Name of new multisig
-                        </p>
-                        <p>{wallet_name}</p>
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                NetWork
+                            </p>
+                            <p>Dorafactory</p>
+                        </div>
+                        <div>
+                            <p className="first-red">
+                                JS Extension
+                            </p>
+                            <p>Polkadot</p>
+                        </div>
+                        <div>
+                            <p className="first-red">
+                                Wallet Account
+                            </p>
+                            <p>{wallet_name}({Ss58Address})</p>
+                        </div>
+
                     </div>
 
                     <div className="right-part">
-                        <p className="first-red">
-                            Any transaction requires the confirmation of:
-                        </p>
-                        <p> {multisig_wallet.owners.length} out of {threshold} owners </p>
-                    </div>
-
-                    <div className="owners">
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                Name of new multisig
+                            </p>
+                            <p> {wallet_name} </p>
+                        </div>
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                Any transaction requires the confirmation of:
+                            </p>
+                            <p> {multisig_wallet.owners.length} out of {threshold} owners </p>
+                        </div>
+                        <div className="owners">
                         <p className="first-red">
                             {multisig_wallet.owners.length} wallet owners
                         </p>
@@ -98,6 +119,9 @@ const CreateStep3 = () => {
                             </div>
                         ))}
                     </div>
+                    </div>
+
+                    
                 </div>
             </div>
 

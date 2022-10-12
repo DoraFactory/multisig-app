@@ -156,7 +156,7 @@ const CreateStep2 = () => {
             <div className="form-input">
                 <input
                     ref = {walletName}
-                    className="wallet-name" 
+                    className="wallet-name input-base" 
                     type="text"
                     placeholder="my-wallet-name" 
                 />
@@ -174,10 +174,10 @@ const CreateStep2 = () => {
                         {
                             owners.map((owner, index) =>(
                                 <div className="address-inputs">
-                                    <input type="text" id={`name ${index}`} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
+                                    <input type="text" id={`name ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
-                                        <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
+                                        <input type="text" id={`address ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
                                     <img id={index} onClick={index===0?null:(e)=> {
                                         e.persist();
@@ -196,7 +196,7 @@ const CreateStep2 = () => {
             <section>
                 3. Any transaction requires the confirmation of:
                 <div className="threshold">
-                <input type="number" οnkeypress="value=value.replace('-','')" min="0" ref={threshold}/>
+                <input type="number" className="number-input input-base" οnkeypress="value=value.replace('-','')" min="0" ref={threshold}/>
                     <span>out of owner(s)</span>
                 </div>
             </section>

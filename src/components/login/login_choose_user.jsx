@@ -57,7 +57,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
-    const SS58Prefix = 128;
+    const SS58Prefix = 42;
     
     let keyringOptions = [];
     let initialAddress = '';
@@ -100,7 +100,8 @@ const LoginUserCard = () => {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
-
+            console.log("-----------------------------");
+            console.log(data);
             const result = await axios(
                 {
                     method: "post",
@@ -133,7 +134,6 @@ const LoginUserCard = () => {
 
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
-        console.log(currentAccount)
     }
 
     return(

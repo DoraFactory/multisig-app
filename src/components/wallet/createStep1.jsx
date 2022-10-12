@@ -111,6 +111,7 @@ const CreateStep1 = () => {
                     value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
+                    disabled="disabled"
                     >
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>

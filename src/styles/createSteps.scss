@@ -57,18 +57,25 @@
 
 
 // CreateStep2
-input{
+.input-base{
     border: 1px solid rgba(14, 14, 17, 0.1);
+    background: #FFFFFF;
     border-radius: 4px;
     padding: 8px 16px;
-    color: rgba(14, 14, 17, 0.35);
+    // color: rgba(14, 14, 17, 0.35);
     font-size: 16px;
     box-sizing: border-box;
 }
 
+
 .wallet-name{
-    width: 100%
+    width: 100%;
 }
+
+.disabled-input {
+    color: rgba(14, 14, 17, 0.35);
+}
+
 .filled{
     color: rgba(14, 14, 17, 0.5);
     font-size: 16px;
@@ -172,10 +179,30 @@ section{
 .left-part{
     margin-right: 36px; 
     padding-left: 16px;
+    background: #FFFFFF;
+    /* line */
+
+    border: 1px solid rgba(14, 14, 17, 0.1);
+    border-radius: 4px;
+    display: flex; 
+    flex-wrap: wrap;
+}
+
+.right-part {
+    margin-right: 36px; 
+    margin-top: 16px; 
+    padding-left: 16px;
+    background: #FFFFFF;
+    /* line */
+
+    border: 1px solid rgba(14, 14, 17, 0.1);
+    border-radius: 4px;
+    display: flex; 
+    flex-wrap: wrap;
 }
 
 .owners{
-    margin-top: 16px;
+    // margin-top: 16px;
     padding: 8px 16px;
     &>p{
         padding-bottom: 8px;
@@ -188,7 +215,7 @@ section{
     justify-content: flex-start;
     padding: 8px 16px;
     .name-info{
-        max-width: 130px;
+        max-width: 300px;
     }
     img{
         width: 40px;
@@ -209,4 +236,17 @@ section{
         content: '*';
         color: var(--theme-orange);
     }
+    font-family: 'SF Pro Text';
+    color: rgba(14, 14, 17, 0.35);
+}
+
+.number-input {
+    width: 132px;
+    height: 40px;
+    background: #FFFFFF;
+    border-radius: 4px;
+}
+
+.left-card-message {
+    width: 50%;
 }
