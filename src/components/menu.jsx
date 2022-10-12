@@ -65,36 +65,34 @@ const Menu = () => {
     const [activeTab, setActiveTab] = useState("assets");
 
 
-    const {setCurrentAccount} = useSubstrate()
-    const { keyring, currentAccount } = useSubstrateState();
+    // const {setCurrentAccount} = useSubstrate()
+    // const { keyring, currentAccount } = useSubstrateState();
+    const [multiAccount, setMultiAccount] =  useState(multisig.accountId);
     const SS58Prefix = 128;
 
 
-    let keyringOptions = [];
-    let initialAddress = '';
-    if(keyring){
-        keyringOptions = keyring.getAccounts().map(account => ({
-            key: encodeAddress(account.address, SS58Prefix),
-            value: encodeAddress(account.address, SS58Prefix),
-            text: account.meta.name.toUpperCase(),
-            icon: 'user',
-        }))
-    
-        initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
-    }
-    
-    const [multisigs, setMultisigs] = useState();
-    useEffect(() => {
-        async function getWallets() {
-            const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-            .then((res) => {
-                setMultisigs(res.data['detail'])
-                return res.data
-            });
-        }
-        getWallets();
-        console.log(multisigs);
-    }, [])
+    const multisigs = JSON.parse(localStorage.getItem("owner-multisigs"));
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log(multisigs);
+    console.log('--------------------------tony1')
+
+    // useEffect(() => {
+    //     async function getWallets() {
+    //         const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+    //         .then((res) => {
+    //             setMultisigs(res.data['detail'])
+    //             return res.data
+    //         });
+    //     }
+    //     getWallets();
+    //     console.log('-------------------2');
+    //     console.log('-------------------2');
+    //     console.log('-------------------2');
+    //     console.log(multisigs);
+    // }, [])
 
     
     const handleCreateWallet = () => {
@@ -119,7 +117,7 @@ const Menu = () => {
 
     const handleChange = (addr) => {
         // setCurrentAccount(keyring.getPair(addr))
-        setCurrentAccount(addr)
+        setMultiAccount(addr)
 
         let wallet_multisig = {
             wallet_name: '',
@@ -142,7 +140,6 @@ const Menu = () => {
         console.log('--------------------------1');
         console.log(wallet_multisig)
         localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
-        
     }
 
     return(
@@ -157,12 +154,12 @@ const Menu = () => {
                                 onChange={(dropdown) => {
                                     handleChange(dropdown.target.value)
                                 }}
-                                value = {currentAccount}
+                                value = {multiAccount}
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
                                 input={<BootstrapInput/>}
                                 >   
-                                     {multisigs?multisigs.map((multisig) => (
+                                     {multisigs.map((multisig) => (
                                         <MenuItem value={multisig.wallet}>
                                             <div class="profile">
                                                 <Identicon
@@ -178,7 +175,7 @@ const Menu = () => {
                                                 </div>
                                             </div>
                                         </MenuItem>
-                                    )):null}
+                                    ))}
                                 </Select>
                         </FormControl>
                     </div>
