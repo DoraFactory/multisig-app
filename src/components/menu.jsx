@@ -1,4 +1,4 @@
-import { React, useState } from 'react'; 
+import { React, useState, useEffect } from 'react'; 
 import '../styles/sideMenu.scss';
 import '../styles/baseindex.scss'
 import { useNavigate } from 'react-router-dom';
@@ -83,32 +83,19 @@ const Menu = () => {
         initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
     }
     
-    // useEffect(async () => {
-    //     // `setCurrentAccount()` is called only when currentAccount is null (uninitialized)
-    //     !currentAccount &&
-    //         initialAddress.length > 0 &&
-    //         setCurrentAccount(keyring.getPair(initialAddress))
-    //     if(!currentAccount){
-    //         localStorage.setItem('main-account', JSON.stringify(initialAddress.address))
-    //     }else{
-    //         localStorage.setItem('main-account', JSON.stringify(currentAccount.address))
-    //     }
+    const [multisigs, setMultisigs] = useState();
+    useEffect(() => {
+        async function getWallets() {
+            const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+            .then((res) => {
+                setMultisigs(res.data['detail'])
+                return res.data
+            });
+        }
+        getWallets();
+        console.log(multisigs);
+    }, [])
 
-    //     const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-    //     .then((res) => {
-    //         return res.data
-    //     });
-    //     localStorage.setItem('multisig', wallets['detail'])
-    // }, [currentAccount, setCurrentAccount, keyring, initialAddress])
-
-    const keyringOptionws = async() => {
-        const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-        .then((res) => {
-            return res.data
-        });
-
-        return wallets['detail']
-    }
     
     const handleCreateWallet = () => {
         navegate('/create-wallet')
@@ -131,7 +118,31 @@ const Menu = () => {
     }
 
     const handleChange = (addr) => {
-        setCurrentAccount(keyring.getPair(addr))
+        // setCurrentAccount(keyring.getPair(addr))
+        setCurrentAccount(addr)
+
+        let wallet_multisig = {
+            wallet_name: '',
+            accountId: '',
+            owners: [],
+            threshold: 0,
+        }
+        multisigs.map((multisig) => {
+            if (multisig.wallet == addr) {
+                wallet_multisig = {
+                    wallet_name: multisig.wallet_name,
+                    accountId: multisig.wallet,
+                    owners: multisig.extra_info.owners,
+                    threshold: multisig.threshold
+                }
+            }
+        })
+        console.log('--------------------------1');
+        console.log('--------------------------1');
+        console.log('--------------------------1');
+        console.log(wallet_multisig)
+        localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
+        
     }
 
     return(
@@ -146,27 +157,28 @@ const Menu = () => {
                                 onChange={(dropdown) => {
                                     handleChange(dropdown.target.value)
                                 }}
-                                // value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
-                                value = {multisig.accountId}
+                                value = {currentAccount}
                                 displayEmpty
                                 inputProps={{ 'aria-label': 'Without label' }}
                                 input={<BootstrapInput/>}
-                                >
-                                    <MenuItem value={multisig.accountId}>
-                                        <div class="profile">
-                                            <Identicon
-                                                value={multisig.accountId}
-                                                size={32}
-                                                theme={"polkadot"}
-                                            />
-                                            <div
-                                                class="name-info"
-                                            >
-                                                <p align='left'>{multisig.wallet_name}</p>
-                                                <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
+                                >   
+                                     {multisigs?multisigs.map((multisig) => (
+                                        <MenuItem value={multisig.wallet}>
+                                            <div class="profile">
+                                                <Identicon
+                                                    value={multisig.wallet}
+                                                    size={32}
+                                                    theme={"polkadot"}
+                                                />
+                                                <div
+                                                    class="name-info"
+                                                >
+                                                    <p align='left'>{multisig.wallet_name}</p>
+                                                    <p>{multisig.wallet.substring(0,6) + '...' + multisig.wallet.substring(42,)}</p>
+                                                </div>
                                             </div>
-                                        </div>
-                                    </MenuItem>
+                                        </MenuItem>
+                                    )):null}
                                 </Select>
                         </FormControl>
                     </div>
