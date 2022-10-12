@@ -132,7 +132,7 @@ const CreateStep3 = () => {
                             <div className="profile">   
                                 <Identicon
                                     value={owner.account}  
-                                    // size={32}
+                                    size={32}
                                     theme={"polkadot"}
                                 />
                                 <div className="name-info">
