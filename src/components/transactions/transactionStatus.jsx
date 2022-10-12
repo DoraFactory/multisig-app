@@ -13,7 +13,7 @@ import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
 import {encodeAddress} from '@polkadot/util-crypto'
-
+import Identicon from '@polkadot/react-identicon';
 
 import axios from 'axios';
 
@@ -138,11 +138,11 @@ const TransactionStatus = () => {
       setOpen(false);
     }
 
-    const approveTx = async(hash) => {
-      //TODO: patch后端检测
+    const approveTx = async(hash, method) => {
+
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
@@ -155,14 +155,47 @@ const TransactionStatus = () => {
         hash,
         100000000000,     // currently, we use this default value
       )
-
-      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
-        if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-        }else if(result.status.isFinalized){
-          console.log('send multisig tx successfully ! ');
-        }
+      console.log('sda');
+      api.query.multisig.multisigs(multisig_wallet.accountId, hash).then((res) => {
+        console.log(res)
+        extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
+          if (result.status.isInBlock) {
+            console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+          }else if(result.status.isFinalized){
+            if(!result.dispatchError){
+                let cur_status = 0;
+                if(res.toHuman().approvals.length == multisig_wallet.threshold - 1){
+                  cur_status = 1;
+                }
+                  let data = {
+                    call_hash : hash,
+                    detail: {
+                      block_height: 0,
+                      address: main_owner,
+                      pallet_method: `balances/` + method,
+                      parameters: params,
+                    },
+                    status: cur_status,
+                    operation: 'approve',
+                    transaction_hash: result.txHash,
+                  }
+                  console.log(hash);
+                  const ans = await axios({
+                    method: "patch",
+                    url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      "dorafactory-token": sessionStorage.getItem('token'),
+                    },
+                    data
+                  });
+                  console.log(ans);
+            }
+          }
+        })
       })
+
+      
       setUnsub(() => unsub)
     }
     
@@ -170,7 +203,7 @@ const TransactionStatus = () => {
     const rejectTx = async(hash) => {
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix); 
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       //TODO: we need to change the ss58format according the different network!
@@ -182,10 +215,32 @@ const TransactionStatus = () => {
         trans.when,
         hash,
       )
-      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
+      extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
         }else if(result.status.isFinalized){
+          let data = {
+            call_hash : hash,
+            detail: {
+              block_height: 0,
+              address: main_owner,
+              pallet_method: `balances/` + method,
+              parameters: params,
+            },
+            status: -1,
+            operation: 'reject',
+            transaction_hash: result.txHash,
+          }
+          const ans = await axios({
+            method: "patch",
+            url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+            headers: {
+              'Content-Type': 'application/json',
+              "dorafactory-token": sessionStorage.getItem('token'),
+            },
+            data
+          });
+          console.log(ans);
           console.log('send multisig tx successfully ! ');
         }
       })
@@ -254,7 +309,7 @@ const TransactionStatus = () => {
         });
 
         axios.get(
-          `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+          `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/?status=1&status=-1`,
           {
             headers: {"dorafactory-token": sessionStorage.getItem("token")}
           }).then((res) => {
@@ -503,6 +558,9 @@ const TransactionStatus = () => {
                       <div class="transaction-status">
                           <div class="status-bar">
                             <span>Pending approval</span>
+                            {
+                              console.log(tx.depositor + '---' + encodeAddress(main_owner, SS58Prefix))
+                            }
                             {tx.depositor == encodeAddress(main_owner, SS58Prefix) ? (
                               <div
                                 v-if="tabIndex==0"
@@ -516,7 +574,7 @@ const TransactionStatus = () => {
                               <div
                                 v-if="tabIndex==0"
                                 class="approve-btn"
-                                onClick={() =>approveTx(hash)}
+                                onClick={() =>approveTx(hash, calls[hash][0].method)}
                               >
                                 ✓ Approve
                               </div>
@@ -640,7 +698,10 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <img src={avatar}/>
+                              <Identicon
+                                  value={approver}  
+                                  theme={"polkadot"}
+                              />
                               <div class="user-profile">
                                 <p>Account</p>
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
@@ -669,7 +730,7 @@ const TransactionStatus = () => {
                         </p>
                         <p>
                           <span class="summary-label">Depositor:</span>
-                          <span class="summary-value">主账户</span>
+                          <span class="summary-value">{tx_info.operations[0].owner.substring(0,10) + '...' + tx_info.operations[0].owner.substring(49,)}</span>
 
                         </p>
                         <p v-if="callDetail(hash)">
