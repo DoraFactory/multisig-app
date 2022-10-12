@@ -83,7 +83,7 @@ const LoginUserCard = () => {
             return res.data
         });
 
-        const injector = await web3FromAddress(encodeAddress(currentAccount.address, SS58Prefix));
+        const injector = await web3FromAddress(currentAccount.address);
 
         const signRaw = injector?.signer?.signRaw;
 
@@ -91,13 +91,13 @@ const LoginUserCard = () => {
             // after making sure that signRaw is defined
             // we can use it to sign our message
             const { signature } = await signRaw({
-                address: encodeAddress(currentAccount.address, SS58Prefix),
+                address: currentAccount.address,
                 data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
 
             const data = {
-                "account": encodeAddress(currentAccount.address, SS58Prefix).toString(),
+                "account": currentAccount.address.toString(),
                 "signature": signature
             };
 

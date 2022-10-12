@@ -12,6 +12,8 @@ import Select from '@mui/material/Select';
 import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
+import {encodeAddress} from '@polkadot/util-crypto'
+
 
 import axios from 'axios';
 
@@ -37,7 +39,7 @@ const TransactionStatus = () => {
     // pending multisig tx list
     const [pendingTx, setPendingTx] = useState({});
     // completed multisig tx list
-    const [completedTx, setCompletedTx] = useState({});
+    const [completedTx, setCompletedTx] = useState([]);
 
     const [currTxList, setCurrTxList] = useState({});
     // 
@@ -48,7 +50,7 @@ const TransactionStatus = () => {
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
-
+    const SS58Prefix = 128;
     const NewTrans = () => {
       setOpen(true);
     }
@@ -67,8 +69,6 @@ const TransactionStatus = () => {
       setMethod(event.target.value);
     };
     const handleGetDestParams = (value, index) => {
-      console.log('value is ' + value);
-      console.log('index is ' + index)
       params[index] = value;
       setParams([...params]);
     }
@@ -79,7 +79,7 @@ const TransactionStatus = () => {
     const submitTx = async() => { 
       // current owner / sender of this multisig wallet
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
@@ -139,6 +139,7 @@ const TransactionStatus = () => {
     }
 
     const approveTx = async(hash) => {
+      //TODO: patch后端检测
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != main_owner
@@ -240,20 +241,26 @@ const TransactionStatus = () => {
 
               console.log(trans.approvals.length);
               console.log(multisig_wallet.owners.length)
-              if(owner == main_owner){
+              if(owner == encodeAddress(main_owner, SS58Prefix)){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
               }
               if(trans.approvals.length < multisig_wallet.owners.length){
                 pendingTx[keys[1]] = trans;
                 setPendingTx(pendingTx);
-              }else{
-                completedTx[keys[1]] = trans;
-                setCompletedTx(completedTx);
               }
             })
           }
-        })
+        });
+
+        axios.get(
+          `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+          {
+            headers: {"dorafactory-token": sessionStorage.getItem("token")}
+          }).then((res) => {
+            setCompletedTx(res.data.detail);
+          })
+
     }, [api, pendingTx, createdTx])
 
     useEffect(() => {
@@ -262,12 +269,9 @@ const TransactionStatus = () => {
         resCalls.forEach(([key, exposure]) => {
           const keys = key.toHuman()
           const callInfo = exposure.toHuman()
-          console.log(keys);
-          console.log(callInfo)
           // key: encoded data hash  value: call info
           calls[keys[0]] = callInfo;
           setCalls(calls);
-          console.log('我一直在查村')
         })
       })
 
@@ -282,16 +286,18 @@ const TransactionStatus = () => {
       }else if(activeTab == "Created"){
         setCurrTxList(createdTx);
       }else {
-
-        setCurrTxList(completedTx);
+        console.log('this is completed');
+        console.log(completedTx);
+        // get the completed transaction and update
+        console.log('completed tx!!!');
       }
     }, [activeTab])
 
-    console.log('pending is ' + JSON.stringify(pendingTx));
+/*     console.log('pending is ' + JSON.stringify(pendingTx));
     console.log(createdTx)
     console.log(currTxList)
     console.log(activeTab)
-    console.log('calls is ' + JSON.stringify(calls));
+    console.log('calls is ' + JSON.stringify(calls)); */
 
 
     return(
@@ -495,9 +501,7 @@ const TransactionStatus = () => {
                       <div class="transaction-status">
                           <div class="status-bar">
                             <span>Pending approval</span>
-                            {/* <span>{tx.depositor}</span> */}
-                            {/* <span>{main_owner} </span> */}
-                            {tx.depositor == main_owner ? (
+                            {tx.depositor == encodeAddress(main_owner, SS58Prefix) ? (
                               <div
                                 v-if="tabIndex==0"
                                 class="reject-btn"
@@ -650,33 +654,29 @@ const TransactionStatus = () => {
                 }
 
                 { 
-                  activeTab === 'Completed' ? Object.entries(currTxList).map(([hash, tx]) => (
+                  activeTab === 'Completed' ? completedTx.map((tx_info) => (
                     <div className="transaction-card">
                       <div class="transaction-summary">
                         <p>
                           <span class="summary-label">CALL HASH:</span>
-                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(49,)}</span>
+                          <span class="summary-value">{tx_info.call_hash.substring(0,10) + '...' + tx_info.call_hash.substring(49,)}</span>
                         </p>
                         <p>
                           <span class="summary-label">BLOCK TIME:</span>
-                          <span class="summary-value">{tx.when.height}</span>
+                          <span class="summary-value">{tx_info.detail.block_height}</span>
                         </p>
                         <p>
                           <span class="summary-label">Depositor:</span>
-                          <span class="summary-value">{tx.depositor.substring(0,15)+ '...' + tx.depositor.substring(35)}</span>
+                          <span class="summary-value">主账户</span>
 
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
-                          { JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
-                          ) : null}
+                            <span class="summary-value">{tx_info.detail.pallet_method}</span>
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
-                          {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
-                          ) : null}
+                            <span class="summary-value">{tx_info.detail.parameters[0] + tx_info.detail.parameters[1]}</span> 
                         </p>
                       </div>
                     
