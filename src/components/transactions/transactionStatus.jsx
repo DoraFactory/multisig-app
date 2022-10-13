@@ -604,7 +604,11 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <img src={avatar}/>
+                              <Identicon
+                                  value={approver}
+                                  size = {32}
+                                  theme={"polkadot"}
+                              />
                               <div class="user-profile">
                                 <p>Account</p>
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
@@ -687,7 +691,8 @@ const TransactionStatus = () => {
                               class="user-info"
                             >
                               <Identicon
-                                  value={approver}  
+                                  value={approver}
+                                  size = {32}
                                   theme={"polkadot"}
                               />
                               <div class="user-profile">
@@ -718,7 +723,7 @@ const TransactionStatus = () => {
                         </p>
                         <p>
                           <span class="summary-label">Depositor:</span>
-                          <span class="summary-value">{tx_info.operations[0].owner.substring(0,10) + '...' + tx_info.operations[0].owner.substring(49,)}</span>
+                          <span class="summary-value">{encodeAddress(tx_info.operations[0].owner, SS58Prefix).substring(0,10) + '...' + encodeAddress(tx_info.operations[0].owner, SS58Prefix).substring(40,)}</span>
 
                         </p>
                         <p v-if="callDetail(hash)">
@@ -804,16 +809,59 @@ const TransactionStatus = () => {
                               >
                                 <Identicon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
+                                    size = {32}
                                     theme={"polkadot"}
                                 />
                                 <div class="user-profile">
-                                  <p>Account</p>
+                                  {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(42,)}</p>
                                 </div>
                               </div>
                             ))}
                         </div>
+
+
+                        <div class="users-list-created">
+                          {tx_info.operations.map((operation) => (
+                              <div
+                                class="user-info"
+                              >
+                                <Identicon
+                                    value={encodeAddress(operation.owner, SS58Prefix)}  
+                                    size = {32}
+                                    theme={"polkadot"}
+                                />
+                                <div class="user-profile">
+                                  {/* <p></p> */}
+                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
+                                </div>
+                              </div>
+                            ))}
+                        </div>
                         
+                        {
+                          tx_info.status < 0 ? (
+                          <div class="users-list-rejected">
+                            {tx_info.operations.map((operation) => (
+                                <div
+                                  class="user-info"
+                                >
+                                  <Identicon
+                                      value={encodeAddress(operation.owner, SS58Prefix)}  
+                                      size = {32}
+                                      theme={"polkadot"}
+                                  />
+                                  <div class="user-profile">
+                                    {/* <p></p> */}
+                                    <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                          ) : (
+                            null
+                          )
+                        }
                       </div>
                     </div>
                   )) : 

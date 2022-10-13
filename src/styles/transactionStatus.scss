@@ -221,6 +221,108 @@
 
 }
 
+
+.users-list-created{
+    margin-left: 3px;
+    width: 1px;
+    position: relative;
+    &:before{
+        content : "";
+        position: absolute;
+        left    : 0;
+        top  : 40;
+        height  : calc(100% - 15px);
+        width   : 100%;
+        border-left:1px solid #00B272;
+    }
+  
+    .user-info{
+        padding-left: 6px;
+        padding-top: 12px;
+        display: flex;
+        position: relative;
+        &:before{
+            content : "";
+            position: absolute;
+            left    : 0;
+            top  : calc(50% + 16px);
+            height  : 50%;
+            width   : 6px;
+            border-top:1px solid #00B272;
+        }
+          
+        p{
+            margin-block: 0;
+            line-height: 15px;
+            height: 15px;
+        }
+
+        .user-profile{
+            font-size: 12px;
+            margin-left: 8px;
+            p{
+                display: flex
+            }
+        }
+    }
+    img{
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+
+.users-list-rejected{
+    margin-left: 3px;
+    width: 1px;
+    position: relative;
+    &:before{
+        content : "";
+        position: absolute;
+        left    : 0;
+        top  : 40;
+        height  : calc(100% - 15px);
+        width   : 100%;
+        border-left:1px solid #00B272;
+    }
+  
+    .user-info{
+        padding-left: 6px;
+        padding-top: 12px;
+        display: flex;
+        position: relative;
+        &:before{
+            content : "";
+            position: absolute;
+            left    : 0;
+            top  : calc(50% + 16px);
+            height  : 50%;
+            width   : 6px;
+            border-top:1px solid #00B272;
+        }
+          
+        p{
+            margin-block: 0;
+            line-height: 15px;
+            height: 15px;
+        }
+
+        .user-profile{
+            font-size: 12px;
+            margin-left: 8px;
+            p{
+                display: flex
+            }
+        }
+    }
+    img{
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
 .flex-submit-div {
     display: flex; 
     flex-wrap: wrap;
