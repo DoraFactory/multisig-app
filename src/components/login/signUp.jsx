@@ -8,6 +8,8 @@ import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 import avatar from '../../resources/avatar.svg'
 import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import {encodeAddress} from '@polkadot/util-crypto'
+
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
@@ -59,18 +61,19 @@ const SignUpCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
     const navigate = useNavigate();
+    const SS58Prefix = 128;
 
     let keyringOptions = [];
     let initialAddress = '';
     if(keyring){
         keyringOptions = keyring.getAccounts().map(account => ({
-            key: account.address,
-            value: account.address,
+            key: encodeAddress(account.address, SS58Prefix),
+            value: encodeAddress(account.address, SS58Prefix),
             text: account.meta.name.toUpperCase(),
             icon: 'user',
         }))
     
-        initialAddress =keyringOptions.length > 0 ? keyringOptions[0].value : ''
+        initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
     }
 
 
@@ -79,7 +82,7 @@ const SignUpCard = () => {
     const handleClose = () => setOpen(false);
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
+        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
 
@@ -96,31 +99,27 @@ const SignUpCard = () => {
                 type: 'bytes'
             });
             console.log(signature)
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
             const data = {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
             console.log(data)
-            console.log('------------------------------1')
 
             const result = await axios(
                 {
                     method: "post",
-                    url: 'http://127.0.0.1:8000/signup/',
+                    url: 'https://multisig.dorafactory.org/signup/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
                     data
                 });
-            console.log('------------------------------2')
 
             console.log(result.data)
             sessionStorage.setItem("token", result.data['token'].toString())
             if(result.data['token']){
                 navigate("/create-wallet")
             }
-            // return signature
         }
     }
 
@@ -141,7 +140,7 @@ const SignUpCard = () => {
                     onChange={(dropdown) => {
                         handleChange(dropdown.target.value)
                     }}
-                    value={currentAccount ? currentAccount.address : initialAddress}
+                    value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                     input={<BootstrapInput/>}

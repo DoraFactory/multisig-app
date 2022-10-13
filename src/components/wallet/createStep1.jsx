@@ -7,8 +7,9 @@ import '../../styles/wallet.scss';
 import Modal from '@mui/material/Modal';
 import localStorage from 'localStorage';
 import { useSubstrate, useSubstrateState } from '../../context';
-import { useNavigate, Link } from 'react-router-dom';
+import {encodeAddress} from '@polkadot/util-crypto'
 
+import { useNavigate, Link } from 'react-router-dom';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
@@ -42,11 +43,12 @@ const CreateStep1 = () => {
     const [btnText, setBtnText] = useState('Connect Wallet');
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
+    const SS58Prefix = 128;
     
     // Get the list of accounts we possess the private key for
     const keyringOptions = keyring.getAccounts().map(account => ({
-        key: account.address,
-        value: account.address,
+        key: encodeAddress(account.address, SS58Prefix),
+        value: encodeAddress(account.address, SS58Prefix),
         text: account.meta.name.toUpperCase(),
         icon: 'user',
     }))
@@ -106,13 +108,11 @@ const CreateStep1 = () => {
                     onChange={(dropdown) => {
                         handleChange(dropdown.target.value)
                     }}
-                    value={currentAccount ? currentAccount.address : initialAddress}
+                    value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
+                    disabled="disabled"
                     >
-                        <MenuItem value="" >
-                            <em>Please select an account</em>
-                        </MenuItem>
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>{option.text}:{option.value}</MenuItem>
                         ))}

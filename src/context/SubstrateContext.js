@@ -6,6 +6,7 @@ import { web3Accounts, web3Enable } from '@polkadot/extension-dapp'
 import { keyring as Keyring } from '@polkadot/ui-keyring'
 import { isTestChain } from '@polkadot/util'
 import { TypeRegistry } from '@polkadot/types/create'
+import {encodeAddress} from '@polkadot/util-crypto'
 
 import config from "./config"
 
@@ -104,7 +105,8 @@ const loadAccounts = (state, dispatch) => {
   const asyncLoadAccounts = async () => {
     try {
       await web3Enable(config.APP_NAME)
-      let allAccounts = await web3Accounts()
+      Keyring.setSS58Format(128)
+      let allAccounts = await web3Accounts();
 
       allAccounts = allAccounts.map(({ address, meta }) => ({
         address,

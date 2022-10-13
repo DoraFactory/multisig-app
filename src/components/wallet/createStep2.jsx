@@ -5,6 +5,8 @@ import '../../styles/createSteps.scss';
 import { Link, useNavigate } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { useSubstrateState} from '../../context';
+import {encodeAddress} from '@polkadot/util-crypto'
+
 import { message } from 'antd';
 import 'antd/es/message/style/index.css'
 
@@ -35,6 +37,7 @@ const CreateStep2 = () => {
     const walletName = useRef();
     const threshold = useRef();
     const { keyring } = useSubstrateState();
+    const SS58Prefix = 128;
     const [ multisigAccount, setMultisigAccount ] = useState({
         wallet_name: '',
         accountId: '',
@@ -50,7 +53,7 @@ const CreateStep2 = () => {
     useEffect(() => {
         owners.push({
             name: curr_name,
-            account: curr_account
+            account: encodeAddress(curr_account, SS58Prefix)
         })
         
         setOwners([...owners.slice(1)]);
@@ -82,17 +85,6 @@ const CreateStep2 = () => {
         console.log(multisigAccount)
     }
 
-    function clearNoNum(event) {
-        event.target.value = event.target.value.replace(/[^\d.]/g, "");  //清除“数字”和“.”以外的字符
-        event.target.value = event.target.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的
-        event.target.value = event.target.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
-        event.target.value = event.target.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');//只能输入两个小数
-        if (event.target.value.indexOf(".") < 0 && event.target.value != "") {//以上已经过滤，此处控制的是如果没有小数点，首位不能为类似于 01、02的金额
-            event.target.value = parseFloat(event.target.value);
-        }
-    }
-
-
     const handleInputChange = (event) => {
         const value = event.target.value;
         const inputType = event.target.id.split(' ')[0];
@@ -104,7 +96,7 @@ const CreateStep2 = () => {
                     owner.name = value
                 }
                 if (inputType === 'address') {
-                    owner.account = value
+                    owner.account = encodeAddress(value, SS58Prefix)
                 }
             }
         })
@@ -113,9 +105,6 @@ const CreateStep2 = () => {
     }
 
     const handleConnect = () => {
-        //TODO: 需要判断是否已经填了wallet名
-        console.log('当前的wallet name IS ' + walletName.current.value) 
-        console.log('当前的阈值 IS ' + threshold.current.value) 
         if(walletName.current.value == ''){
             NoWalletName()
             return
@@ -142,8 +131,6 @@ const CreateStep2 = () => {
     }
 
     const handleDelOwner = (index) => {
-        console.log("=====================")
-        console.log(index)
         owners.pop();
         setOwners([...owners]);
         console.log(owners)
@@ -169,7 +156,7 @@ const CreateStep2 = () => {
             <div className="form-input">
                 <input
                     ref = {walletName}
-                    className="wallet-name" 
+                    className="wallet-name input-base" 
                     type="text"
                     placeholder="my-wallet-name" 
                 />
@@ -187,10 +174,10 @@ const CreateStep2 = () => {
                         {
                             owners.map((owner, index) =>(
                                 <div className="address-inputs">
-                                    <input type="text" id={`name ${index}`} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
+                                    <input type="text" id={`name ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
-                                        <input type="text" id={`address ${index}`} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
+                                        <input type="text" id={`address ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
                                     <img id={index} onClick={index===0?null:(e)=> {
                                         e.persist();
@@ -209,7 +196,7 @@ const CreateStep2 = () => {
             <section>
                 3. Any transaction requires the confirmation of:
                 <div className="threshold">
-                <input type="number" οnkeypress="value=value.replace('-','')" min="0" ref={threshold}/>
+                <input type="number" className="number-input input-base" οnkeypress="value=value.replace('-','')" min="0" ref={threshold}/>
                     <span>out of owner(s)</span>
                 </div>
             </section>

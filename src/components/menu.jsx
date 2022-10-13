@@ -1,4 +1,4 @@
-import { React, useState } from 'react'; 
+import { React, useState, useEffect } from 'react'; 
 import '../styles/sideMenu.scss';
 import '../styles/baseindex.scss'
 import { useNavigate } from 'react-router-dom';
@@ -7,12 +7,93 @@ import TabContent from './tabs/tabContent';
 import AssetCards from './assets/assetCards';
 import TransactionStatus from './transactions/transactionStatus';
 import OwnerCard from './owners/ownerCard';
+import Select, { SelectChangeEvent } from '@mui/material/Select';
+import FormControl from '@mui/material/FormControl';
+import MenuItem from '@mui/material/MenuItem';
+import { styled } from '@mui/material/styles';
+import InputBase from '@mui/material/InputBase';
+import Identicon from '@polkadot/react-identicon';
+
+import {encodeAddress} from '@polkadot/util-crypto'
+import { useSubstrate, useSubstrateState } from '../context';
+
+import axios from 'axios';
+
+const BootstrapInput = styled(InputBase)(({ theme }) => ({
+    'label + &': {
+      marginTop: theme.spacing(3),
+    },
+    '& .MuiInputBase-input': {
+      borderRadius: 4,
+      display: 'flex',
+      'justify-content': 'flex-start',
+      cursor: 'pointer',
+      position: 'relative',
+      backgroundColor: theme.palette.background.paper,
+    //   border: '1px solid #FF761C',
+      'border-radius': '4px',
+      fontSize: 16,
+      margin:-2,
+      padding: '10px 26px 10px 12px',
+      transition: theme.transitions.create(['border-color', 'box-shadow']),
+      // Use the system font instead of the default Roboto font.
+      fontFamily: [
+        '-apple-system',
+        'BlinkMacSystemFont',
+        '"Segoe UI"',
+        'Roboto',
+        '"Helvetica Neue"',
+        'Arial',
+        'sans-serif',
+        '"Apple Color Emoji"',
+        '"Segoe UI Emoji"',
+        '"Segoe UI Symbol"',
+      ].join(','),
+      '&:focus': {
+        borderRadius: 4,
+        borderColor: '#FF761C',
+        boxShadow: '0 0 0 0.2rem rgba(255, 118, 28, 0.1)',
+      },
+    },
+  }));
+
 
 const Menu = () => {
     const navegate =  useNavigate();
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
 
     const [activeTab, setActiveTab] = useState("assets");
+
+
+    // const {setCurrentAccount} = useSubstrate()
+    // const { keyring, currentAccount } = useSubstrateState();
+    const [multiAccount, setMultiAccount] =  useState(multisig.accountId);
+    const SS58Prefix = 128;
+
+
+    const multisigs = JSON.parse(localStorage.getItem("owner-multisigs"));
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log('--------------------------tony1')
+    console.log(multisigs);
+    console.log('--------------------------tony1')
+
+    // useEffect(() => {
+    //     async function getWallets() {
+    //         const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+    //         .then((res) => {
+    //             setMultisigs(res.data['detail'])
+    //             return res.data
+    //         });
+    //     }
+    //     getWallets();
+    //     console.log('-------------------2');
+    //     console.log('-------------------2');
+    //     console.log('-------------------2');
+    //     console.log(multisigs);
+    // }, [])
+
     
     const handleCreateWallet = () => {
         navegate('/create-wallet')
@@ -34,25 +115,74 @@ const Menu = () => {
         setActiveTab('owners')
     }
 
+    const handleChange = (addr) => {
+        // setCurrentAccount(keyring.getPair(addr))
+        setMultiAccount(addr)
+
+        let wallet_multisig = {
+            wallet_name: '',
+            accountId: '',
+            owners: [],
+            threshold: 0,
+        }
+        multisigs.map((multisig) => {
+            if (multisig.wallet == addr) {
+                wallet_multisig = {
+                    wallet_name: multisig.wallet_name,
+                    accountId: multisig.wallet,
+                    owners: multisig.extra_info.owners,
+                    threshold: multisig.threshold
+                }
+            }
+        })
+        console.log('--------------------------1');
+        console.log('--------------------------1');
+        console.log('--------------------------1');
+        console.log(wallet_multisig)
+        localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
+    }
+
     return(
         <div className="content">
             <div className="side-menu">
                 <div className="wallet-info">
                     <div>
-                        <div class="profile">
-                            <img src={Icons.Avatar} />
-                            <div
-                                v-if="wallet"
-                                class="name-info"
-                            >
-                                <p>{multisig.wallet_name}</p>
-                                <p>{multisig.accountId.substring(0,6) + '...' + multisig.accountId.substring(42,)}</p>
-                            </div>
-                        </div>
+                        <FormControl sx={{ m: 1, minWidth: 200 }}  size="small">
+                                <Select           
+                                labelId="demo-select-small"
+                                id="demo-select-small"
+                                onChange={(dropdown) => {
+                                    handleChange(dropdown.target.value)
+                                }}
+                                value = {multiAccount}
+                                displayEmpty
+                                inputProps={{ 'aria-label': 'Without label' }}
+                                input={<BootstrapInput/>}
+                                >   
+                                     {multisigs.map((multisig) => (
+                                        <MenuItem value={multisig.wallet}>
+                                            <div class="profile">
+                                                <Identicon
+                                                    value={multisig.wallet}
+                                                    size={32}
+                                                    theme={"polkadot"}
+                                                />
+                                                <div
+                                                    class="name-info"
+                                                >
+                                                    <p align='left'>{multisig.wallet_name}</p>
+                                                    <p>{multisig.wallet.substring(0,6) + '...' + multisig.wallet.substring(42,)}</p>
+                                                </div>
+                                            </div>
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                        </FormControl>
                     </div>
                     <div className="new-wallet" onClick={handleCreateWallet}>
                         + Create a new wallet
                     </div>
+
                 </div>
 
                 <div className={activeTab==="assets" ? "menu-link menu-selected": "menu-link"} onClick={handleAsset}>
@@ -227,6 +357,7 @@ const Menu = () => {
                         viewBox="0 0 24 24"
                         fill="none"
                         xmlns="http://www.w3.org/2000/svg"
+                        className='font-image'
                     >
                         <path
                         d="M8.8999 7.55999C9.2099 3.95999 11.0599 2.48999 15.1099 2.48999H15.2399C19.7099 2.48999 21.4999 4.27999 21.4999 8.74999V15.27C21.4999 19.74 19.7099 21.53 15.2399 21.53H15.1099C11.0899 21.53 9.2399 20.08 8.9099 16.54"

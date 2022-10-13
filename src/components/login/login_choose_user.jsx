@@ -6,19 +6,15 @@ import { useNavigate, Link } from 'react-router-dom';
 import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
-import avatar from '../../resources/avatar.svg'
-import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import { web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
+import {encodeAddress} from '@polkadot/util-crypto'
+
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
-
-// import sessionStorage from 'sessionStorage';
-
-// import JSONBigInt from 'json-bigint';
-
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
       marginTop: theme.spacing(3),
@@ -60,28 +56,24 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
-
+    const SS58Prefix = 42;
+    
     let keyringOptions = [];
     let initialAddress = '';
     if(keyring){
         keyringOptions = keyring.getAccounts().map(account => ({
-            key: account.address,
-            value: account.address,
+            key: encodeAddress(account.address, SS58Prefix),
+            value: encodeAddress(account.address, SS58Prefix),
             text: account.meta.name.toUpperCase(),
             icon: 'user',
         }))
-    
-        initialAddress =keyringOptions.length > 0 ? keyringOptions[0].value : ''
+        initialAddress = keyringOptions.length > 0 ? keyringOptions[0].value : ''
     }
 
-
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
     const navigate = useNavigate();
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
+        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
             return res.data
         });
 
@@ -97,39 +89,57 @@ const LoginUserCard = () => {
                 data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
-            console.log(signature)
-            console.log('=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-')
-
+            localStorage.setItem('main-account', JSON.stringify(currentAccount.address))
             const data = {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
-            console.log(currentAccount.address.toString())
-            console.log('-------------------------------1');
-
+            console.log("-----------------------------");
+            console.log(data);
             const result = await axios(
                 {
                     method: "post",
-                    url: 'http://127.0.0.1:8000/login/',
+                    url: 'https://multisig.dorafactory.org/login/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
                     data
                 });
-            console.log('-------------------------------2');
             console.log(result.data)
-
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
-                const wallets = await axios.get(`http://127.0.0.1:8000/wallets/${currentAccount.address.toString()}/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+                const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
                     .then((res) => {
+                        // setMultisigs(res.data['detail'])
                         return res.data
                     });
-                console.log('---------------------------here')
+                console.log("---------------------------here1111");
+                console.log("---------------------------here1111");
+                console.log("---------------------------here1111");
+                console.log("---------------------------here1111");
                 console.log(wallets);
-                if(wallets.length == 0) {
+                console.log(wallets.length);
+                console.log(wallets['detail']);
+                console.log(wallets['detail'].length);
+                console.log(wallets['detail'] == 0 && wallets['code'] == 'ok' )
+                if(wallets['detail'].length === 0 && wallets['code'] === 'ok' ) {
+                    console.log("----------------------- hello11")
+                    console.log("----------------------- hello11")
+                    console.log("----------------------- hello11")
                     navigate("/create-wallet")
                 } else {
+                    localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
+
+                    let wallet_multisig = {
+                        wallet_name: wallets['detail'][0].wallet_name,
+                        accountId: wallets['detail'][0].wallet,
+                        owners: wallets['detail'][0].extra_info.owners,
+                        threshold: wallets['detail'][0].threshold
+                    }
+
+                    console.log("---------------------------1222222");
+                    console.log(wallet_multisig)
+                    localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
                     navigate("/accountInfo")
                 }
             } else {
@@ -137,7 +147,6 @@ const LoginUserCard = () => {
             }
         }
     }
-
 
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
@@ -153,9 +162,9 @@ const LoginUserCard = () => {
                     labelId="demo-select-small"
                     id="demo-select-small"
                     onChange={(dropdown) => {
-                        handleChange(dropdown.target.value)
+                        handleChange(dropdown.target.value);
                     }}
-                    value={currentAccount ? currentAccount.address : initialAddress}
+                    value={currentAccount ? encodeAddress(currentAccount.address, SS58Prefix) : initialAddress}
                     displayEmpty
                     inputProps={{ 'aria-label': 'Without label' }}
                     input={<BootstrapInput/>}
@@ -177,21 +186,34 @@ const LoginUserCard = () => {
                                 </div>
                             </MenuItem>
                         ))}
+                        {/* {
+                            keyringOptions.map((option) => {
+                                console.log(option.value)
+                            })
+                        } */}
                     </Select>
             </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
                 <div>
                     Login
                 </div>
+                     {/* <Button onClick={handleToggle}>Login</Button>
+                    <Backdrop
+                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
+                        open={open}
+                        onClick={handleClose}
+                    >
+                        <CircularProgress color="inherit" />
+                    </Backdrop> */}
             </div>
             <div className="div-line-word or-line">
                 OR
             </div>
-            <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
+            <div className="text-center">Haven't used Dorafactory Multisig before? Sign up!</div>
             <div className="login-btn-base login-btn-reverse signUp-btn">
             <Link to="/signup">
-            Sign Up
-        </Link>
+                Sign Up
+            </Link>
             </div>
         </div>
     )

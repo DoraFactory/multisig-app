@@ -100,6 +100,7 @@
     }
 }
 
+
 .progress-bar{
     display: inline-flex;
     color: #00B272;
@@ -107,6 +108,17 @@
     .connect-line{
         height: 1px;
         width: 60px;
+        border-bottom: 1px solid;
+        margin: 0 6px;
+        &.waiting{
+            border-bottom: 1px dotted #B7B7B8;
+        }
+    }
+
+    .connect-line-failed{
+        height: 1px;
+        width: 60px;
+        color: #FD0053;
         border-bottom: 1px solid;
         margin: 0 6px;
         &.waiting{
@@ -137,10 +149,30 @@
             background: white;
         }
     }
+
+    .circle-sign-failed{
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        color: white;
+        border-radius: 50%;
+        font-size: 12px;
+        text-align: center;
+        background: #FD0053;
+        margin-right: 6px;
+        &.empty{
+            border: 1px solid #B7B7B8;
+            background: white;
+        }
+    }
+
+    .completed-failed{
+        color: #FD0053;
+    }
 }
   
 .users-list{
-    margin-left: 156px;
+    margin-left: 150px;
     width: 1px;
     position: relative;
     &:before{
@@ -187,4 +219,146 @@
         height: 30px;
     }
 
+}
+
+
+.users-list-created{
+    margin-left: 3px;
+    width: 1px;
+    position: relative;
+    &:before{
+        content : "";
+        position: absolute;
+        left    : 0;
+        top  : 40;
+        height  : 29px;
+        width   : 50%;
+        border-left:1px solid #00B272;
+    }
+  
+    .user-info{
+        padding-left: 6px;
+        padding-top: 12px;
+        display: flex;
+        position: relative;
+        &:before{
+            content : "";
+            position: absolute;
+            left    : 0;
+            top  : calc(50% + 6px);
+            height  : 50%;
+            width   : 6px;
+            border-top:1px solid #00B272;
+        }
+          
+        p{
+            margin-block: 0;
+            line-height: 15px;
+            height: 15px;
+        }
+
+        .user-profile{
+            font-size: 12px;
+            margin-left: 8px;
+            p{
+                display: flex
+            }
+        }
+    }
+    img{
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+
+.users-list-rejected{
+    margin-left: 170px;
+    width: 1px;
+    position: relative;
+    &:before{
+        content : "";
+        position: absolute;
+        left    : 0;
+        top  : 40;
+        height  : calc(100% - 15px);
+        width   : 100%;
+        border-left:1px solid #00B272;
+    }
+  
+    .user-info{
+        padding-left: 6px;
+        padding-top: 12px;
+        display: flex;
+        position: relative;
+        &:before{
+            content : "";
+            position: absolute;
+            left    : 0;
+            top  : calc(50% + 6px);
+            height  : 50%;
+            width   : 6px;
+            border-top:1px solid #00B272;
+        }
+          
+        p{
+            margin-block: 0;
+            line-height: 15px;
+            height: 15px;
+        }
+
+        .user-profile{
+            font-size: 12px;
+            margin-left: 8px;
+            p{
+                display: flex
+            }
+        }
+    }
+    img{
+        width: 30px;
+        height: 30px;
+    }
+
+}
+
+.flex-submit-div {
+    display: flex; 
+    flex-wrap: wrap;
+}
+
+.module-input {
+    width: 50%;
+    height: 40px;
+    width: 100%;
+    text-align: left;
+    font-size: 16px;
+    padding: 10px 16px;
+    border: 1px solid rgba(14, 14, 17, 0.1);
+    box-sizing: border-box;
+    border-radius: 4px;
+    color: rgba(14, 14, 17, 0.3);
+    margin-bottom: 0px;
+}
+
+.font-image {
+    vertical-align: middle;
+}
+
+.right-transaction-card {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.right-100-width {
+    width: 100%;
+}
+
+.right-50-width {
+    width: 50%;
+}
+
+.right-33-width {
+    width: 33%;
 }

@@ -12,6 +12,8 @@ import Select from '@mui/material/Select';
 import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
+import {encodeAddress} from '@polkadot/util-crypto'
+import Identicon from '@polkadot/react-identicon';
 
 import axios from 'axios';
 
@@ -37,18 +39,16 @@ const TransactionStatus = () => {
     // pending multisig tx list
     const [pendingTx, setPendingTx] = useState({});
     // completed multisig tx list
-    const [completedTx, setCompletedTx] = useState({});
+    const [completedTx, setCompletedTx] = useState([]);
 
     const [currTxList, setCurrTxList] = useState({});
     // 
-    const [approvealNums, setApprovealNums] = useState(0);
     const [calls, setCalls] = useState({});
     // 
-    const [blockHeight, setBlockHeight] = useState();
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
-
+    const SS58Prefix = 128;
     const NewTrans = () => {
       setOpen(true);
     }
@@ -67,8 +67,6 @@ const TransactionStatus = () => {
       setMethod(event.target.value);
     };
     const handleGetDestParams = (value, index) => {
-      console.log('value is ' + value);
-      console.log('index is ' + index)
       params[index] = value;
       setParams([...params]);
     }
@@ -79,7 +77,7 @@ const TransactionStatus = () => {
     const submitTx = async() => { 
       // current owner / sender of this multisig wallet
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
@@ -94,32 +92,43 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
+        let block_number = 0;
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+          let block_num = await api.rpc.chain.getBlock(result.status.asInBlock);
+          console.log(block_num);
         }else if(result.status.isFinalized){
-          // save current multisig wallet's transaction 
-          let data = {
-            call_hash : api.registry.hash(encodeData).toHex(),
-            owner: main_owner,
-            detail: {
-              block_height: 0,
-              address: main_owner,
-              pallet_method: `balances` + method.name,
-              parameters: params,
-            },
-            status: 1
+          console.log(result.status.isFinalized)
+          if(!result.dispatchError){
+            // save current multisig wallet's transaction 
+            console.log(result.txHash)
+            console.log(block_number);
+            let data = {
+              call_hash : api.registry.hash(encodeData).toHex(),
+              detail: {
+                block_height: block_number,
+                address: main_owner,
+                pallet_method: `balances/` + method.name,
+                parameters: params,
+              },
+              status: 0,
+              operation: 'approve',
+              transaction_hash: result.txHash,
+            }
+            const res = await axios({
+                  method: "post",
+                  url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
+                  headers: {
+                    'Content-Type': 'application/json',
+                    "dorafactory-token": sessionStorage.getItem('token'),
+                  },
+                  data
+            });
+            console.log(res);
+            console.log('send multisig tx successfully ! ');
+          }else{
+            console.log(`transaction failed`);
           }
-          const result = await axios({
-                method: "post",
-                url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
-                headers: {
-                  'Content-Type': 'application/json',
-                  "dorafactory-token": sessionStorage.getItem('token'),
-                },
-                data
-          });
-          console.log(result);
-          console.log('send multisig tx successfully ! ');
         }
       })
       setUnsub(() => unsub)
@@ -127,9 +136,10 @@ const TransactionStatus = () => {
     }
 
     const approveTx = async(hash) => {
+
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
@@ -142,14 +152,47 @@ const TransactionStatus = () => {
         hash,
         100000000000,     // currently, we use this default value
       )
-
-      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
-        if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-        }else if(result.status.isFinalized){
-          console.log('send multisig tx successfully ! ');
-        }
+      console.log('sda');
+      api.query.multisig.multisigs(multisig_wallet.accountId, hash).then((res) => {
+        console.log(res)
+        extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
+          if (result.status.isInBlock) {
+            console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
+          }else if(result.status.isFinalized){
+            if(!result.dispatchError){
+                let cur_status = 0;
+                if(res.toHuman().approvals.length == multisig_wallet.threshold - 1){
+                  cur_status = 1;
+                }
+                  let data = {
+                    call_hash : hash,
+                    detail: {
+                      block_height: 0,
+                      address: main_owner,
+                      pallet_method: `balances/` + method,
+                      parameters: params,
+                    },
+                    status: cur_status,
+                    operation: 'approve',
+                    transaction_hash: result.txHash,
+                  }
+                  console.log(hash);
+                  const ans = await axios({
+                    method: "patch",
+                    url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
+                    headers: {
+                      'Content-Type': 'application/json',
+                      "dorafactory-token": sessionStorage.getItem('token'),
+                    },
+                    data
+                  });
+                  console.log(ans);
+            }
+          }
+        })
       })
+
+      
       setUnsub(() => unsub)
     }
     
@@ -157,7 +200,7 @@ const TransactionStatus = () => {
     const rejectTx = async(hash) => {
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
-        return acc.account != main_owner
+        return acc.account != encodeAddress(main_owner, SS58Prefix); 
       }).map((acc) => {return acc.account});
       console.log(otherAddresses)
       //TODO: we need to change the ss58format according the different network!
@@ -169,10 +212,32 @@ const TransactionStatus = () => {
         trans.when,
         hash,
       )
-      extrinsic.signAndSend(main_owner, {signer: injector.signer}, result => {
+      extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
         }else if(result.status.isFinalized){
+          let data = {
+            call_hash : hash,
+            detail: {
+              block_height: 0,
+              address: main_owner,
+              pallet_method: `balances/` + method,
+              parameters: params,
+            },
+            status: -1,
+            operation: 'reject',
+            transaction_hash: result.txHash,
+          }
+          const ans = await axios({
+            method: "patch",
+            url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
+            headers: {
+              'Content-Type': 'application/json',
+              "dorafactory-token": sessionStorage.getItem('token'),
+            },
+            data
+          });
+          console.log(ans);
           console.log('send multisig tx successfully ! ');
         }
       })
@@ -228,20 +293,26 @@ const TransactionStatus = () => {
 
               console.log(trans.approvals.length);
               console.log(multisig_wallet.owners.length)
-              if(owner == main_owner){
+              if(owner == encodeAddress(main_owner, SS58Prefix)){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
               }
               if(trans.approvals.length < multisig_wallet.owners.length){
                 pendingTx[keys[1]] = trans;
                 setPendingTx(pendingTx);
-              }else{
-                completedTx[keys[1]] = trans;
-                setCompletedTx(completedTx);
               }
             })
           }
-        })
+        });
+
+        axios.get(
+          `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/?status=1&status=-1`,
+          {
+            headers: {"dorafactory-token": sessionStorage.getItem("token")}
+          }).then((res) => {
+            setCompletedTx(res.data.detail);
+          })
+
     }, [api, pendingTx, createdTx])
 
     useEffect(() => {
@@ -250,12 +321,9 @@ const TransactionStatus = () => {
         resCalls.forEach(([key, exposure]) => {
           const keys = key.toHuman()
           const callInfo = exposure.toHuman()
-          console.log(keys);
-          console.log(callInfo)
           // key: encoded data hash  value: call info
           calls[keys[0]] = callInfo;
           setCalls(calls);
-          console.log('我一直在查村')
         })
       })
 
@@ -270,16 +338,12 @@ const TransactionStatus = () => {
       }else if(activeTab == "Created"){
         setCurrTxList(createdTx);
       }else {
-
-        setCurrTxList(completedTx);
+        console.log('this is completed');
+        console.log(completedTx);
+        // get the completed transaction and update
+        console.log('completed tx!!!');
       }
     }, [activeTab])
-
-    console.log('pending is ' + JSON.stringify(pendingTx));
-    console.log(createdTx)
-    console.log(currTxList)
-    console.log(activeTab)
-    console.log('calls is ' + JSON.stringify(calls));
 
 
     return(
@@ -355,9 +419,10 @@ const TransactionStatus = () => {
                                       <div className="description">
                                       Submit
                                       </div>
-                                      <div>
-                                        <div><input value="balances"/></div>
-                                        <FormControl sx={{ m: 1, minWidth: 700 }}  size="small">
+                                      <div className='flex-submit-div'>
+                                        <div><input value="balances" className='module-input'/></div>
+                                        <div>
+                                        <FormControl sx={{ m: 1, minWidth: 800 }}  size="small">
                                         <Select           
                                           labelId="demo-select-small"
                                           id="demo-select-small"
@@ -378,6 +443,7 @@ const TransactionStatus = () => {
                                           })}
                                         </Select>
                                       </FormControl>
+                                      </div>
                                       </div>
                                   </div>
 
@@ -483,9 +549,7 @@ const TransactionStatus = () => {
                       <div class="transaction-status">
                           <div class="status-bar">
                             <span>Pending approval</span>
-                            {/* <span>{tx.depositor}</span> */}
-                            {/* <span>{main_owner} </span> */}
-                            {tx.depositor == main_owner ? (
+                            {tx.depositor == encodeAddress(main_owner, SS58Prefix) ? (
                               <div
                                 v-if="tabIndex==0"
                                 class="reject-btn"
@@ -540,7 +604,11 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <img src={avatar}/>
+                              <Identicon
+                                  value={approver}
+                                  size = {32}
+                                  theme={"polkadot"}
+                              />
                               <div class="user-profile">
                                 <p>Account</p>
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
@@ -622,7 +690,11 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <img src={avatar}/>
+                              <Identicon
+                                  value={approver}
+                                  size = {32}
+                                  theme={"polkadot"}
+                              />
                               <div class="user-profile">
                                 <p>Account</p>
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
@@ -638,40 +710,53 @@ const TransactionStatus = () => {
                 }
 
                 { 
-                  activeTab === 'Completed' ? Object.entries(currTxList).map(([hash, tx]) => (
+                  activeTab === 'Completed' ? completedTx.map((tx_info) => (
                     <div className="transaction-card">
                       <div class="transaction-summary">
                         <p>
                           <span class="summary-label">CALL HASH:</span>
-                          <span class="summary-value">{hash.substring(0,10) + '...' + hash.substring(49,)}</span>
+                          <span class="summary-value">{tx_info.call_hash.substring(0,10) + '...' + tx_info.call_hash.substring(49,)}</span>
                         </p>
                         <p>
                           <span class="summary-label">BLOCK TIME:</span>
-                          <span class="summary-value">{tx.when.height}</span>
+                          <span class="summary-value">{tx_info.detail.block_height}</span>
                         </p>
                         <p>
                           <span class="summary-label">Depositor:</span>
-                          <span class="summary-value">{tx.depositor.substring(0,15)+ '...' + tx.depositor.substring(35)}</span>
+                          <span class="summary-value">{encodeAddress(tx_info.operations[0].owner, SS58Prefix).substring(0,10) + '...' + encodeAddress(tx_info.operations[0].owner, SS58Prefix).substring(40,)}</span>
 
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
-                          { JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{calls[hash][0].method  + '/' + calls[hash][0].section}</span>
-                          ) : null}
+                            <span class="summary-value">{tx_info.detail.pallet_method}</span>
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
-                          {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
-                          ) : null}
+                            <span class="summary-value">{tx_info.detail.parameters[1]}</span> 
                         </p>
                       </div>
                     
                       <div class="transaction-status">
-                        <p class="status-summary">
+                        {/* <p class="status-summary">
                           {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
-                        </p>
+                        </p> */}
+                        {
+                          tx_info.status > 0 ? (
+                            <div class="progress-bar">
+                                <div class="circle-sign">
+                                  ✓
+                                </div>
+                                <span>Success</span>
+                            </div>
+                          ) : (
+                            <div class="progress-bar">
+                                <div class="circle-sign-failed">
+                                  X
+                                </div>
+                                <span className='completed-failed'>Failed</span>
+                            </div>
+                          )
+                        }
 
                         <div class="progress-bar">
                           <div class="progress-created">
@@ -683,35 +768,100 @@ const TransactionStatus = () => {
                           </div>
                           <div>
                             <div class="progress-confirmed">
-                              <div class="circle-sign" />
+                              <div class="circle-sign">
+                                ✓
+                              </div>
                               <div class="">
                                 Confirmed
                               </div>
-                              <span class="connect-line waiting" />
+                              {/* <span class="connect-line" /> */}
                             </div>
                           </div>
-                          <div class="progress-executed inactive">
-                            <div class="circle-sign empty" />
-                            <div class="">
-                              Executed
-                            </div>
-                          </div>
+                          {
+                            tx_info.status > 0 ? (
+                              
+                              <div class="progress-executed">
+                                <span class="connect-line" />
+                                <div class="circle-sign" />
+                                <div class="">
+                                  Executed
+                                </div>
+                              </div>
+                            ) : (
+                                <div class="progress-executed">
+                                  <span class="connect-line-failed" />
+                                  <div class="circle-sign-failed">
+                                    X
+                                  </div>
+                                  <div class="completed-failed">
+                                    Rejected
+                                  </div>
+                                </div>
+                            )
+                          }
+                          
                         </div>
-
+                        <div className='right-transaction-card'>
+                          {tx_info.operations.map((operation, index) => (
+                            index === 0? (
+                            <div class="users-list-created">
+                              <div
+                              class="user-info"
+                              >
+                                <Identicon
+                                    value={encodeAddress(operation.owner, SS58Prefix)}  
+                                    size = {32}
+                                    theme={"polkadot"}
+                                />
+                                <div class="user-profile">
+                                  {/* <p></p> */}
+                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
+                                </div>
+                              </div>
+                            </div>) : (null)
+                            ))}
+                        
                         <div class="users-list">
-                          <div
-                            v-for="(addr, i) in trans.approvals"
-                        
-                            class="user-info"
-                          >
-                            <img src={avatar}/>
-                            <div class="user-profile">
-                              <p>Account</p>
-                              <p>5EyU8W...wSL</p>
-                            </div>
-                          </div>
+                          {tx_info.operations.map((operation) => (
+                              <div
+                                class="user-info"
+                              >
+                                <Identicon
+                                    value={encodeAddress(operation.owner, SS58Prefix)}  
+                                    size = {32}
+                                    theme={"polkadot"}
+                                />
+                                <div class="user-profile">
+                                  {/* <p></p> */}
+                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
+                                </div>
+                              </div>
+                            ))}
                         </div>
-                        
+                        {
+                          tx_info.status < 0 ? (
+                          <div class="users-list-rejected">
+                            {tx_info.operations.map((operation) => (
+                                <div
+                                  class="user-info"
+                                >
+                                  <Identicon
+                                      value={encodeAddress(operation.owner, SS58Prefix)}  
+                                      size = {32}
+                                      theme={"polkadot"}
+                                  />
+                                  <div class="user-profile">
+                                    {/* <p></p> */}
+                                    <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
+                                  </div>
+                                </div>
+                              ))}
+                          </div>
+                          ) : (
+                            null
+                          )
+                        }
+                        </div>
                       </div>
                     </div>
                   )) : 

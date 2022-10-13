@@ -3,16 +3,11 @@ import StepProgess from './stepProgess';
 import Icons from '../../resources';
 import { useNavigate, Link } from 'react-router-dom';
 import localStorage from 'localStorage';
-import { createKeyMulti, encodeAddress, sortAddresses} from '@polkadot/util-crypto'
-import { useSubstrate, useSubstrateState } from '../../context';
-
-import { web3Accounts,web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
-import { stringToHex } from "@polkadot/util";
-import axios from 'axios';
-
-import { styled } from '@mui/material/styles';
-import InputBase from '@mui/material/InputBase';
+import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto'
+import { useSubstrateState } from '../../context';
 import Identicon from '@polkadot/react-identicon';
+
+import axios from 'axios';
 
 const CreateStep3 = () => {
     const navigate = useNavigate();
@@ -24,15 +19,15 @@ const CreateStep3 = () => {
 
     const sub_address_set = owners.map((owner) => owner.account);
 
-    const { keyring, currentAccount } = useSubstrateState();
+    const { keyring } = useSubstrateState();
+  
+    const SS58Prefix = 128;
+    const multiAddress = createKeyMulti(sub_address_set, threshold);
+    const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
 
     const CreateWallet = async() =>{
         // prefix 
-        const SS58Prefix = 42
-        const multiAddress = createKeyMulti(sub_address_set, threshold);
-        const Ss58Address = encodeAddress(multiAddress, SS58Prefix)
-        console.log(Ss58Address)
-        console.log(multiAddress)
+
         let multisig = {
             wallet_name: wallet_name,
             accountId: Ss58Address,
@@ -41,14 +36,8 @@ const CreateStep3 = () => {
         }
         localStorage.setItem('multisig-wallet', JSON.stringify(multisig));
 
-
         let curr_account = JSON.parse(localStorage.getItem('main-account'));
         let curr_name = keyring.getAddress(curr_account).meta.name;
-        console.log('--------------------------1');
-        console.log(curr_account)
-        console.log(currentAccount)
-        console.log(curr_name)
-        console.log('--------------------------2');
         
         const data = {
             "wallet": Ss58Address,
@@ -57,13 +46,11 @@ const CreateStep3 = () => {
             "extra_info": {"owners": owners},
             "threshold": threshold
         }
-        console.log(data);
-        console.log('--------------------------3');
 
         const result = await axios(
             {
                 method: "post",
-                url: `http://127.0.0.1:8000/wallets/${curr_account}/`,
+                url: `https://multisig.dorafactory.org/wallets/`,
                 headers: {
                     'Content-Type': 'application/json',
                     "dorafactory-token": sessionStorage.getItem("token")
@@ -71,9 +58,25 @@ const CreateStep3 = () => {
                 data
             });
 
-        console.log('------------------------------4')
-
         console.log(result.data)
+
+        const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+            .then((res) => {
+                // setMultisigs(res.data['detail'])
+                return res.data
+            });
+        localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
+        
+        let wallet_multisig = {
+            wallet_name: wallets['detail'][0].wallet_name,
+            accountId: wallets['detail'][0].wallet,
+            owners: wallets['detail'][0].extra_info.owners,
+            threshold: wallets['detail'][0].threshold
+        }
+
+        console.log("---------------------------1222222");
+        console.log(wallet_multisig)
+        // localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
         navigate('/accountInfo')
     }
 
@@ -87,26 +90,51 @@ const CreateStep3 = () => {
             <div className="sunmmary">
                 <div className="top">
                     <div className="left-part">
-                        <p className="first-red">
-                            Name of new multisig
-                        </p>
-                        <p>{wallet_name}</p>
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                NetWork
+                            </p>
+                            <p>Dorafactory</p>
+                        </div>
+                        <div>
+                            <p className="first-red">
+                                JS Extension
+                            </p>
+                            <p>Polkadot</p>
+                        </div>
+                        <div>
+                            <p className="first-red">
+                                Wallet Account
+                            </p>
+                            <p>{wallet_name}({Ss58Address})</p>
+                        </div>
+
                     </div>
 
                     <div className="right-part">
-                        <p className="first-red">
-                            Any transaction requires the confirmation of:
-                        </p>
-                        <p> {multisig_wallet.owners.length} out of {threshold} owners </p>
-                    </div>
-
-                    <div className="owners">
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                Name of new multisig
+                            </p>
+                            <p> {wallet_name} </p>
+                        </div>
+                        <div className="left-card-message">
+                            <p className="first-red">
+                                Any transaction requires the confirmation of:
+                            </p>
+                            <p> {multisig_wallet.owners.length} out of {threshold} owners </p>
+                        </div>
+                        <div className="owners">
                         <p className="first-red">
                             {multisig_wallet.owners.length} wallet owners
                         </p>
                         {owners.map((owner) => (
                             <div className="profile">   
-                                <img src={Icons.Avatar} />
+                                <Identicon
+                                    value={owner.account}  
+                                    size={32}
+                                    theme={"polkadot"}
+                                />
                                 <div className="name-info">
                                     <p>{owner.name}</p>
                                     <p>{owner.account}</p>
@@ -114,6 +142,9 @@ const CreateStep3 = () => {
                             </div>
                         ))}
                     </div>
+                    </div>
+
+                    
                 </div>
             </div>
 

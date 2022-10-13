@@ -14,6 +14,8 @@
     padding-right: 100px;
     text-align: center;
     margin: 120px auto;
+    margin-top: 80px;
+    margin-bottom: 0px;
     h3 {
         margin-bottom: 8px;
     }
@@ -194,4 +196,9 @@ content: "";
     text-align: left;
     text-decoration:underline;
     color: #FF761C;
+}
+
+.font-image {
+    vertical-align: middle;
+    margin-right: 8px;
 }
