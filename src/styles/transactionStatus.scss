@@ -172,7 +172,7 @@
 }
   
 .users-list{
-    margin-left: 156px;
+    margin-left: 150px;
     width: 1px;
     position: relative;
     &:before{
@@ -231,8 +231,8 @@
         position: absolute;
         left    : 0;
         top  : 40;
-        height  : calc(100% - 15px);
-        width   : 100%;
+        height  : 29px;
+        width   : 50%;
         border-left:1px solid #00B272;
     }
   
@@ -245,7 +245,7 @@
             content : "";
             position: absolute;
             left    : 0;
-            top  : calc(50% + 16px);
+            top  : calc(50% + 6px);
             height  : 50%;
             width   : 6px;
             border-top:1px solid #00B272;
@@ -274,7 +274,7 @@
 
 
 .users-list-rejected{
-    margin-left: 3px;
+    margin-left: 170px;
     width: 1px;
     position: relative;
     &:before{
@@ -296,7 +296,7 @@
             content : "";
             position: absolute;
             left    : 0;
-            top  : calc(50% + 16px);
+            top  : calc(50% + 6px);
             height  : 50%;
             width   : 6px;
             border-top:1px solid #00B272;
@@ -342,4 +342,23 @@
     margin-bottom: 0px;
 }
 
+.font-image {
+    vertical-align: middle;
+}
 
+.right-transaction-card {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.right-100-width {
+    width: 100%;
+}
+
+.right-50-width {
+    width: 50%;
+}
+
+.right-33-width {
+    width: 33%;
+}

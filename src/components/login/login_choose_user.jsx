@@ -15,9 +15,6 @@ import axios from 'axios';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
 import Identicon from '@polkadot/react-identicon';
-import Backdrop from '@mui/material/Backdrop';
-import CircularProgress from '@mui/material/CircularProgress';
-import Button from '@mui/material/Button';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
       marginTop: theme.spacing(3),
@@ -74,7 +71,6 @@ const LoginUserCard = () => {
     }
 
     const navigate = useNavigate();
-    const [open, setOpen] = React.useState(false);
 
     const handleSignMessage = async()  => {
         const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
@@ -110,7 +106,6 @@ const LoginUserCard = () => {
                     data
                 });
             console.log(result.data)
-            setOpen(!open);
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
                 const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
@@ -125,7 +120,6 @@ const LoginUserCard = () => {
                 console.log(wallets);
                 console.log(wallets['detail']);
                 if(wallets.length == 0) {
-                    setOpen(false);
                     navigate("/create-wallet")
                 } else {
                     localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
@@ -140,11 +134,9 @@ const LoginUserCard = () => {
                     console.log("---------------------------1222222");
                     console.log(wallet_multisig)
                     localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
-                    setOpen(false);
                     navigate("/accountInfo")
                 }
             } else {
-                setOpen(false);
                 navigate("/signup")
             }
         }
@@ -216,14 +208,6 @@ const LoginUserCard = () => {
             <Link to="/signup">
                 Sign Up
             </Link>
-            </div>
-            <div>            
-                <Backdrop
-                    sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                    open={open}
-                >
-                    <CircularProgress color="inherit" />
-                </Backdrop>
             </div>
         </div>
     )

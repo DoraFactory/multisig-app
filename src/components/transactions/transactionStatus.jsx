@@ -801,11 +801,12 @@ const TransactionStatus = () => {
                           }
                           
                         </div>
-
-                        <div class="users-list">
-                          {tx_info.operations.map((operation) => (
+                        <div className='right-transaction-card'>
+                          {tx_info.operations.map((operation, index) => (
+                            index === 0? (
+                            <div class="users-list-created">
                               <div
-                                class="user-info"
+                              class="user-info"
                               >
                                 <Identicon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
@@ -814,14 +815,13 @@ const TransactionStatus = () => {
                                 />
                                 <div class="user-profile">
                                   {/* <p></p> */}
-                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(42,)}</p>
+                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                 </div>
                               </div>
+                            </div>) : (null)
                             ))}
-                        </div>
-
-
-                        <div class="users-list-created">
+                        
+                        <div class="users-list">
                           {tx_info.operations.map((operation) => (
                               <div
                                 class="user-info"
@@ -838,7 +838,6 @@ const TransactionStatus = () => {
                               </div>
                             ))}
                         </div>
-                        
                         {
                           tx_info.status < 0 ? (
                           <div class="users-list-rejected">
@@ -862,6 +861,7 @@ const TransactionStatus = () => {
                             null
                           )
                         }
+                        </div>
                       </div>
                     </div>
                   )) : 
