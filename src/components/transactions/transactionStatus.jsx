@@ -43,10 +43,8 @@ const TransactionStatus = () => {
 
     const [currTxList, setCurrTxList] = useState({});
     // 
-    const [approvealNums, setApprovealNums] = useState(0);
     const [calls, setCalls] = useState({});
     // 
-    const [blockHeight, setBlockHeight] = useState();
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
@@ -137,7 +135,7 @@ const TransactionStatus = () => {
       setOpen(false);
     }
 
-    const approveTx = async(hash, method) => {
+    const approveTx = async(hash) => {
 
       const trans = currTxList[hash];
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
@@ -564,7 +562,7 @@ const TransactionStatus = () => {
                               <div
                                 v-if="tabIndex==0"
                                 class="approve-btn"
-                                onClick={() =>approveTx(hash, calls[hash][0].method)}
+                                onClick={() =>approveTx(hash)}
                               >
                                 ✓ Approve
                               </div>
@@ -737,13 +735,23 @@ const TransactionStatus = () => {
                         {/* <p class="status-summary">
                           {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
                         </p> */}
-
-                        <div class="progress-bar">
-                            <div class="circle-sign">
-                              ✓
+                        {
+                          tx_info.status > 0 ? (
+                            <div class="progress-bar">
+                                <div class="circle-sign">
+                                  ✓
+                                </div>
+                                <span>Success</span>
                             </div>
-                            <span>Success</span>
-                        </div>
+                          ) : (
+                            <div class="progress-bar">
+                                <div class="circle-sign-failed">
+                                  X
+                                </div>
+                                <span className='completed-failed'>Failed</span>
+                            </div>
+                          )
+                        }
 
                         <div class="progress-bar">
                           <div class="progress-created">
@@ -761,32 +769,49 @@ const TransactionStatus = () => {
                               <div class="">
                                 Confirmed
                               </div>
-                              <span class="connect-line waiting" />
+                              {/* <span class="connect-line" /> */}
                             </div>
                           </div>
-                          <div class="progress-executed">
-                            <div class="circle-sign" />
-                            <div class="">
-                              Executed
-                            </div>
-                          </div>
+                          {
+                            tx_info.status > 0 ? (
+                              
+                              <div class="progress-executed">
+                                <span class="connect-line" />
+                                <div class="circle-sign" />
+                                <div class="">
+                                  Executed
+                                </div>
+                              </div>
+                            ) : (
+                                <div class="progress-executed">
+                                  <span class="connect-line-failed" />
+                                  <div class="circle-sign-failed">
+                                    X
+                                  </div>
+                                  <div class="completed-failed">
+                                    Rejected
+                                  </div>
+                                </div>
+                            )
+                          }
+                          
                         </div>
 
                         <div class="users-list">
-                        {tx_info.operations.map((operation) => (
-                            <div
-                              class="user-info"
-                            >
-                              <Identicon
-                                  value={encodeAddress(operation.owner, SS58Prefix)}  
-                                  theme={"polkadot"}
-                              />
-                              <div class="user-profile">
-                                <p>Account</p>
-                                <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(42,)}</p>
+                          {tx_info.operations.map((operation) => (
+                              <div
+                                class="user-info"
+                              >
+                                <Identicon
+                                    value={encodeAddress(operation.owner, SS58Prefix)}  
+                                    theme={"polkadot"}
+                                />
+                                <div class="user-profile">
+                                  <p>Account</p>
+                                  <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(42,)}</p>
+                                </div>
                               </div>
-                            </div>
-                          ))}
+                            ))}
                         </div>
                         
                       </div>

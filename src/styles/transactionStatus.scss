@@ -100,6 +100,7 @@
     }
 }
 
+
 .progress-bar{
     display: inline-flex;
     color: #00B272;
@@ -107,6 +108,17 @@
     .connect-line{
         height: 1px;
         width: 60px;
+        border-bottom: 1px solid;
+        margin: 0 6px;
+        &.waiting{
+            border-bottom: 1px dotted #B7B7B8;
+        }
+    }
+
+    .connect-line-failed{
+        height: 1px;
+        width: 60px;
+        color: #FD0053;
         border-bottom: 1px solid;
         margin: 0 6px;
         &.waiting{
@@ -136,6 +148,26 @@
             border: 1px solid #B7B7B8;
             background: white;
         }
+    }
+
+    .circle-sign-failed{
+        width: 12px;
+        height: 12px;
+        line-height: 12px;
+        color: white;
+        border-radius: 50%;
+        font-size: 12px;
+        text-align: center;
+        background: #FD0053;
+        margin-right: 6px;
+        &.empty{
+            border: 1px solid #B7B7B8;
+            background: white;
+        }
+    }
+
+    .completed-failed{
+        color: #FD0053;
     }
 }
   
