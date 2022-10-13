@@ -96,10 +96,6 @@ const retrieveChainInfo = async api => {
   }
 }
 
-const disconnectChainSocket = async api => {
-  await api.disconnect()
-}
-
 ////////////////////////////////////////////////////////
 // Loading accounts from dev and polkadot-js extension
 const loadAccounts = (state, dispatch) => {
@@ -164,23 +160,6 @@ const SubstrateContextProvider = props => {
       loadAccounts(state, dispatch)
     }
   }, [state, dispatch])
-
-  useEffect(() => {
-    const { api } = state
-    const handleTabClose = async(event) => {
-      event.preventDefault();
-      console.log('beforeunload event triggered');
-      await disconnectChainSocket(api);
-
-      return (event.returnValue = 'Are you sure you want to exit?');
-    };
-
-    window.addEventListener('beforeunload', handleTabClose);
-
-    return () => {
-      window.removeEventListener('beforeunload', handleTabClose);
-    };
-  }, []);
 
   function setCurrentAccount(acct) {
     dispatch({ type: 'SET_CURRENT_ACCOUNT', payload: acct })
