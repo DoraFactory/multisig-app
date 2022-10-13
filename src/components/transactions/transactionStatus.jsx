@@ -94,22 +94,21 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        // let block_number;
+        let block_number = 0;
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-          // block_number = await api.rpc.chain.getBlock(result.status.asInBlock).block;
-          // console.log(block_number);
-          // console.log(JSON.stringify(result));
+          let block_num = await api.rpc.chain.getBlock(result.status.asInBlock);
+          console.log(block_num);
         }else if(result.status.isFinalized){
           console.log(result.status.isFinalized)
           if(!result.dispatchError){
             // save current multisig wallet's transaction 
             console.log(result.txHash)
-            // console.log(block_number);
+            console.log(block_number);
             let data = {
               call_hash : api.registry.hash(encodeData).toHex(),
               detail: {
-                block_height: 0,
+                block_height: block_number,
                 address: main_owner,
                 pallet_method: `balances/` + method.name,
                 parameters: params,
@@ -348,12 +347,6 @@ const TransactionStatus = () => {
       }
     }, [activeTab])
 
-/*     console.log('pending is ' + JSON.stringify(pendingTx));
-    console.log(createdTx)
-    console.log(currTxList)
-    console.log(activeTab)
-    console.log('calls is ' + JSON.stringify(calls)); */
-
 
     return(
         <div>
@@ -558,9 +551,6 @@ const TransactionStatus = () => {
                       <div class="transaction-status">
                           <div class="status-bar">
                             <span>Pending approval</span>
-                            {
-                              console.log(tx.depositor + '---' + encodeAddress(main_owner, SS58Prefix))
-                            }
                             {tx.depositor == encodeAddress(main_owner, SS58Prefix) ? (
                               <div
                                 v-if="tabIndex==0"
@@ -739,14 +729,21 @@ const TransactionStatus = () => {
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
-                            <span class="summary-value">{tx_info.detail.parameters[0] + tx_info.detail.parameters[1]}</span> 
+                            <span class="summary-value">{tx_info.detail.parameters[1]}</span> 
                         </p>
                       </div>
                     
                       <div class="transaction-status">
-                        <p class="status-summary">
+                        {/* <p class="status-summary">
                           {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
-                        </p>
+                        </p> */}
+
+                        <div class="progress-bar">
+                            <div class="circle-sign">
+                              ✓
+                            </div>
+                            <span>Success</span>
+                        </div>
 
                         <div class="progress-bar">
                           <div class="progress-created">
@@ -758,15 +755,17 @@ const TransactionStatus = () => {
                           </div>
                           <div>
                             <div class="progress-confirmed">
-                              <div class="circle-sign" />
+                              <div class="circle-sign">
+                                ✓
+                              </div>
                               <div class="">
                                 Confirmed
                               </div>
                               <span class="connect-line waiting" />
                             </div>
                           </div>
-                          <div class="progress-executed inactive">
-                            <div class="circle-sign empty" />
+                          <div class="progress-executed">
+                            <div class="circle-sign" />
                             <div class="">
                               Executed
                             </div>
@@ -774,17 +773,20 @@ const TransactionStatus = () => {
                         </div>
 
                         <div class="users-list">
-                          <div
-                            v-for="(addr, i) in trans.approvals"
-                        
-                            class="user-info"
-                          >
-                            <img src={avatar}/>
-                            <div class="user-profile">
-                              <p>Account</p>
-                              <p>5EyU8W...wSL</p>
+                        {tx_info.operations.map((operation) => (
+                            <div
+                              class="user-info"
+                            >
+                              <Identicon
+                                  value={encodeAddress(operation.owner, SS58Prefix)}  
+                                  theme={"polkadot"}
+                              />
+                              <div class="user-profile">
+                                <p>Account</p>
+                                <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(42,)}</p>
+                              </div>
                             </div>
-                          </div>
+                          ))}
                         </div>
                         
                       </div>
