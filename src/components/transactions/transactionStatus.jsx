@@ -117,7 +117,7 @@ const TransactionStatus = () => {
             }
             const res = await axios({
                   method: "post",
-                  url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+                  url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
                   headers: {
                     'Content-Type': 'application/json',
                     "dorafactory-token": sessionStorage.getItem('token'),
@@ -179,7 +179,7 @@ const TransactionStatus = () => {
                   console.log(hash);
                   const ans = await axios({
                     method: "patch",
-                    url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+                    url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
                     headers: {
                       'Content-Type': 'application/json',
                       "dorafactory-token": sessionStorage.getItem('token'),
@@ -230,7 +230,7 @@ const TransactionStatus = () => {
           }
           const ans = await axios({
             method: "patch",
-            url: `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/`,
+            url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
             headers: {
               'Content-Type': 'application/json',
               "dorafactory-token": sessionStorage.getItem('token'),
@@ -306,7 +306,7 @@ const TransactionStatus = () => {
         });
 
         axios.get(
-          `http://127.0.0.1:8000/wallets/${multisig_wallet.accountId}/transactions/?status=1&status=-1`,
+          `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/?status=1&status=-1`,
           {
             headers: {"dorafactory-token": sessionStorage.getItem("token")}
           }).then((res) => {

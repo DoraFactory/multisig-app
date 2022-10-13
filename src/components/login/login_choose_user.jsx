@@ -73,7 +73,7 @@ const LoginUserCard = () => {
     const navigate = useNavigate();
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
+        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address.toString()}}).then((res) => {
             return res.data
         });
 
@@ -99,7 +99,7 @@ const LoginUserCard = () => {
             const result = await axios(
                 {
                     method: "post",
-                    url: 'http://127.0.0.1:8000/login/',
+                    url: 'https://multisig.dorafactory.org/login/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
@@ -108,7 +108,7 @@ const LoginUserCard = () => {
             console.log(result.data)
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
-                const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+                const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
                     .then((res) => {
                         // setMultisigs(res.data['detail'])
                         return res.data
@@ -118,8 +118,14 @@ const LoginUserCard = () => {
                 console.log("---------------------------here1111");
                 console.log("---------------------------here1111");
                 console.log(wallets);
+                console.log(wallets.length);
                 console.log(wallets['detail']);
-                if(wallets.length == 0) {
+                console.log(wallets['detail'].length);
+                console.log(wallets['detail'] == 0 && wallets['code'] == 'ok' )
+                if(wallets['detail'].length === 0 && wallets['code'] === 'ok' ) {
+                    console.log("----------------------- hello11")
+                    console.log("----------------------- hello11")
+                    console.log("----------------------- hello11")
                     navigate("/create-wallet")
                 } else {
                     localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))

@@ -50,7 +50,7 @@ const CreateStep3 = () => {
         const result = await axios(
             {
                 method: "post",
-                url: `http://127.0.0.1:8000/wallets/`,
+                url: `https://multisig.dorafactory.org/wallets/`,
                 headers: {
                     'Content-Type': 'application/json',
                     "dorafactory-token": sessionStorage.getItem("token")
@@ -60,7 +60,7 @@ const CreateStep3 = () => {
 
         console.log(result.data)
 
-        const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+        const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
             .then((res) => {
                 // setMultisigs(res.data['detail'])
                 return res.data

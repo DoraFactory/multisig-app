@@ -81,7 +81,7 @@ const Menu = () => {
 
     // useEffect(() => {
     //     async function getWallets() {
-    //         const wallets = await axios.get(`http://127.0.0.1:8000/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
+    //         const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
     //         .then((res) => {
     //             setMultisigs(res.data['detail'])
     //             return res.data

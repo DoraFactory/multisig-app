@@ -82,7 +82,7 @@ const SignUpCard = () => {
     const handleClose = () => setOpen(false);
 
     const handleSignMessage = async()  => {
-        const message = await axios.get("http://127.0.0.1:8000/login/", {params: {account: currentAccount.address}}).then((res) => {
+        const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address}}).then((res) => {
             return res.data
         });
 
@@ -108,7 +108,7 @@ const SignUpCard = () => {
             const result = await axios(
                 {
                     method: "post",
-                    url: 'http://127.0.0.1:8000/signup/',
+                    url: 'https://multisig.dorafactory.org/signup/',
                     headers: {
                     'Content-Type': 'application/json'
                     },
