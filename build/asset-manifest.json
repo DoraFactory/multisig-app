@@ -1,7 +1,7 @@
 {
   "files": {
-    "main.css": "/static/css/main.868e9594.css",
-    "main.js": "/static/js/main.b279d8df.js",
+    "main.css": "/static/css/main.6ab3c24a.css",
+    "main.js": "/static/js/main.9e88c450.js",
     "static/media/avatar.svg": "/static/media/avatar.5d94362de0ab68a05aa736a725b68725.svg",
     "static/media/icon_polkadot.svg": "/static/media/icon_polkadot.40816de3ac2c5e658486de6f3598dac3.svg",
     "static/media/polkadot-logo.svg": "/static/media/polkadot-logo.cddc7f9bde0ca3759816b629fe0b11fe.svg",
@@ -20,11 +20,11 @@
     "static/media/pending.svg": "/static/media/pending.833c87f530a7aee307b9.svg",
     "static/media/invalid.svg": "/static/media/invalid.c0f512504c28841039f4.svg",
     "static/media/failed.svg": "/static/media/failed.f8fbf8740275dbb4e2bd.svg",
-    "main.868e9594.css.map": "/static/css/main.868e9594.css.map",
-    "main.b279d8df.js.map": "/static/js/main.b279d8df.js.map"
+    "main.6ab3c24a.css.map": "/static/css/main.6ab3c24a.css.map",
+    "main.9e88c450.js.map": "/static/js/main.9e88c450.js.map"
   },
   "entrypoints": [
-    "static/css/main.868e9594.css",
-    "static/js/main.b279d8df.js"
+    "static/css/main.6ab3c24a.css",
+    "static/js/main.9e88c450.js"
   ]
 }
