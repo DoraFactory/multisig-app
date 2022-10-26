@@ -3,8 +3,7 @@ import '../../styles/owners.scss'
 import avatar from '../../resources/avatar.svg'
 import copy from '../../resources/copy.svg'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Identicon from '@polkadot/react-identicon';
-
+import IdentityIcon from '../IdentityIcon';
 
 function OwnerCard () {
 
@@ -23,11 +22,11 @@ function OwnerCard () {
           {owners.map((owner) => (
             <div class="owner-card">
               {/* <img class="owner-logo" src={avatar}/> */}
-              <Identicon
+              <IdentityIcon
                   value={owner.account}
-                  // size={32}
-                  theme={"polkadot"}
-                  className="owner-logo"
+                  size={68}
+                  // theme={"robohash"}
+                  // className="owner-logo"
               />
               <p class="owner-name"> {owner.name} </p>
               <div class="flex-container">
