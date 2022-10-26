@@ -15,8 +15,7 @@ import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
-// import JSONBigInt from 'json-bigint';
+import IdentityIcon from '../IdentityIcon';
 
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -148,10 +147,9 @@ const SignUpCard = () => {
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>
                                 <div class="profile">
-                                    <Identicon
+                                    <IdentityIcon
                                         value={option.value}
                                         size={32}
-                                        theme={"polkadot"}
                                     />
                                     <div
                                         class="name-info"

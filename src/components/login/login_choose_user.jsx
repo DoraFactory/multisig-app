@@ -7,14 +7,13 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 import { web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
-import {encodeAddress} from '@polkadot/util-crypto'
-
+import {encodeAddress} from '@polkadot/util-crypto';
+import IdentityIcon from '../IdentityIcon';
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
       marginTop: theme.spacing(3),
@@ -172,10 +171,9 @@ const LoginUserCard = () => {
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>
                                 <div class="profile">
-                                    <Identicon
-                                        value={option.value}
+                                    <IdentityIcon
                                         size={32}
-                                        theme={"polkadot"}
+                                        value={option.value}
                                     />
                                     <div
                                         class="name-info"

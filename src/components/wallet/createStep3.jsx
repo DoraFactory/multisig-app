@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto'
 import { useSubstrateState } from '../../context';
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from '../IdentityIcon';
 
 import axios from 'axios';
 
@@ -130,10 +130,9 @@ const CreateStep3 = () => {
                         </p>
                         {owners.map((owner) => (
                             <div className="profile">   
-                                <Identicon
+                                <IdentityIcon
                                     value={owner.account}  
                                     size={32}
-                                    theme={"polkadot"}
                                 />
                                 <div className="name-info">
                                     <p>{owner.name}</p>
