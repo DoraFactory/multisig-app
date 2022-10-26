@@ -24,6 +24,10 @@ const TransactionStatus = () => {
     const [multiArgs, setMultiArgs] = useState('Id');
     const [activeTab, setActiveTab] = useState("Pending");
     const [unsub, setUnsub] = useState(null)
+    // all pallets
+    const [pallets, setPallets] = useState(['balances','currencies']);
+    // current pallet
+    const [pallet, setPallet] = useState('balances');
     // all methods of pallet balances 
     const [methods, setMethods] = useState([]);
     // current method
@@ -66,6 +70,9 @@ const TransactionStatus = () => {
     const handleMethodChange = (event) => {
       setMethod(event.target.value);
     };
+    const handlePalletChange = (event) => {
+      setPallet(event.target.value);
+    }
     const handleGetDestParams = (value, index) => {
       params[index] = value;
       setParams([...params]);
@@ -259,22 +266,20 @@ const TransactionStatus = () => {
 
 
     useEffect(() => {
-      const balance_methods = api.tx['balances'];
-      for (let k in balance_methods) {
-        const meta = balance_methods[k].meta.toJSON()
+      const current_methods = api.tx[pallet];
+      methods.splice(0, methods.length);
+      for (let k in current_methods) {
+        const meta = current_methods[k].meta.toJSON()
         const balance_method = {
             'name': `${k}(${meta.args.map((e)=>e.name).join(',')})`,
-            'doc': meta.docs[0],
+            'doc': meta.docs[0].substring(0,48),
             'args': meta.args,
             'key': k,
         }
-        
         methods.push(balance_method);
-        console.log(methods)
-        setMethods([...methods.slice(6,12)]); 
+        setMethods([...methods]); 
       }
-    }, [])
-
+    }, [pallet])
 
     useEffect(() => {
         api.query.multisig.multisigs.entries(multisig_wallet.accountId, multisigTxs => {
@@ -409,7 +414,7 @@ const TransactionStatus = () => {
                                       Account
                                       </div>
                                       <div className="balance">
-                                      Balance: 100
+                                      {/* Balance: 100 */}
                                       </div>
                                   </div>
                                   <div className="wallet-info">
@@ -420,30 +425,51 @@ const TransactionStatus = () => {
                                       Submit
                                       </div>
                                       <div className='flex-submit-div'>
-                                        <div><input value="balances" className='module-input'/></div>
                                         <div>
-                                        <FormControl sx={{ m: 1, minWidth: 800 }}  size="small">
-                                        <Select           
-                                          labelId="demo-select-small"
-                                          id="demo-select-small"
-                                          value={method}
-                                          onChange={handleMethodChange}
-                                          displayEmpty
-                                          inputProps={{ 'aria-label': 'Without label' }}
-                                        >
-                                          {methods.map((method) => {
-                                            return(
-                                              <MenuItem value={method}>
-                                                <div className="method-dropdown">
-                                                  <span>{method.name}</span>
-                                                  <span>{method.doc}</span>
-                                                </div>
-                                              </MenuItem>
-                                            )
-                                          })}
-                                        </Select>
-                                      </FormControl>
-                                      </div>
+                                          <FormControl sx={{ m: 0, minWidth: 98 }}  size="small">
+                                            <Select           
+                                              labelId="demo-select-small"
+                                              id="demo-select-small"
+                                              value={pallet}
+                                              onChange={handlePalletChange}
+                                              displayEmpty
+                                              inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                              {pallets.map((pallet) => {
+                                                return(
+                                                  <MenuItem value={pallet}>
+                                                    <div className="method-dropdown">
+                                                      <span>{pallet}</span>
+                                                    </div>
+                                                  </MenuItem>
+                                                )
+                                              })}
+                                            </Select>
+                                          </FormControl>
+                                        </div>
+                                        <div>
+                                          <FormControl sx={{ m: 0, minWidth: 753 }}  size="small">
+                                            <Select           
+                                              labelId="demo-select-small"
+                                              id="demo-select-small"
+                                              value={methods[0]}
+                                              onChange={handleMethodChange}
+                                              displayEmpty
+                                              inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                              {methods.map((method) => {
+                                                return(
+                                                  <MenuItem value={method}>
+                                                    <div className="method-dropdown">
+                                                      <span>{method.name}</span>
+                                                      <span>{method.doc}</span>
+                                                    </div>
+                                                  </MenuItem>
+                                                )
+                                              })}
+                                            </Select>
+                                          </FormControl>
+                                        </div>
                                       </div>
                                   </div>
 
