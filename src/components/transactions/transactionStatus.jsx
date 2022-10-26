@@ -13,7 +13,7 @@ import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
 import {encodeAddress} from '@polkadot/util-crypto'
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from '../IdentityIcon';
 
 import axios from 'axios';
 
@@ -604,10 +604,9 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <Identicon
+                              <IdentityIcon
                                   value={approver}
                                   size = {32}
-                                  theme={"polkadot"}
                               />
                               <div class="user-profile">
                                 <p>Account</p>
@@ -690,10 +689,9 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <Identicon
+                              <IdentityIcon
                                   value={approver}
                                   size = {32}
-                                  theme={"polkadot"}
                               />
                               <div class="user-profile">
                                 <p>Account</p>
@@ -808,10 +806,9 @@ const TransactionStatus = () => {
                               <div
                               class="user-info"
                               >
-                                <Identicon
+                                <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
                                     size = {32}
-                                    theme={"polkadot"}
                                 />
                                 <div class="user-profile">
                                   {/* <p></p> */}
@@ -826,10 +823,9 @@ const TransactionStatus = () => {
                               <div
                                 class="user-info"
                               >
-                                <Identicon
+                                <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
                                     size = {32}
-                                    theme={"polkadot"}
                                 />
                                 <div class="user-profile">
                                   {/* <p></p> */}
@@ -845,13 +841,11 @@ const TransactionStatus = () => {
                                 <div
                                   class="user-info"
                                 >
-                                  <Identicon
+                                  <IdentityIcon
                                       value={encodeAddress(operation.owner, SS58Prefix)}  
                                       size = {32}
-                                      theme={"polkadot"}
                                   />
                                   <div class="user-profile">
-                                    {/* <p></p> */}
                                     <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                   </div>
                                 </div>
