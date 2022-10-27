@@ -99,21 +99,23 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        let block_number = 0;
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-          let block_num = await api.rpc.chain.getBlock(result.status.asInBlock);
-          console.log(block_num);
         }else if(result.status.isFinalized){
           console.log(result.status.isFinalized)
           if(!result.dispatchError){
             // save current multisig wallet's transaction 
-            console.log(result.txHash)
-            console.log(block_number);
+            let block_hash = result.status.asFinalized.toString()
+            console.log(result.status.asFinalized.toString());
+            console.log(result.txHash.toString())
+            // console.log(result.status.finalized)
+
+            // let block_number = await api.rpc.chain.getBlock(block_hash).block.header.number;
+            // console.log("这就是区块号"+ block_number);
             let data = {
               call_hash : api.registry.hash(encodeData).toHex(),
               detail: {
-                block_height: block_number,
+                block_height: block_hash,
                 address: main_owner,
                 pallet_method: `balances/` + method.name,
                 parameters: params,
@@ -167,6 +169,7 @@ const TransactionStatus = () => {
             console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
           }else if(result.status.isFinalized){
             if(!result.dispatchError){
+                let block_hash = result.status.asFinalized.toString()
                 let cur_status = 0;
                 if(res.toHuman().approvals.length == multisig_wallet.threshold - 1){
                   cur_status = 1;
@@ -174,7 +177,7 @@ const TransactionStatus = () => {
                   let data = {
                     call_hash : hash,
                     detail: {
-                      block_height: 0,
+                      block_height: block_hash,
                       address: main_owner,
                       pallet_method: `balances/` + method,
                       parameters: params,
@@ -223,10 +226,11 @@ const TransactionStatus = () => {
         if (result.status.isInBlock) {
           console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
         }else if(result.status.isFinalized){
+          let block_hash = result.status.asFinalized.toString()
           let data = {
             call_hash : hash,
             detail: {
-              block_height: 0,
+              block_height: block_hash,
               address: main_owner,
               pallet_method: `balances/` + method,
               parameters: params,
@@ -279,6 +283,8 @@ const TransactionStatus = () => {
         methods.push(balance_method);
         setMethods([...methods]); 
       }
+      setMethod(methods[0])
+      console.log(methods)
     }, [pallet])
 
     useEffect(() => {
@@ -452,7 +458,7 @@ const TransactionStatus = () => {
                                             <Select           
                                               labelId="demo-select-small"
                                               id="demo-select-small"
-                                              value={methods[0]}
+                                              value={method}
                                               onChange={handleMethodChange}
                                               displayEmpty
                                               inputProps={{ 'aria-label': 'Without label' }}
