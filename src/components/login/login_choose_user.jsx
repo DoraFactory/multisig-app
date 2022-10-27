@@ -24,11 +24,10 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       'justify-content': 'flex-start',
       cursor: 'pointer',
       position: 'relative',
-      backgroundColor: theme.palette.background.paper,
       border: '1px solid #FF761C',
       'border-radius': '4px',
       fontSize: 16,
-      margin:-2,
+      'margin-left': '-5px', 
       padding: '10px 26px 10px 12px',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       // Use the system font instead of the default Roboto font.
@@ -55,7 +54,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
-    const SS58Prefix = 42;
+    const SS58Prefix = 128;
     
     let keyringOptions = [];
     let initialAddress = '';
@@ -153,7 +152,7 @@ const LoginUserCard = () => {
 
     return(
         <div className="login-card blur-card-bg">
-
+{}
             <h3>Login</h3>
             <div className="description">Choose linked account </div>
             <FormControl sx={{ m: 1, minWidth: 490 }}  size="small">
@@ -179,7 +178,7 @@ const LoginUserCard = () => {
                                         class="name-info"
                                     >
                                         <p align='left'>{option.text}</p>
-                                        <p>{option.value}</p>
+                                        <p>{encodeAddress(option.value, SS58Prefix).substring(0,20) + '......' + encodeAddress(option.value, SS58Prefix).substring(30,)}</p>
                                     </div>
                                 </div>
                             </MenuItem>

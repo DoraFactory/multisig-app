@@ -4,8 +4,8 @@
   --theme-gray-bg: #C8C8C8
 }
 body {
-  min-height: 100 vh;
-  background: url('background.svg');
+  background: url('background.svg') no-repeat center fixed;     
+  background-size: cover;
 }
 a {
   text-decoration: none;

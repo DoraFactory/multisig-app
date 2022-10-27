@@ -18,7 +18,7 @@ const LoginCard = (props) => {
             <h3>Login</h3>
             <div className="description">Welcome back! Login with Web3 wallet.</div>
 
-            <div className="login-btn-base login-btn-reverse login-btn" onClick={handleClick}>
+            <div className="login-btn-base login-btn-reverse login-btn first-login-btn" onClick={handleClick}>
                 <img className='font-image' src={polkadot_logo}/>
                 <div className='first-login-logo'>Login with Polkadot</div>
             </div>
