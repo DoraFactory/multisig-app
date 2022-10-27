@@ -32,7 +32,8 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       border: '1px solid #FF761C',
       'border-radius': '4px',
       fontSize: 16,
-      margin:-2,
+      'margin-left': '-5px',
+
       padding: '10px 26px 10px 12px',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       // Use the system font instead of the default Roboto font.
@@ -128,7 +129,7 @@ const SignUpCard = () => {
     }
 
     return(
-        <div className="login-card blur-card-bg">
+        <div className="login-card blur-card-bg signup-card">
 
             <h3>Sign-up</h3>
             <div className="description">Choose linked account </div>
@@ -155,13 +156,22 @@ const SignUpCard = () => {
                                         class="name-info"
                                     >
                                         <p align='left'>{option.text}</p>
-                                        <p>{option.value}</p>
+                                        <p>{encodeAddress(option.value, SS58Prefix).substring(0,20) + '......' + encodeAddress(option.value, SS58Prefix).substring(30,)}</p>
                                     </div>
                                 </div>
                             </MenuItem>
                         ))}
                     </Select>
             </FormControl>
+            <div>
+                <div className="check-input">
+                    <input type="checkbox" name="check1"/>
+                </div>
+                <div className="private-info">
+                    <p className='private-info-text'>I have read and agree to the terms of the <a className='private-info-link'>Dorafactory end user agreement.</a></p>
+                    <p className='private-info-text'>To see how we use your personal data please see our <a className='private-info-link'>privacy notice.</a></p>
+                </div>
+            </div>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
                 <div>
                     Sign-up

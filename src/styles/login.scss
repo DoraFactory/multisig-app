@@ -21,10 +21,9 @@
     }
     .description {
         text-align: left;
-        padding-bottom: 6px;
+        padding-bottom: 4px;
         font-size: 12px;
         font-weight: 400;
-        margin-bottom: 10px;
     }
     .login-btn {
         width: 496px;
@@ -44,11 +43,8 @@
 .login-btn-base {
     box-sizing: border-box;
 
-    // position: absolute;
     width: 496px;
     height: 48px;
-    // left: 127px;
-    // top: 238px;
 
     background: rgba(255, 118, 28, 0.1);
     border: 1px solid #FF761C;
@@ -57,7 +53,7 @@
     // background-color: var(--theme-orange);
     color: white;
     font-weight: 600;
-    padding: 15px;
+    padding: 12px;
     display: inline-block;
     cursor: pointer;
   }
@@ -72,20 +68,13 @@
     color: #FF761C;
     font-family: 'SF Pro Text';
     font-style: normal;
-    // font-weight: 600;
-    // font-size: 15px;
-    // line-height: 24px;
 }
 
 .login-btn-choose {
     background-color: white;
-    // color: #FF761C;
     font-family: 'SF Pro Text';
     font-style: normal;
-    // font-weight: 600;
-    // font-size: 15px;
-    // line-height: 24px;
-
+    margin-top: 16px;
 }
 
 .login-btn-background {
@@ -97,7 +86,7 @@
 .text-center {
     text-align: center;
     margin-top: 20px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .or-line {
@@ -202,4 +191,74 @@ content: "";
 .font-image {
     vertical-align: middle;
     margin-right: 8px;
+}
+
+.first-login-btn {
+    margin-top: 8px;
+}
+
+.private-info-parent {
+    display: flex; 
+    flex-wrap: wrap;
+}
+
+.private-info {
+    width: 496px;
+    text-align: left;
+    cursor: pointer;
+    display: inline-block;
+    width: 95%;
+
+}
+
+.private-info-text {
+    margin-top: 0px;
+    margin-bottom: 0px;
+    vertical-align: middle;
+}
+
+.private-info-link {
+    color:#FF761C;
+    text-decoration:underline
+}
+
+.check-input {
+    float: left;
+    width: 5%;
+}
+
+input[type=checkbox]{
+    width: 50%;
+    cursor: pointer;
+    position: relative;
+    width: 15px;
+    height: 15px;
+    font-size: 14px;
+    vertical-align: middle;
+}
+
+input[type=checkbox]::after{
+    position: absolute;
+    top: 0;
+    color: #000;
+    width: 15px;
+    height: 15px;
+    display: inline-block;
+    visibility: visible;
+    padding-left: 0px;
+    text-align: center;
+    content: ' ';
+    border-radius: 3px
+}
+       
+input[type=checkbox]:checked::after{
+    content: "✓";
+    font-size: 12px;
+    font-weight: bold;
+    color: white;
+    background-color: #FF761C;
+}
+
+.signup-card {
+    height: 450px;
 }
