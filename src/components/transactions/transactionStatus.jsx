@@ -728,18 +728,17 @@ const TransactionStatus = () => {
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
-                            <span class="summary-value">{tx_info.detail.pallet_method}</span>
+                          <span class="summary-value">{tx_info.detail.pallet_method}</span>
                         </p>
                         <p v-if="callDetail(hash)">
-                          <span class="summary-label">PARAMETER:</span>
-                            <span class="summary-value">{tx_info.detail.parameters[1]}</span> 
+                          <p class="summary-label">PARAMETER:</p>
+                          {tx_info.detail.parameters.map((parameter) => (
+                              <p class="summary-value">{parameter}</p>
+                          ))}
                         </p>
                       </div>
                     
                       <div class="transaction-status">
-                        {/* <p class="status-summary">
-                          {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
-                        </p> */}
                         {
                           tx_info.status > 0 ? (
                             <div class="progress-bar">
@@ -774,7 +773,6 @@ const TransactionStatus = () => {
                               <div class="">
                                 Confirmed
                               </div>
-                              {/* <span class="connect-line" /> */}
                             </div>
                           </div>
                           {
@@ -814,7 +812,6 @@ const TransactionStatus = () => {
                                     theme={"polkadot"}
                                 />
                                 <div class="user-profile">
-                                  {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                 </div>
                               </div>
@@ -832,7 +829,6 @@ const TransactionStatus = () => {
                                     theme={"polkadot"}
                                 />
                                 <div class="user-profile">
-                                  {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                 </div>
                               </div>
@@ -851,7 +847,6 @@ const TransactionStatus = () => {
                                       theme={"polkadot"}
                                   />
                                   <div class="user-profile">
-                                    {/* <p></p> */}
                                     <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                   </div>
                                 </div>
