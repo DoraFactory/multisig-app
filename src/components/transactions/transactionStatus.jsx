@@ -487,7 +487,7 @@ const TransactionStatus = () => {
                                         {args.type === "MultiAddress" ? 
                                             (
                                               <div>
-                                                <FormControl sx={{ m: 1, minWidth: 120 }}  size="small">
+                                                <FormControl sx={{ m: 0, minWidth: 120 }}  size="small">
                                                 <Select
                                                   labelId="demo-select-small"
                                                   id="demo-select-small"
@@ -636,12 +636,14 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
+                              <div className='user-image'>
                               <IdentityIcon
                                   value={approver}
-                                  size = {32}
+                                  size = {30}
                               />
+                              </div>
                               <div class="user-profile">
-                                <p>Account</p>
+                                {/* <p>Account</p> */}
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
                               </div>
                             </div>
@@ -721,12 +723,14 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
+                              <div className='user-image'>
                               <IdentityIcon
                                   value={approver}
-                                  size = {32}
+                                  size={30}
                               />
+                              </div>
                               <div class="user-profile">
-                                <p>Account</p>
+                                {/* <p>Account</p> */}
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
                               </div>
                             </div>
@@ -748,7 +752,7 @@ const TransactionStatus = () => {
                           <span class="summary-value">{tx_info.call_hash.substring(0,10) + '...' + tx_info.call_hash.substring(49,)}</span>
                         </p>
                         <p>
-                          <span class="summary-label">BLOCK TIME:</span>
+                          <span class="summary-label">BLOCK HASH:</span>
                           <span class="summary-value">{tx_info.detail.block_height}</span>
                         </p>
                         <p>
@@ -838,10 +842,12 @@ const TransactionStatus = () => {
                               <div
                               class="user-info"
                               >
+                                <div className='user-image'>
                                 <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
-                                    size = {32}
+                                    size={30}
                                 />
+                                </div>
                                 <div class="user-profile">
                                   {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
@@ -855,10 +861,12 @@ const TransactionStatus = () => {
                               <div
                                 class="user-info"
                               >
+                                <div className='user-image'>
                                 <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
-                                    size = {32}
+                                    size={30}
                                 />
+                                </div>
                                 <div class="user-profile">
                                   {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
@@ -873,10 +881,12 @@ const TransactionStatus = () => {
                                 <div
                                   class="user-info"
                                 >
+                                  <div className='user-image'>
                                   <IdentityIcon
                                       value={encodeAddress(operation.owner, SS58Prefix)}  
-                                      size = {32}
+                                      size={30}
                                   />
+                                  </div>
                                   <div class="user-profile">
                                     <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                   </div>

@@ -149,10 +149,13 @@ const LoginUserCard = () => {
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
     }
+    
+    const handleSignup = () => {
+        navigate("/signup")
+    }
 
     return(
         <div className="login-card blur-card-bg">
-{}
             <h3>Login</h3>
             <div className="description">Choose linked account </div>
             <FormControl sx={{ m: 1, minWidth: 490 }}  size="small">
@@ -194,23 +197,13 @@ const LoginUserCard = () => {
                 <div>
                     Login
                 </div>
-                     {/* <Button onClick={handleToggle}>Login</Button>
-                    <Backdrop
-                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                        open={open}
-                        onClick={handleClose}
-                    >
-                        <CircularProgress color="inherit" />
-                    </Backdrop> */}
             </div>
             <div className="div-line-word or-line">
                 OR
             </div>
             <div className="text-center">Haven't used Dorafactory Multisig before? Sign up!</div>
-            <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/signup">
+            <div className="login-btn-base login-btn-reverse signUp-btn" onClick={handleSignup}>
                 Sign Up
-            </Link>
             </div>
         </div>
     )

@@ -6,11 +6,15 @@ import '../../styles/login.scss';
 import 'antd/es/button/style/index.css';
 import polkadot_logo from '../../resources/polkadot-logo.svg'
 
-
 const LoginCard = (props) => {
+    const navigate = useNavigate();
 
     const handleClick = () => {
         props.setDefaultPolka()
+    }
+
+    const handleSignup = () => {
+        navigate("/signup")
     }
 
     return(
@@ -23,14 +27,12 @@ const LoginCard = (props) => {
                 <div className='first-login-logo'>Login with Polkadot</div>
             </div>
             
-            <div className="div-line-word or-line">
+            <div className="div-line-word or-line first-line">
                 OR
             </div>
-            <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
-            <div className="login-btn-base sign-up-btn-reverse signUp-btn">
-                <Link to="/signup">
+            <div className="text-center first-text">Haven’t used Dorafactory Multisig before? Sign up!</div>
+            <div className="login-btn-base sign-up-btn-reverse signUp-btn" onClick={handleSignup}>
                     Sign Up
-                </Link>
             </div>
         </div>
     )

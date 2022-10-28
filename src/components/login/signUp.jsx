@@ -128,6 +128,10 @@ const SignUpCard = () => {
         setCurrentAccount(keyring.getPair(addr))
     }
 
+    const handleLogin = () => {
+        navigate("/login")
+    }
+
     return(
         <div className="login-card blur-card-bg signup-card">
 
@@ -181,10 +185,8 @@ const SignUpCard = () => {
                 OR
             </div>
             <div className="text-center">Already have an account? Login!</div>
-            <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/login">
-            Login
-        </Link>
+            <div className="login-btn-base login-btn-reverse signUp-btn" onClick={handleLogin}>
+                Login
             </div>
         </div>
     )
