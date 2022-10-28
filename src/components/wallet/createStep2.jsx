@@ -96,11 +96,11 @@ const CreateStep2 = () => {
         const inputIndex = Number(event.target.id.split(' ')[1]);
 
         owners.map((owner, index) => {
-            if (index === inputIndex) {
-                if (inputType === 'name') {
+            if (index == inputIndex) {
+                if (inputType == 'name') {
                     owner.name = value
                 }
-                if (inputType === 'address') {
+                if (inputType == 'address') {
                     owner.account = encodeAddress(value, SS58Prefix)
                 }
             }
