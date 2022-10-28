@@ -62,7 +62,7 @@ const CreateStep2 = () => {
         })
         
         setOwners([...owners.slice(1)]);
-        
+
         setMultisigAccount(
             {
                 wallet_name: walletName.current.value,
@@ -179,15 +179,15 @@ const CreateStep2 = () => {
                         {
                             owners.map((owner, index) =>(
                                 <div className="address-inputs">
-                                    <input type="text" id={`name ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
+                                    <input type="text" id={`name ${index}`} className={index==0?"input-base disabled-input":"input-base"} disabled={index==0?true:false} defaultValue={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
-                                        <input type="text" id={`address ${index}`} className={index===0?"input-base disabled-input":"input-base"} disabled={index===0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
+                                        <input type="text" id={`address ${index}`} className={index==0?"input-base disabled-input":"input-base"} disabled={index==0?true:false}  defaultValue = {owner.account} onChange={(e) => handleInputChange(e)}/>
                                     </div>
-                                    <img id={index} onClick={index===0?null:(e)=> {
+                                    <img id={index} onClick={index==0?null:(e)=> {
                                         e.persist();
                                         handleDelOwner(index)
-                                    }} src={Icons.Delete} className={index===0? "deletion": "deletion visible"}/>
+                                    }} src={Icons.Delete} className={index==0? "deletion": "deletion visible"}/>
                                 </div>
                             ))
                         }
