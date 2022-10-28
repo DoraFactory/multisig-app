@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from './IdentityIcon';
 
 import {encodeAddress} from '@polkadot/util-crypto'
 import { useSubstrate, useSubstrateState } from '../context';
@@ -149,23 +149,22 @@ const Menu = () => {
                     <div>
                         <FormControl sx={{ m: 1, minWidth: 200 }}  size="small">
                                 <Select           
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                onChange={(dropdown) => {
-                                    handleChange(dropdown.target.value)
-                                }}
-                                value = {multiAccount}
-                                displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                input={<BootstrapInput/>}
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    onChange={(dropdown) => {
+                                        handleChange(dropdown.target.value)
+                                    }}
+                                    value = {multiAccount}
+                                    displayEmpty
+                                    inputProps={{ 'aria-label': 'Without label' }}
+                                    input={<BootstrapInput/>}
                                 >   
                                      {multisigs.map((multisig) => (
                                         <MenuItem value={multisig.wallet}>
                                             <div class="profile">
-                                                <Identicon
+                                                <IdentityIcon
                                                     value={multisig.wallet}
                                                     size={32}
-                                                    theme={"polkadot"}
                                                 />
                                                 <div
                                                     class="name-info"

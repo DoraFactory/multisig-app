@@ -15,8 +15,7 @@ import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
-// import JSONBigInt from 'json-bigint';
+import IdentityIcon from '../IdentityIcon';
 
 
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
@@ -33,7 +32,8 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       border: '1px solid #FF761C',
       'border-radius': '4px',
       fontSize: 16,
-      margin:-2,
+      'margin-left': '-5px',
+
       padding: '10px 26px 10px 12px',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       // Use the system font instead of the default Roboto font.
@@ -128,8 +128,12 @@ const SignUpCard = () => {
         setCurrentAccount(keyring.getPair(addr))
     }
 
+    const handleLogin = () => {
+        navigate("/login")
+    }
+
     return(
-        <div className="login-card blur-card-bg">
+        <div className="login-card blur-card-bg signup-card">
 
             <h3>Sign-up</h3>
             <div className="description">Choose linked account </div>
@@ -148,22 +152,30 @@ const SignUpCard = () => {
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>
                                 <div class="profile">
-                                    <Identicon
+                                    <IdentityIcon
                                         value={option.value}
                                         size={32}
-                                        theme={"polkadot"}
                                     />
                                     <div
                                         class="name-info"
                                     >
                                         <p align='left'>{option.text}</p>
-                                        <p>{option.value}</p>
+                                        <p>{encodeAddress(option.value, SS58Prefix).substring(0,20) + '......' + encodeAddress(option.value, SS58Prefix).substring(30,)}</p>
                                     </div>
                                 </div>
                             </MenuItem>
                         ))}
                     </Select>
             </FormControl>
+            <div>
+                <div className="check-input">
+                    <input type="checkbox" name="check1"/>
+                </div>
+                <div className="private-info">
+                    <p className='private-info-text'>I have read and agree to the terms of the <a className='private-info-link'>Dorafactory end user agreement.</a></p>
+                    <p className='private-info-text'>To see how we use your personal data please see our <a className='private-info-link'>privacy notice.</a></p>
+                </div>
+            </div>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
                 <div>
                     Sign-up
@@ -173,10 +185,8 @@ const SignUpCard = () => {
                 OR
             </div>
             <div className="text-center">Already have an account? Login!</div>
-            <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/login">
-            Login
-        </Link>
+            <div className="login-btn-base login-btn-reverse signUp-btn" onClick={handleLogin}>
+                Login
             </div>
         </div>
     )

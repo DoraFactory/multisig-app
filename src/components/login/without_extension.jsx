@@ -7,6 +7,12 @@ import 'antd/es/button/style/index.css';
 import polkadot_logo from '../../resources/polkadot-logo.svg'
 
 const WithoutExtensionCard = () => {
+    const navigate = useNavigate();
+
+    const handleSignup = () => {
+        navigate("/signup")
+    }
+
     return(
         <div className="login-card blur-card-bg">
             <h3>Login</h3>
@@ -21,10 +27,8 @@ const WithoutExtensionCard = () => {
                 OR
             </div>
             <div className="text-center">Haven’t used Dorafactory Multisig before? Sign up!</div>
-            <div className="login-btn-base sign-up-btn-reverse signUp-btn">
-                <Link to="/create-wallet">
+            <div className="login-btn-base sign-up-btn-reverse signUp-btn" onClick={handleSignup}>
                     Sign Up
-                </Link>
             </div>
         </div>
     )
