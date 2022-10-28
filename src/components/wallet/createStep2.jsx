@@ -48,7 +48,12 @@ const CreateStep2 = () => {
     const [owners, setOwners] = useState([]);
 
     let curr_account = JSON.parse(localStorage.getItem('main-account'));
+    console.log("---------------------bug -------------------")
+    console.log("---------------------bug -------------------")
+    console.log("---------------------bug -------------------")
     let curr_name = keyring.getAddress(curr_account).meta.name;
+    console.log(curr_account);
+    console.log(curr_name);
 
     useEffect(() => {
         owners.push({
