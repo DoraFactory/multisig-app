@@ -54,13 +54,15 @@ const CreateStep2 = () => {
     let curr_name = keyring.getAddress(curr_account).meta.name;
     console.log(curr_account);
     console.log(curr_name);
-    owners.push({
-        name: curr_name,
-        account: encodeAddress(curr_account, SS58Prefix)
-    })
-    
-    setOwners([...owners.slice(1)]);
+
     useEffect(() => {
+        owners.push({
+            name: curr_name,
+            account: encodeAddress(curr_account, SS58Prefix)
+        })
+        
+        setOwners([...owners.slice(1)]);
+        
         setMultisigAccount(
             {
                 wallet_name: walletName.current.value,
