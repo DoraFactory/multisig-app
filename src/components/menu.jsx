@@ -199,7 +199,7 @@ const Menu = () => {
                             stroke-linejoin="round"
                         />
                     </svg>
-                    <span>ASSETS</span>
+                    <span className='cursor-pointer'>ASSETS</span>
                 </div>
                 <div className={activeTab==="transactions" ? "menu-link menu-selected": "menu-link"} onClick={handleTransaction}>
                     <svg
@@ -274,7 +274,7 @@ const Menu = () => {
                             stroke-linejoin="round"
                         />
                     </svg>
-                    <span>TRANSACTIONS</span>
+                    <span className='cursor-pointer'>TRANSACTIONS</span>
                 </div>
 
                 <div className={activeTab==="owners" ? "menu-link menu-selected": "menu-link"} onClick={handleOwner}>
@@ -314,7 +314,7 @@ const Menu = () => {
                         stroke-width="1.5"
                         />
                     </svg>
-                    <span>OWNERES</span>
+                    <span className='cursor-pointer'>OWNERS</span>
                 </div>
 
                 <div class="logout" onClick={loginOut}>
@@ -348,7 +348,7 @@ const Menu = () => {
                         stroke-linejoin="round"
                         />
                     </svg>
-                    <span>Logout</span>
+                    <span className='cursor-pointer'>Logout</span>
                 </div>
             </div>
             <div>
