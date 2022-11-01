@@ -45,22 +45,37 @@ const CreateStep2 = () => {
         threshold: 1,
     });
 
-    const [owners, setOwners] = useState([]);
 
     let curr_account = JSON.parse(localStorage.getItem('main-account'));
     console.log("---------------------bug -------------------")
     console.log("---------------------bug -------------------")
     console.log("---------------------bug -------------------")
     let curr_name = keyring.getAddress(curr_account).meta.name;
+    let data = [{
+        name: curr_name,
+        account: encodeAddress(curr_account, SS58Prefix)
+    }]
+    const [owners, setOwners] = useState(data);
+
     console.log(curr_account);
     console.log(curr_name);
+    console.log(owners)
+    // owners.push({
+    //     name: curr_name,
+    //     account: encodeAddress(curr_account, SS58Prefix)
+    // })
+    // setOwners([...owners.slice(1)]);
+
 
     useEffect(() => {
+        console.log('----------------------- slice')
+        console.log([owners])
+        console.log([...owners.slice(1)])
+        console.log([...owners.slice(2)])
         owners.push({
             name: curr_name,
             account: encodeAddress(curr_account, SS58Prefix)
         })
-        
         setOwners([...owners.slice(1)]);
 
         setMultisigAccount(
@@ -175,10 +190,16 @@ const CreateStep2 = () => {
                             <div>NAME</div>
                             <div>ADDRESS</div>
                         </div>
-
+                        {
+                            console.log('-------------------------- 1')
+                        }
+                        {
+                            console.log(owners)
+                        }
                         {
                             owners.map((owner, index) =>(
-                                <div className="address-inputs">
+                        <div className="address-inputs">
+
                                     <input type="text" id={`name ${index}`} className={index==0?"input-base disabled-input":"input-base"} disabled={index==0?true:false} value={owner.name} onChange={(e) => handleInputChange(e)}/>
                                     <div className="editable">
                                         <div className="validate-status"></div>
@@ -188,9 +209,12 @@ const CreateStep2 = () => {
                                         e.persist();
                                         handleDelOwner(index)
                                     }} src={Icons.Delete} className={index==0? "deletion": "deletion visible"}/>
-                                </div>
+                        </div>
+
                             ))
+                            
                         }
+
                         <div className="add-link" onClick={ addAccountLink }>
                             + add another owner
                         </div>
