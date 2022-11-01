@@ -46,7 +46,6 @@ function RoboHash ({className, publicKey, size}) {
     () => ({ height: `${size}px`, width: `${size}px` }),
     [size]
   );
-  console.log("==========")
   return (
     <div
       className={className}

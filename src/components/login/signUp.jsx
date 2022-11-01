@@ -102,12 +102,10 @@ const SignUpCard = () => {
                 data: stringToHex(message['message'].toString()),
                 type: 'bytes'
             });
-            console.log(signature)
             const data = {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
-            console.log(data)
 
             const result = await axios(
                 {
@@ -119,7 +117,6 @@ const SignUpCard = () => {
                     data
                 });
 
-            console.log(result.data)
             sessionStorage.setItem("token", result.data['token'].toString())
             if(result.data['token']){
                 navigate("/create-wallet")

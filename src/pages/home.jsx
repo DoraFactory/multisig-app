@@ -37,7 +37,6 @@ const Home = () => {
         setDefaultPolka(0)
         web3Enable("dorafactory multisig app").then((extension) => {
             // no polkadot.js extension
-            console.log(extension.length);
             if (extension.length == 0) {
                 setIsExtension(0);
             }

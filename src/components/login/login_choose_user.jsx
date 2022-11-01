@@ -92,8 +92,6 @@ const LoginUserCard = () => {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
-            console.log("-----------------------------");
-            console.log(data);
             const result = await axios(
                 {
                     method: "post",
@@ -103,27 +101,13 @@ const LoginUserCard = () => {
                     },
                     data
                 });
-            console.log(result.data)
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
                 const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
                     .then((res) => {
-                        // setMultisigs(res.data['detail'])
                         return res.data
                     });
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log(wallets);
-                console.log(wallets.length);
-                console.log(wallets['detail']);
-                console.log(wallets['detail'].length);
-                console.log(wallets['detail'] == 0 && wallets['code'] == 'ok' )
                 if(wallets['detail'].length === 0 && wallets['code'] === 'ok' ) {
-                    console.log("----------------------- hello11")
-                    console.log("----------------------- hello11")
-                    console.log("----------------------- hello11")
                     navigate("/create-wallet")
                 } else {
                     localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
@@ -135,8 +119,6 @@ const LoginUserCard = () => {
                         threshold: wallets['detail'][0].threshold
                     }
 
-                    console.log("---------------------------1222222");
-                    console.log(wallet_multisig)
                     localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
                     navigate("/accountInfo")
                 }
@@ -186,11 +168,7 @@ const LoginUserCard = () => {
                                 </div>
                             </MenuItem>
                         ))}
-                        {/* {
-                            keyringOptions.map((option) => {
-                                console.log(option.value)
-                            })
-                        } */}
+
                     </Select>
             </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>

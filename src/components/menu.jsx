@@ -64,36 +64,9 @@ const Menu = () => {
 
     const [activeTab, setActiveTab] = useState("assets");
 
-
-    // const {setCurrentAccount} = useSubstrate()
-    // const { keyring, currentAccount } = useSubstrateState();
     const [multiAccount, setMultiAccount] =  useState(multisig.accountId);
-    const SS58Prefix = 128;
-
 
     const multisigs = JSON.parse(localStorage.getItem("owner-multisigs"));
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log(multisigs);
-    console.log('--------------------------tony1')
-
-    // useEffect(() => {
-    //     async function getWallets() {
-    //         const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-    //         .then((res) => {
-    //             setMultisigs(res.data['detail'])
-    //             return res.data
-    //         });
-    //     }
-    //     getWallets();
-    //     console.log('-------------------2');
-    //     console.log('-------------------2');
-    //     console.log('-------------------2');
-    //     console.log(multisigs);
-    // }, [])
-
     
     const handleCreateWallet = () => {
         navegate('/create-wallet')
@@ -116,7 +89,6 @@ const Menu = () => {
     }
 
     const handleChange = (addr) => {
-        // setCurrentAccount(keyring.getPair(addr))
         setMultiAccount(addr)
 
         let wallet_multisig = {
@@ -135,10 +107,6 @@ const Menu = () => {
                 }
             }
         })
-        console.log('--------------------------1');
-        console.log('--------------------------1');
-        console.log('--------------------------1');
-        console.log(wallet_multisig)
         localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
     }
 

@@ -86,7 +86,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
       const extrinsic = api.tx.multisig.asMulti(
@@ -100,18 +99,11 @@ const TransactionStatus = () => {
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
         if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
         }else if(result.status.isFinalized){
-          console.log(result.status.isFinalized)
           if(!result.dispatchError){
             // save current multisig wallet's transaction 
             let block_hash = result.status.asFinalized.toString()
-            console.log(result.status.asFinalized.toString());
-            console.log(result.txHash.toString())
-            // console.log(result.status.finalized)
 
-            // let block_number = await api.rpc.chain.getBlock(block_hash).block.header.number;
-            // console.log("这就是区块号"+ block_number);
             let data = {
               call_hash : api.registry.hash(encodeData).toHex(),
               detail: {
@@ -133,8 +125,6 @@ const TransactionStatus = () => {
                   },
                   data
             });
-            console.log(res);
-            console.log('send multisig tx successfully ! ');
           }else{
             console.log(`transaction failed`);
           }
@@ -150,7 +140,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
 
@@ -161,9 +150,7 @@ const TransactionStatus = () => {
         hash,
         100000000000,     // currently, we use this default value
       )
-      console.log('sda');
       api.query.multisig.multisigs(multisig_wallet.accountId, hash).then((res) => {
-        console.log(res)
         extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
           if (result.status.isInBlock) {
             console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
@@ -186,7 +173,6 @@ const TransactionStatus = () => {
                     operation: 'approve',
                     transaction_hash: result.txHash,
                   }
-                  console.log(hash);
                   const ans = await axios({
                     method: "patch",
                     url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
@@ -196,7 +182,6 @@ const TransactionStatus = () => {
                     },
                     data
                   });
-                  console.log(ans);
             }
           }
         })
@@ -212,7 +197,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix); 
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       //TODO: we need to change the ss58format according the different network!
       const otherSignatories = sortAddresses(otherAddresses, 128);
       const injector = await web3FromAddress(main_owner);
@@ -248,8 +232,6 @@ const TransactionStatus = () => {
             },
             data
           });
-          console.log(ans);
-          console.log('send multisig tx successfully ! ');
         }
       })
       setUnsub(() => unsub)
@@ -284,7 +266,6 @@ const TransactionStatus = () => {
         setMethods([...methods]); 
       }
       setMethod(methods[0])
-      console.log(methods)
     }, [pallet])
 
     useEffect(() => {
@@ -293,17 +274,13 @@ const TransactionStatus = () => {
             multisigTxs.forEach(([key, exposure]) => {
               // keys里面存的多签地址和call hash
               const keys = key.toHuman()
-              console.log(keys)
               // 当前多签地址的所有多签交易
               const trans = exposure.toJSON()
-              console.log(trans)
               // as polkdot extension provides us substrate address, we have to convert first to compare
               const owner = trans.depositor
               // group transactions by depositor
               // key: encoded data hash  value: tx info
 
-              console.log(trans.approvals.length);
-              console.log(multisig_wallet.owners.length)
               if(owner == encodeAddress(main_owner, SS58Prefix)){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
@@ -328,7 +305,6 @@ const TransactionStatus = () => {
 
     useEffect(() => {
       api.query.multisig.calls.entries((resCalls) => {
-        console.log('我在查询calls')
         resCalls.forEach(([key, exposure]) => {
           const keys = key.toHuman()
           const callInfo = exposure.toHuman()
@@ -344,15 +320,9 @@ const TransactionStatus = () => {
     // record the current tx list according to the tab
     useEffect(() => {
       if(activeTab == "Pending"){
-        console.log('this is pending');
         setCurrTxList(pendingTx);
       }else if(activeTab == "Created"){
         setCurrTxList(createdTx);
-      }else {
-        console.log('this is completed');
-        console.log(completedTx);
-        // get the completed transaction and update
-        console.log('completed tx!!!');
       }
     }, [activeTab])
 

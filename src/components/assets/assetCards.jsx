@@ -23,13 +23,10 @@ const AssetCards = () => {
     useEffect(() => {
         api.query.system.account(multisig.accountId, balanceInfo => {
             const free = formatBalance(balanceInfo.data.free, { withSi: false, forceUnit: '-' });
-            console.log(free)
             setDoraBalance(free);
         })
     }, [api, doraBalance, setDoraBalance])
 
-    console.log(api)
-    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -112,12 +109,12 @@ const AssetCards = () => {
                                 <p className="detail-value">
                                     {doraBalance}
                                 </p>
-                                <p className="detail-label">
+                                {/* <p className="detail-label">
                                     VALUE
                                 </p>
                                 <p className="detail-value">
                                     $
-                                </p>
+                                </p> */}
                                 <span className="receive-btn" onClick={handleOpen}>
                                     ↙ Receive
                                 </span>

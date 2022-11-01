@@ -55,10 +55,6 @@ function IdentityIcon ({className, prefix, size, value}) {
     [queueAction, t]
   );
 
-  console.log(Custom)
-  console.log(prefix)
-  console.log(size)
-  console.log(value)
   return (
       <Custom
         className={className}
