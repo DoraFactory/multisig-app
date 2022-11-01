@@ -48,7 +48,21 @@ const TransactionStatus = () => {
     const [currTxList, setCurrTxList] = useState({});
     // 
     const [calls, setCalls] = useState({});
-    // 
+    // data: calls[hash][0].args
+    const handleGetParameter = (data) => {
+      let args = []
+      Object.keys(data).forEach((key) => {
+        if (key=='dest' || key=='source' || key=='who') {
+          Object.keys(data[key]).forEach((keyType) => {
+            // args.push(data[key][keyType].substring(0,15)+ '...' + data[key][keyType].substring(35))
+            args.push(data[key][keyType])
+          })
+        }else {
+          args.push(data[key])
+        }
+      })
+      return args
+    } 
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
@@ -534,7 +548,9 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
                           {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                             handleGetParameter(calls[hash][0].args).map((data) => {
+                              return <p class="summary-value">{data}</p>
+                            })
                           ) : null}
                         </p>
                       </div>
@@ -644,7 +660,9 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
                           {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                             handleGetParameter(calls[hash][0].args).map((data) => {
+                              return <p class="summary-value">{data}</p>
+                            })
                           ) : null}
                         </p>
                       </div>
