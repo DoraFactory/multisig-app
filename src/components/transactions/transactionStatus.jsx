@@ -98,36 +98,31 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        if (result.status.isInBlock) {
-        }else if(result.status.isFinalized){
-          if(!result.dispatchError){
-            // save current multisig wallet's transaction 
-            let block_hash = result.status.asFinalized.toString()
+        if(result.status.isFinalized){
+          // save current multisig wallet's transaction 
+          let block_hash = result.status.asFinalized.toString()
 
-            let data = {
-              call_hash : api.registry.hash(encodeData).toHex(),
-              detail: {
-                block_height: block_hash,
-                address: main_owner,
-                pallet_method: `balances/` + method.name,
-                parameters: params,
-              },
-              status: 0,
-              operation: 'approve',
-              transaction_hash: result.txHash,
-            }
-            const res = await axios({
-                  method: "post",
-                  url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
-                  headers: {
-                    'Content-Type': 'application/json',
-                    "dorafactory-token": sessionStorage.getItem('token'),
-                  },
-                  data
-            });
-          }else{
-            console.log(`transaction failed`);
+          let data = {
+            call_hash : api.registry.hash(encodeData).toHex(),
+            detail: {
+              block_height: block_hash,
+              address: main_owner,
+              pallet_method: `balances/` + method.name,
+              parameters: params,
+            },
+            status: 0,
+            operation: 'approve',
+            transaction_hash: result.txHash,
           }
+          const res = await axios({
+                method: "post",
+                url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
+                headers: {
+                  'Content-Type': 'application/json',
+                  "dorafactory-token": sessionStorage.getItem('token'),
+                },
+                data
+          });
         }
       })
       setUnsub(() => unsub)
@@ -152,9 +147,7 @@ const TransactionStatus = () => {
       )
       api.query.multisig.multisigs(multisig_wallet.accountId, hash).then((res) => {
         extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-          if (result.status.isInBlock) {
-            console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-          }else if(result.status.isFinalized){
+          if(result.status.isFinalized){
             if(!result.dispatchError){
                 let block_hash = result.status.asFinalized.toString()
                 let cur_status = 0;
@@ -207,9 +200,7 @@ const TransactionStatus = () => {
         hash,
       )
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-        }else if(result.status.isFinalized){
+        if(result.status.isFinalized){
           let block_hash = result.status.asFinalized.toString()
           let data = {
             call_hash : hash,
