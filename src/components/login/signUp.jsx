@@ -77,9 +77,13 @@ const SignUpCard = () => {
     }
 
 
-    const [open, setOpen] = useState(false);
-    const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const [checked, setChecked] = useState(false);
+    const handleInputChange = (event) => {
+        const target = event.target;
+        const value = target.checked;
+        
+        setChecked(value)
+    }
 
     const handleSignMessage = async()  => {
         const message = await axios.get("https://multisig.dorafactory.org/login/", {params: {account: currentAccount.address}}).then((res) => {
@@ -169,15 +173,15 @@ const SignUpCard = () => {
             </FormControl>
             <div>
                 <div className="check-input">
-                    <input type="checkbox" name="check1"/>
+                    <input type="checkbox" name="check1" checked={checked} onChange={(e) => handleInputChange(e)}/>
                 </div>
                 <div className="private-info">
                     <p className='private-info-text'>I have read and agree to the terms of the <a className='private-info-link'>Dorafactory end user agreement.</a></p>
                     <p className='private-info-text'>To see how we use your personal data please see our <a className='private-info-link'>privacy notice.</a></p>
                 </div>
             </div>
-            <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
-                <div>
+            <div className={checked?"login-btn-base login-btn-background login-btn-choose":"check-signup-btn"} onClick={checked?(() => handleSignMessage()):null} disabled={!checked}>
+                <div className={checked?null:"check-signup-font"}>
                     Sign-up
                 </div>
             </div>

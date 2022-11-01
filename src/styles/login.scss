@@ -44,6 +44,35 @@
     margin-top: 70px;
 }
 
+.check-signup-btn {
+    background: #ff761c1a;
+    border-radius: 8px;
+    box-sizing: border-box;
+
+    width: 496px;
+    height: 48px;
+
+    border: 1px solid #FF761C;
+    border-radius: 8px;
+
+    // background-color: var(--theme-orange);
+    color: white;
+    font-weight: 600;
+    padding: 12px;
+    display: inline-block;
+    cursor: pointer;
+
+    font-family: 'SF Pro Text';
+    font-style: normal;
+    margin-top: 16px;
+}
+
+.check-signup-font {
+    color: #FF761C;
+    font-family: 'SF Pro Text';
+    font-style: normal;
+}
+
 .login-btn-base {
     box-sizing: border-box;
 
@@ -60,7 +89,7 @@
     padding: 12px;
     display: inline-block;
     cursor: pointer;
-  }
+}
 
 .sign-up-btn-reverse {
     background-color: white;
