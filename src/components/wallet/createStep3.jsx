@@ -5,7 +5,7 @@ import { useNavigate, Link } from 'react-router-dom';
 import localStorage from 'localStorage';
 import { createKeyMulti, encodeAddress } from '@polkadot/util-crypto'
 import { useSubstrateState } from '../../context';
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from '../IdentityIcon';
 
 import axios from 'axios';
 
@@ -58,25 +58,12 @@ const CreateStep3 = () => {
                 data
             });
 
-        console.log(result.data)
-
         const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
             .then((res) => {
-                // setMultisigs(res.data['detail'])
                 return res.data
             });
         localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
         
-        let wallet_multisig = {
-            wallet_name: wallets['detail'][0].wallet_name,
-            accountId: wallets['detail'][0].wallet,
-            owners: wallets['detail'][0].extra_info.owners,
-            threshold: wallets['detail'][0].threshold
-        }
-
-        console.log("---------------------------1222222");
-        console.log(wallet_multisig)
-        // localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
         navigate('/accountInfo')
     }
 
@@ -130,10 +117,9 @@ const CreateStep3 = () => {
                         </p>
                         {owners.map((owner) => (
                             <div className="profile">   
-                                <Identicon
+                                <IdentityIcon
                                     value={owner.account}  
                                     size={32}
-                                    theme={"polkadot"}
                                 />
                                 <div className="name-info">
                                     <p>{owner.name}</p>

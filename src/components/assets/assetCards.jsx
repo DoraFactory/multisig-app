@@ -19,17 +19,14 @@ const AssetCards = () => {
 
     const multisig = JSON.parse(localStorage.getItem('multisig-wallet'));
     const network = localStorage.getItem('network');
-    
+        
     useEffect(() => {
         api.query.system.account(multisig.accountId, balanceInfo => {
-            const free = formatBalance(balanceInfo.data.free, { withSi: false, forceUnit: '-' });
-            console.log(free)
+            const free = formatBalance(balanceInfo.data.free/1000000000000, { withSi: false, forceUnit: '-' }, chainDecimals);
             setDoraBalance(free);
         })
     }, [api, doraBalance, setDoraBalance])
 
-    console.log(api)
-    
     const handleOpen = () => setOpen(true);
     const handleClose = () => setOpen(false);
 
@@ -110,14 +107,14 @@ const AssetCards = () => {
                                     BALANCE
                                 </p>
                                 <p className="detail-value">
-                                    {doraBalance}
+                                    {doraBalance} DORA
                                 </p>
-                                <p className="detail-label">
+                                {/* <p className="detail-label">
                                     VALUE
                                 </p>
                                 <p className="detail-value">
                                     $
-                                </p>
+                                </p> */}
                                 <span className="receive-btn" onClick={handleOpen}>
                                     ↙ Receive
                                 </span>

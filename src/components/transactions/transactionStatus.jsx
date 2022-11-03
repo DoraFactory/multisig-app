@@ -13,7 +13,7 @@ import { useSubstrateState } from "../../context";
 import { sortAddresses } from '@polkadot/util-crypto';
 import { web3Enable, web3FromAddress } from '@polkadot/extension-dapp'
 import {encodeAddress} from '@polkadot/util-crypto'
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from '../IdentityIcon';
 
 import axios from 'axios';
 
@@ -24,6 +24,10 @@ const TransactionStatus = () => {
     const [multiArgs, setMultiArgs] = useState('Id');
     const [activeTab, setActiveTab] = useState("Pending");
     const [unsub, setUnsub] = useState(null)
+    // all pallets
+    const [pallets, setPallets] = useState(['balances','currencies']);
+    // current pallet
+    const [pallet, setPallet] = useState('balances');
     // all methods of pallet balances 
     const [methods, setMethods] = useState([]);
     // current method
@@ -44,7 +48,21 @@ const TransactionStatus = () => {
     const [currTxList, setCurrTxList] = useState({});
     // 
     const [calls, setCalls] = useState({});
-    // 
+    // data: calls[hash][0].args
+    const handleGetParameter = (data) => {
+      let args = []
+      Object.keys(data).forEach((key) => {
+        if (key=='dest' || key=='source' || key=='who') {
+          Object.keys(data[key]).forEach((keyType) => {
+            // args.push(data[key][keyType].substring(0,15)+ '...' + data[key][keyType].substring(35))
+            args.push(data[key][keyType])
+          })
+        }else {
+          args.push(data[key])
+        }
+      })
+      return args
+    } 
 
     const {api} = useSubstrateState();
     const Tabs = ['Pending', 'Created', 'Completed'];
@@ -66,6 +84,9 @@ const TransactionStatus = () => {
     const handleMethodChange = (event) => {
       setMethod(event.target.value);
     };
+    const handlePalletChange = (event) => {
+      setPallet(event.target.value);
+    }
     const handleGetDestParams = (value, index) => {
       params[index] = value;
       setParams([...params]);
@@ -79,7 +100,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
       const extrinsic = api.tx.multisig.asMulti(
@@ -92,43 +112,31 @@ const TransactionStatus = () => {
       );
 
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        let block_number = 0;
-        if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-          let block_num = await api.rpc.chain.getBlock(result.status.asInBlock);
-          console.log(block_num);
-        }else if(result.status.isFinalized){
-          console.log(result.status.isFinalized)
-          if(!result.dispatchError){
-            // save current multisig wallet's transaction 
-            console.log(result.txHash)
-            console.log(block_number);
-            let data = {
-              call_hash : api.registry.hash(encodeData).toHex(),
-              detail: {
-                block_height: block_number,
-                address: main_owner,
-                pallet_method: `balances/` + method.name,
-                parameters: params,
-              },
-              status: 0,
-              operation: 'approve',
-              transaction_hash: result.txHash,
-            }
-            const res = await axios({
-                  method: "post",
-                  url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
-                  headers: {
-                    'Content-Type': 'application/json',
-                    "dorafactory-token": sessionStorage.getItem('token'),
-                  },
-                  data
-            });
-            console.log(res);
-            console.log('send multisig tx successfully ! ');
-          }else{
-            console.log(`transaction failed`);
+        if(result.status.isFinalized){
+          // save current multisig wallet's transaction 
+          let block_hash = result.status.asFinalized.toString()
+
+          let data = {
+            call_hash : api.registry.hash(encodeData).toHex(),
+            detail: {
+              block_height: block_hash,
+              address: main_owner,
+              pallet_method: `balances/` + method.name,
+              parameters: params,
+            },
+            status: 0,
+            operation: 'approve',
+            transaction_hash: result.txHash,
           }
+          const res = await axios({
+                method: "post",
+                url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
+                headers: {
+                  'Content-Type': 'application/json',
+                  "dorafactory-token": sessionStorage.getItem('token'),
+                },
+                data
+          });
         }
       })
       setUnsub(() => unsub)
@@ -141,7 +149,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix);
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       const otherSignatories = sortAddresses(otherAddresses, 0);
       const injector = await web3FromAddress(main_owner);
 
@@ -152,14 +159,11 @@ const TransactionStatus = () => {
         hash,
         100000000000,     // currently, we use this default value
       )
-      console.log('sda');
       api.query.multisig.multisigs(multisig_wallet.accountId, hash).then((res) => {
-        console.log(res)
         extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-          if (result.status.isInBlock) {
-            console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-          }else if(result.status.isFinalized){
+          if(result.status.isFinalized){
             if(!result.dispatchError){
+                let block_hash = result.status.asFinalized.toString()
                 let cur_status = 0;
                 if(res.toHuman().approvals.length == multisig_wallet.threshold - 1){
                   cur_status = 1;
@@ -167,7 +171,7 @@ const TransactionStatus = () => {
                   let data = {
                     call_hash : hash,
                     detail: {
-                      block_height: 0,
+                      block_height: block_hash,
                       address: main_owner,
                       pallet_method: `balances/` + method,
                       parameters: params,
@@ -176,7 +180,6 @@ const TransactionStatus = () => {
                     operation: 'approve',
                     transaction_hash: result.txHash,
                   }
-                  console.log(hash);
                   const ans = await axios({
                     method: "patch",
                     url: `https://multisig.dorafactory.org/wallets/${multisig_wallet.accountId}/transactions/`,
@@ -186,7 +189,6 @@ const TransactionStatus = () => {
                     },
                     data
                   });
-                  console.log(ans);
             }
           }
         })
@@ -202,7 +204,6 @@ const TransactionStatus = () => {
       const otherAddresses = multisig_wallet.owners.filter((acc) => {
         return acc.account != encodeAddress(main_owner, SS58Prefix); 
       }).map((acc) => {return acc.account});
-      console.log(otherAddresses)
       //TODO: we need to change the ss58format according the different network!
       const otherSignatories = sortAddresses(otherAddresses, 128);
       const injector = await web3FromAddress(main_owner);
@@ -213,13 +214,12 @@ const TransactionStatus = () => {
         hash,
       )
       extrinsic.signAndSend(main_owner, {signer: injector.signer}, async result => {
-        if (result.status.isInBlock) {
-          console.log(`Transaction included at blockHash ${result.status.asInBlock}`);
-        }else if(result.status.isFinalized){
+        if(result.status.isFinalized){
+          let block_hash = result.status.asFinalized.toString()
           let data = {
             call_hash : hash,
             detail: {
-              block_height: 0,
+              block_height: block_hash,
               address: main_owner,
               pallet_method: `balances/` + method,
               parameters: params,
@@ -237,8 +237,6 @@ const TransactionStatus = () => {
             },
             data
           });
-          console.log(ans);
-          console.log('send multisig tx successfully ! ');
         }
       })
       setUnsub(() => unsub)
@@ -259,22 +257,21 @@ const TransactionStatus = () => {
 
 
     useEffect(() => {
-      const balance_methods = api.tx['balances'];
-      for (let k in balance_methods) {
-        const meta = balance_methods[k].meta.toJSON()
+      const current_methods = api.tx[pallet];
+      methods.splice(0, methods.length);
+      for (let k in current_methods) {
+        const meta = current_methods[k].meta.toJSON()
         const balance_method = {
             'name': `${k}(${meta.args.map((e)=>e.name).join(',')})`,
-            'doc': meta.docs[0],
+            'doc': meta.docs[0].substring(0,48),
             'args': meta.args,
             'key': k,
         }
-        
         methods.push(balance_method);
-        console.log(methods)
-        setMethods([...methods.slice(6,12)]); 
+        setMethods([...methods]); 
       }
-    }, [])
-
+      setMethod(methods[0])
+    }, [pallet])
 
     useEffect(() => {
         api.query.multisig.multisigs.entries(multisig_wallet.accountId, multisigTxs => {
@@ -282,17 +279,13 @@ const TransactionStatus = () => {
             multisigTxs.forEach(([key, exposure]) => {
               // keys里面存的多签地址和call hash
               const keys = key.toHuman()
-              console.log(keys)
               // 当前多签地址的所有多签交易
               const trans = exposure.toJSON()
-              console.log(trans)
               // as polkdot extension provides us substrate address, we have to convert first to compare
               const owner = trans.depositor
               // group transactions by depositor
               // key: encoded data hash  value: tx info
 
-              console.log(trans.approvals.length);
-              console.log(multisig_wallet.owners.length)
               if(owner == encodeAddress(main_owner, SS58Prefix)){
                 createdTx[keys[1]] = trans;
                 setCreatedTx(createdTx);
@@ -317,7 +310,6 @@ const TransactionStatus = () => {
 
     useEffect(() => {
       api.query.multisig.calls.entries((resCalls) => {
-        console.log('我在查询calls')
         resCalls.forEach(([key, exposure]) => {
           const keys = key.toHuman()
           const callInfo = exposure.toHuman()
@@ -333,15 +325,9 @@ const TransactionStatus = () => {
     // record the current tx list according to the tab
     useEffect(() => {
       if(activeTab == "Pending"){
-        console.log('this is pending');
         setCurrTxList(pendingTx);
       }else if(activeTab == "Created"){
         setCurrTxList(createdTx);
-      }else {
-        console.log('this is completed');
-        console.log(completedTx);
-        // get the completed transaction and update
-        console.log('completed tx!!!');
       }
     }, [activeTab])
 
@@ -409,7 +395,7 @@ const TransactionStatus = () => {
                                       Account
                                       </div>
                                       <div className="balance">
-                                      Balance: 100
+                                      {/* Balance: 100 */}
                                       </div>
                                   </div>
                                   <div className="wallet-info">
@@ -420,30 +406,51 @@ const TransactionStatus = () => {
                                       Submit
                                       </div>
                                       <div className='flex-submit-div'>
-                                        <div><input value="balances" className='module-input'/></div>
                                         <div>
-                                        <FormControl sx={{ m: 1, minWidth: 800 }}  size="small">
-                                        <Select           
-                                          labelId="demo-select-small"
-                                          id="demo-select-small"
-                                          value={method}
-                                          onChange={handleMethodChange}
-                                          displayEmpty
-                                          inputProps={{ 'aria-label': 'Without label' }}
-                                        >
-                                          {methods.map((method) => {
-                                            return(
-                                              <MenuItem value={method}>
-                                                <div className="method-dropdown">
-                                                  <span>{method.name}</span>
-                                                  <span>{method.doc}</span>
-                                                </div>
-                                              </MenuItem>
-                                            )
-                                          })}
-                                        </Select>
-                                      </FormControl>
-                                      </div>
+                                          <FormControl sx={{ m: 0, minWidth: 98 }}  size="small">
+                                            <Select           
+                                              labelId="demo-select-small"
+                                              id="demo-select-small"
+                                              value={pallet}
+                                              onChange={handlePalletChange}
+                                              displayEmpty
+                                              inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                              {pallets.map((pallet) => {
+                                                return(
+                                                  <MenuItem value={pallet}>
+                                                    <div className="method-dropdown">
+                                                      <span>{pallet}</span>
+                                                    </div>
+                                                  </MenuItem>
+                                                )
+                                              })}
+                                            </Select>
+                                          </FormControl>
+                                        </div>
+                                        <div>
+                                          <FormControl sx={{ m: 0, minWidth: 753 }}  size="small">
+                                            <Select           
+                                              labelId="demo-select-small"
+                                              id="demo-select-small"
+                                              value={method}
+                                              onChange={handleMethodChange}
+                                              displayEmpty
+                                              inputProps={{ 'aria-label': 'Without label' }}
+                                            >
+                                              {methods.map((method) => {
+                                                return(
+                                                  <MenuItem value={method}>
+                                                    <div className="method-dropdown">
+                                                      <span>{method.name}</span>
+                                                      <span>{method.doc}</span>
+                                                    </div>
+                                                  </MenuItem>
+                                                )
+                                              })}
+                                            </Select>
+                                          </FormControl>
+                                        </div>
                                       </div>
                                   </div>
 
@@ -455,7 +462,7 @@ const TransactionStatus = () => {
                                         {args.type === "MultiAddress" ? 
                                             (
                                               <div>
-                                                <FormControl sx={{ m: 1, minWidth: 120 }}  size="small">
+                                                <FormControl sx={{ m: 0, minWidth: 120 }}  size="small">
                                                 <Select
                                                   labelId="demo-select-small"
                                                   id="demo-select-small"
@@ -541,7 +548,9 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
                           {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                             handleGetParameter(calls[hash][0].args).map((data) => {
+                              return <p class="summary-value">{data}</p>
+                            })
                           ) : null}
                         </p>
                       </div>
@@ -604,13 +613,14 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <Identicon
+                              <div className='user-image'>
+                              <IdentityIcon
                                   value={approver}
-                                  size = {32}
-                                  theme={"polkadot"}
+                                  size = {30}
                               />
+                              </div>
                               <div class="user-profile">
-                                <p>Account</p>
+                                {/* <p>Account</p> */}
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
                               </div>
                             </div>
@@ -650,7 +660,9 @@ const TransactionStatus = () => {
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">PARAMETER:</span>
                           {JSON.stringify(calls) != '{}' ? (
-                            <span class="summary-value">{JSON.stringify(calls[hash][0].args)}</span> 
+                             handleGetParameter(calls[hash][0].args).map((data) => {
+                              return <p class="summary-value">{data}</p>
+                            })
                           ) : null}
                         </p>
                       </div>
@@ -690,13 +702,14 @@ const TransactionStatus = () => {
                             <div
                               class="user-info"
                             >
-                              <Identicon
+                              <div className='user-image'>
+                              <IdentityIcon
                                   value={approver}
-                                  size = {32}
-                                  theme={"polkadot"}
+                                  size={30}
                               />
+                              </div>
                               <div class="user-profile">
-                                <p>Account</p>
+                                {/* <p>Account</p> */}
                                 <p>{approver.substring(0,7) + '...' + approver.substring(42,)}</p>
                               </div>
                             </div>
@@ -718,7 +731,7 @@ const TransactionStatus = () => {
                           <span class="summary-value">{tx_info.call_hash.substring(0,10) + '...' + tx_info.call_hash.substring(49,)}</span>
                         </p>
                         <p>
-                          <span class="summary-label">BLOCK TIME:</span>
+                          <span class="summary-label">BLOCK HASH:</span>
                           <span class="summary-value">{tx_info.detail.block_height}</span>
                         </p>
                         <p>
@@ -728,18 +741,17 @@ const TransactionStatus = () => {
                         </p>
                         <p v-if="callDetail(hash)">
                           <span class="summary-label">MODULEID/METHOD:</span>
-                            <span class="summary-value">{tx_info.detail.pallet_method}</span>
+                          <span class="summary-value">{tx_info.detail.pallet_method}</span>
                         </p>
                         <p v-if="callDetail(hash)">
-                          <span class="summary-label">PARAMETER:</span>
-                            <span class="summary-value">{tx_info.detail.parameters[1]}</span> 
+                          <p class="summary-label">PARAMETER:</p>
+                          {tx_info.detail.parameters.map((parameter) => (
+                              <p class="summary-value">{parameter}</p>
+                          ))}
                         </p>
                       </div>
                     
                       <div class="transaction-status">
-                        {/* <p class="status-summary">
-                          {multisig_wallet.threshold} out of {multisig_wallet.owners.length} owners
-                        </p> */}
                         {
                           tx_info.status > 0 ? (
                             <div class="progress-bar">
@@ -774,7 +786,6 @@ const TransactionStatus = () => {
                               <div class="">
                                 Confirmed
                               </div>
-                              {/* <span class="connect-line" /> */}
                             </div>
                           </div>
                           {
@@ -808,13 +819,13 @@ const TransactionStatus = () => {
                               <div
                               class="user-info"
                               >
-                                <Identicon
+                                <div className='user-image'>
+                                <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
-                                    size = {32}
-                                    theme={"polkadot"}
+                                    size={30}
                                 />
+                                </div>
                                 <div class="user-profile">
-                                  {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                 </div>
                               </div>
@@ -826,13 +837,13 @@ const TransactionStatus = () => {
                               <div
                                 class="user-info"
                               >
-                                <Identicon
+                                <div className='user-image'>
+                                <IdentityIcon
                                     value={encodeAddress(operation.owner, SS58Prefix)}  
-                                    size = {32}
-                                    theme={"polkadot"}
+                                    size={30}
                                 />
+                                </div>
                                 <div class="user-profile">
-                                  {/* <p></p> */}
                                   <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                 </div>
                               </div>
@@ -845,13 +856,13 @@ const TransactionStatus = () => {
                                 <div
                                   class="user-info"
                                 >
-                                  <Identicon
+                                  <div className='user-image'>
+                                  <IdentityIcon
                                       value={encodeAddress(operation.owner, SS58Prefix)}  
-                                      size = {32}
-                                      theme={"polkadot"}
+                                      size={30}
                                   />
+                                  </div>
                                   <div class="user-profile">
-                                    {/* <p></p> */}
                                     <p>{encodeAddress(operation.owner, SS58Prefix).substring(0,7) + '...' + encodeAddress(operation.owner, SS58Prefix).substring(46,)}</p>
                                   </div>
                                 </div>

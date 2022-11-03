@@ -3,8 +3,18 @@ import '../../styles/owners.scss'
 import avatar from '../../resources/avatar.svg'
 import copy from '../../resources/copy.svg'
 import { CopyToClipboard } from 'react-copy-to-clipboard';
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from '../IdentityIcon';
+import { message } from 'antd';
+import 'antd/es/message/style/index.css'
 
+message.config({
+    top:100,
+    duration:2
+})
+
+const CopySuccess = () => {
+  message.success('Copied', 1);
+};
 
 function OwnerCard () {
 
@@ -18,16 +28,16 @@ function OwnerCard () {
 
     return (
       <div class="all-owners">
-        <p class="owner-title"> OWNERES / </p>
+        <p class="owner-title"> OWNERS / </p>
         <div class="owner-card-list">
           {owners.map((owner) => (
             <div class="owner-card">
               {/* <img class="owner-logo" src={avatar}/> */}
-              <Identicon
+              <IdentityIcon
                   value={owner.account}
-                  // size={32}
-                  theme={"polkadot"}
-                  className="owner-logo"
+                  size={68}
+                  // theme={"robohash"}
+                  // className="owner-logo"
               />
               <p class="owner-name"> {owner.name} </p>
               <div class="flex-container">
@@ -40,7 +50,7 @@ function OwnerCard () {
                   <CopyToClipboard
                       text={owner.account}
                   >
-                    <img src={copy}/>
+                    <img className='cursor-pointer' src={copy} onClick={CopySuccess}/>
                   </CopyToClipboard>
                 {/* </div> */}
               </div>

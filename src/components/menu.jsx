@@ -12,7 +12,7 @@ import FormControl from '@mui/material/FormControl';
 import MenuItem from '@mui/material/MenuItem';
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
+import IdentityIcon from './IdentityIcon';
 
 import {encodeAddress} from '@polkadot/util-crypto'
 import { useSubstrate, useSubstrateState } from '../context';
@@ -64,36 +64,9 @@ const Menu = () => {
 
     const [activeTab, setActiveTab] = useState("assets");
 
-
-    // const {setCurrentAccount} = useSubstrate()
-    // const { keyring, currentAccount } = useSubstrateState();
     const [multiAccount, setMultiAccount] =  useState(multisig.accountId);
-    const SS58Prefix = 128;
-
 
     const multisigs = JSON.parse(localStorage.getItem("owner-multisigs"));
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log('--------------------------tony1')
-    console.log(multisigs);
-    console.log('--------------------------tony1')
-
-    // useEffect(() => {
-    //     async function getWallets() {
-    //         const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
-    //         .then((res) => {
-    //             setMultisigs(res.data['detail'])
-    //             return res.data
-    //         });
-    //     }
-    //     getWallets();
-    //     console.log('-------------------2');
-    //     console.log('-------------------2');
-    //     console.log('-------------------2');
-    //     console.log(multisigs);
-    // }, [])
-
     
     const handleCreateWallet = () => {
         navegate('/create-wallet')
@@ -116,7 +89,6 @@ const Menu = () => {
     }
 
     const handleChange = (addr) => {
-        // setCurrentAccount(keyring.getPair(addr))
         setMultiAccount(addr)
 
         let wallet_multisig = {
@@ -135,10 +107,6 @@ const Menu = () => {
                 }
             }
         })
-        console.log('--------------------------1');
-        console.log('--------------------------1');
-        console.log('--------------------------1');
-        console.log(wallet_multisig)
         localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
     }
 
@@ -149,23 +117,22 @@ const Menu = () => {
                     <div>
                         <FormControl sx={{ m: 1, minWidth: 200 }}  size="small">
                                 <Select           
-                                labelId="demo-select-small"
-                                id="demo-select-small"
-                                onChange={(dropdown) => {
-                                    handleChange(dropdown.target.value)
-                                }}
-                                value = {multiAccount}
-                                displayEmpty
-                                inputProps={{ 'aria-label': 'Without label' }}
-                                input={<BootstrapInput/>}
+                                    labelId="demo-select-small"
+                                    id="demo-select-small"
+                                    onChange={(dropdown) => {
+                                        handleChange(dropdown.target.value)
+                                    }}
+                                    value = {multiAccount}
+                                    displayEmpty
+                                    inputProps={{ 'aria-label': 'Without label' }}
+                                    input={<BootstrapInput/>}
                                 >   
                                      {multisigs.map((multisig) => (
                                         <MenuItem value={multisig.wallet}>
                                             <div class="profile">
-                                                <Identicon
+                                                <IdentityIcon
                                                     value={multisig.wallet}
                                                     size={32}
-                                                    theme={"polkadot"}
                                                 />
                                                 <div
                                                     class="name-info"
@@ -232,7 +199,7 @@ const Menu = () => {
                             stroke-linejoin="round"
                         />
                     </svg>
-                    <span>ASSETS</span>
+                    <span className='cursor-pointer'>ASSETS</span>
                 </div>
                 <div className={activeTab==="transactions" ? "menu-link menu-selected": "menu-link"} onClick={handleTransaction}>
                     <svg
@@ -307,7 +274,7 @@ const Menu = () => {
                             stroke-linejoin="round"
                         />
                     </svg>
-                    <span>TRANSACTIONS</span>
+                    <span className='cursor-pointer'>TRANSACTIONS</span>
                 </div>
 
                 <div className={activeTab==="owners" ? "menu-link menu-selected": "menu-link"} onClick={handleOwner}>
@@ -347,7 +314,7 @@ const Menu = () => {
                         stroke-width="1.5"
                         />
                     </svg>
-                    <span>OWNERES</span>
+                    <span className='cursor-pointer'>OWNERS</span>
                 </div>
 
                 <div class="logout" onClick={loginOut}>
@@ -381,7 +348,7 @@ const Menu = () => {
                         stroke-linejoin="round"
                         />
                     </svg>
-                    <span>Logout</span>
+                    <span className='cursor-pointer'>Logout</span>
                 </div>
             </div>
             <div>

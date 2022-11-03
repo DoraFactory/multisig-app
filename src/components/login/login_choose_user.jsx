@@ -7,14 +7,13 @@ import FormControl from '@mui/material/FormControl';
 import Select, { SelectChangeEvent } from '@mui/material/Select';
 import '../../styles/login.scss';
 import { web3FromAddress, web3Enable, web3FromSource } from '@polkadot/extension-dapp';
-import {encodeAddress} from '@polkadot/util-crypto'
-
+import {encodeAddress} from '@polkadot/util-crypto';
+import IdentityIcon from '../IdentityIcon';
 import { stringToHex } from "@polkadot/util";
 import axios from 'axios';
 
 import { styled } from '@mui/material/styles';
 import InputBase from '@mui/material/InputBase';
-import Identicon from '@polkadot/react-identicon';
 const BootstrapInput = styled(InputBase)(({ theme }) => ({
     'label + &': {
       marginTop: theme.spacing(3),
@@ -25,11 +24,10 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
       'justify-content': 'flex-start',
       cursor: 'pointer',
       position: 'relative',
-      backgroundColor: theme.palette.background.paper,
       border: '1px solid #FF761C',
       'border-radius': '4px',
       fontSize: 16,
-      margin:-2,
+      'margin-left': '-5px', 
       padding: '10px 26px 10px 12px',
       transition: theme.transitions.create(['border-color', 'box-shadow']),
       // Use the system font instead of the default Roboto font.
@@ -56,7 +54,7 @@ const BootstrapInput = styled(InputBase)(({ theme }) => ({
 const LoginUserCard = () => {
     const {setCurrentAccount} = useSubstrate()
     const { keyring, currentAccount } = useSubstrateState();
-    const SS58Prefix = 42;
+    const SS58Prefix = 128;
     
     let keyringOptions = [];
     let initialAddress = '';
@@ -94,8 +92,6 @@ const LoginUserCard = () => {
                 "account": currentAccount.address.toString(),
                 "signature": signature
             };
-            console.log("-----------------------------");
-            console.log(data);
             const result = await axios(
                 {
                     method: "post",
@@ -105,27 +101,13 @@ const LoginUserCard = () => {
                     },
                     data
                 });
-            console.log(result.data)
             if(result.data['token']){
                 sessionStorage.setItem("token", result.data['token'].toString())
                 const wallets = await axios.get(`https://multisig.dorafactory.org/wallets/`,{headers: {"dorafactory-token": sessionStorage.getItem("token")}})
                     .then((res) => {
-                        // setMultisigs(res.data['detail'])
                         return res.data
                     });
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log("---------------------------here1111");
-                console.log(wallets);
-                console.log(wallets.length);
-                console.log(wallets['detail']);
-                console.log(wallets['detail'].length);
-                console.log(wallets['detail'] == 0 && wallets['code'] == 'ok' )
                 if(wallets['detail'].length === 0 && wallets['code'] === 'ok' ) {
-                    console.log("----------------------- hello11")
-                    console.log("----------------------- hello11")
-                    console.log("----------------------- hello11")
                     navigate("/create-wallet")
                 } else {
                     localStorage.setItem('owner-multisigs', JSON.stringify(wallets['detail']))
@@ -137,8 +119,6 @@ const LoginUserCard = () => {
                         threshold: wallets['detail'][0].threshold
                     }
 
-                    console.log("---------------------------1222222");
-                    console.log(wallet_multisig)
                     localStorage.setItem('multisig-wallet', JSON.stringify(wallet_multisig));
                     navigate("/accountInfo")
                 }
@@ -151,10 +131,13 @@ const LoginUserCard = () => {
     const handleChange = (addr) => {
         setCurrentAccount(keyring.getPair(addr))
     }
+    
+    const handleSignup = () => {
+        navigate("/signup")
+    }
 
     return(
         <div className="login-card blur-card-bg">
-
             <h3>Login</h3>
             <div className="description">Choose linked account </div>
             <FormControl sx={{ m: 1, minWidth: 490 }}  size="small">
@@ -172,48 +155,33 @@ const LoginUserCard = () => {
                         {keyringOptions.map((option) => (
                             <MenuItem value={option.value}>
                                 <div class="profile">
-                                    <Identicon
-                                        value={option.value}
+                                    <IdentityIcon
                                         size={32}
-                                        theme={"polkadot"}
+                                        value={option.value}
                                     />
                                     <div
                                         class="name-info"
                                     >
                                         <p align='left'>{option.text}</p>
-                                        <p>{option.value}</p>
+                                        <p>{encodeAddress(option.value, SS58Prefix).substring(0,20) + '......' + encodeAddress(option.value, SS58Prefix).substring(30,)}</p>
                                     </div>
                                 </div>
                             </MenuItem>
                         ))}
-                        {/* {
-                            keyringOptions.map((option) => {
-                                console.log(option.value)
-                            })
-                        } */}
+
                     </Select>
             </FormControl>
             <div className="login-btn-base login-btn-background login-btn-choose" onClick={() => handleSignMessage()}>
                 <div>
                     Login
                 </div>
-                     {/* <Button onClick={handleToggle}>Login</Button>
-                    <Backdrop
-                        sx={{ color: '#fff', zIndex: (theme) => theme.zIndex.drawer + 1 }}
-                        open={open}
-                        onClick={handleClose}
-                    >
-                        <CircularProgress color="inherit" />
-                    </Backdrop> */}
             </div>
             <div className="div-line-word or-line">
                 OR
             </div>
             <div className="text-center">Haven't used Dorafactory Multisig before? Sign up!</div>
-            <div className="login-btn-base login-btn-reverse signUp-btn">
-            <Link to="/signup">
+            <div className="login-btn-base login-btn-reverse signUp-btn" onClick={handleSignup}>
                 Sign Up
-            </Link>
             </div>
         </div>
     )

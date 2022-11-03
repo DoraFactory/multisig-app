@@ -62,7 +62,6 @@ const connect = (state, dispatch) => {
 
   dispatch({ type: 'CONNECT_INIT' })
 
-  console.log(`Connected socket: ${socket}`)
   const provider = new WsProvider(socket)
   const _api = new ApiPromise({ 
     provider, 
@@ -125,7 +124,6 @@ const loadAccounts = (state, dispatch) => {
 
       dispatch({ type: 'SET_KEYRING', payload: Keyring })
     } catch (e) {
-      console.error(e)
       dispatch({ type: 'KEYRING_ERROR' })
     }
   }

@@ -11,8 +11,8 @@ const Home = () => {
 
     const networks = [
         {"address": "ws://127.0.0.1:9944", "name":"DoraFactory", "logo": "logo.svg"},
-        {"address":"wss://rpc.polkadot.io", "name":"Polkadot", "logo": "networks/polkadot.png"},
-        {"address":"wss://kusama-rpc.polkadot.io", "name":"Kusama", "logo": "networks/kusama.png"}
+        // {"address":"wss://rpc.polkadot.io", "name":"Polkadot", "logo": "networks/polkadot.png"},
+        // {"address":"wss://kusama-rpc.polkadot.io", "name":"Kusama", "logo": "networks/kusama.png"}
     ];
 
     const [network, setNetwork] = useState('');
@@ -37,7 +37,6 @@ const Home = () => {
         setDefaultPolka(0)
         web3Enable("dorafactory multisig app").then((extension) => {
             // no polkadot.js extension
-            console.log(extension.length);
             if (extension.length == 0) {
                 setIsExtension(0);
             }
@@ -47,14 +46,14 @@ const Home = () => {
     return(
         <div className="home-content"> 
             <div className="header-home">
-                <select 
+                <select disabled
                     onChange={(dropdown) => {
                         handleNetworkChange(dropdown.target.value)
                     }}
                     value = {network}
                 >
                     {networks.map((network) => (
-                        <option value = {network.name}>
+                        <option value={network.name}>
                                 {network.name}
                         </option>
                     ))}
