@@ -1,4 +1,5 @@
 FROM node:14-alpine AS builder
+ARG build_env
 RUN apk add g++ make py3-pip
 ENV NODE_ENV production
 # Add a work directory
@@ -10,7 +11,7 @@ RUN yarn install
 # Copy app files
 COPY . .
 # Build the app
-RUN yarn build
+RUN yarn build$build_env
 
 # Bundle static assets with nginx
 FROM nginx:1.21.0-alpine as production
