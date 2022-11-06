@@ -15,8 +15,10 @@ jobs:
     - name: Git clone the repository
       uses: actions/checkout@v1
     - name: Build image
+      env:
+        BUILD_ARG: ${{ fromJson('["--build-arg build_env=:dev", ""]')[github.ref_name == 'dev'] }}
       run: |
-        docker build -t multisig-app:local -f Dockerfile .
+        docker build $BUILD_ARG -t multisig-app:local -f Dockerfile .
     - name: Configure AWS Credentials
       uses: aws-actions/configure-aws-credentials@master
       with:
@@ -34,6 +36,8 @@ jobs:
         docker tag multisig-app:local $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
     - name: Redeploy on aws
+      env:
+        NS: ${{ fromJson('["-n webapp", ""]')[github.ref_name == 'main'] }}
       run: |
         aws eks update-kubeconfig --region  ap-southeast-1 --name ${{ secrets.EKS_CLUSTER }}
-        kubectl rollout restart deploy multisig-app-dev
+        kubectl rollout restart deploy multisig-app-dev $NS
